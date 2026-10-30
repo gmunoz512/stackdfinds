@@ -1,0 +1,44 @@
+name: Import existing Stackd app
+on:
+  push:
+    paths:
+      - .github/workflows/import-stackd.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout independent destination
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch original Stackd source (without its history)
+        run: git clone --depth 1 https://github.com/gmunoz512/stackbnb-60920.git "$RUNNER_TEMP/stackd-source"
+      - name: Transfer app and all existing UI assets
+        run: |
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='node_modules/' \
+            --exclude='dist/' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='.vercel/' \
+            --exclude='*.local' \
+            "$RUNNER_TEMP/stackd-source/" "./"
+          git status --short
+      - name: Commit imported application to independent history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: import complete Stackd app and preserved UI"
+            git push
+          fi
+      - name: Verify web build
+        run: |
+          npm ci
+          npm run build
