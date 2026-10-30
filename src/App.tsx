@@ -200,7 +200,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AppRoutes = () => (
   <Suspense fallback={<PageLoader />}>
   <Routes>
-    <Route path="/" element={<SplashPage />} />
+    <Route path="/" element={<AppView />} />
+    <Route path="/welcome" element={<SplashPage />} />
     {/* Legacy route - redirect to unified auth */}
     <Route path="/select-role" element={<Navigate to="/auth" replace />} />
     
