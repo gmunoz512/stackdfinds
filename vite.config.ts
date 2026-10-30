@@ -7,6 +7,8 @@ export default defineConfig(() => ({
     host: "::",
     port: 8080,
   },
+  // Project Pages is under /stackdfinds/; use / when a custom domain is configured.
+  base: process.env.VITE_BASE_PATH || "/",
   plugins: [react()],
   resolve: {
     alias: {
