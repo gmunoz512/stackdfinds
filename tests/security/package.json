@@ -1,0 +1,13 @@
+{
+  "name": "stackbnb-security-regressions",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node profile-guards.mjs && tsx paid-api-guard.test.ts && node endpoint-wiring.mjs && node vendor-review.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "tsx": "^4.23.13",
+    "typescript": "5.8.3"
+  }
+}

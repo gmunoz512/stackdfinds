@@ -1,0 +1,64 @@
+project_id = "ilityngsjxknvxtqrgav"
+
+[functions.assign-role]
+verify_jwt = true
+
+[functions.trip-planner-chat]
+verify_jwt = false
+
+[functions.tripadvisor-search]
+verify_jwt = false
+
+[functions.google-reviews]
+verify_jwt = false
+
+[functions.scrape-instagram]
+verify_jwt = false
+
+[functions.host-guide]
+verify_jwt = false
+
+[functions.generate-vendor-description]
+verify_jwt = false
+
+[functions.create-booking-checkout]
+verify_jwt = true
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.create-connect-account]
+verify_jwt = true
+
+[functions.check-connect-status]
+verify_jwt = true
+
+[functions.create-stripe-login-link]
+verify_jwt = true
+
+[functions.send-reset-otp]
+verify_jwt = false
+
+[functions.verify-reset-otp]
+verify_jwt = false
+
+[functions.scrape-airbnb-reviews]
+verify_jwt = false
+
+[functions.price-comparison]
+verify_jwt = false
+
+[functions.vendor-directions]
+verify_jwt = false
+
+[functions.validate-promo-code]
+verify_jwt = false
+
+[functions.google-places]
+verify_jwt = false
+
+[functions.process-refund]
+verify_jwt = false
+
+[functions.vendor-review]
+verify_jwt = true

@@ -1,0 +1,295 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 5%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+
+    --primary: 20 100% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 30 100% 50%;
+    --secondary-foreground: 0 0% 5%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 0 0% 95%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 20 100% 55%;
+
+    --radius: 0.75rem;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(25 100% 55%), hsl(280 80% 55%));
+    --gradient-dark: linear-gradient(135deg, hsl(30 100% 65%), hsl(280 70% 50%));
+    --gradient-accent: linear-gradient(135deg, hsl(25 100% 55%), hsl(280 80% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(30 100% 60%), hsl(320 80% 55%), hsl(280 75% 50%));
+    
+    --shadow-elegant: 0 10px 30px -10px hsl(280 80% 50% / 0.3);
+    --shadow-card: 0 2px 12px -2px hsl(25 100% 50% / 0.15);
+    --shadow-glow: 0 0 40px hsl(280 80% 55% / 0.4);
+    --shadow-button: 0 4px 20px -4px hsl(280 80% 50% / 0.4);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 20 100% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 100% 97%;
+    --sidebar-accent-foreground: 20 100% 40%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 20 100% 55%;
+
+    /* Palette tokens. Values match the previous Tailwind shades. */
+    --ash-abyss: 0 0% 3.9%;
+    --ash-wash: 0 0% 98%;
+    --brand: 24.6 95% 53.1%;
+    --brand-abyss: 13 81.1% 14.5%;
+    --brand-dark: 15 79.1% 33.7%;
+    --brand-light: 27 96% 61%;
+    --brand-muted: 32.1 97.7% 83.1%;
+    --brand-strong: 20.5 90.2% 48.2%;
+    --brand-tint: 34.3 100% 91.8%;
+    --cyan: 188.7 94.5% 42.7%;
+    --danger: 0 84.2% 60.2%;
+    --danger-abyss: 0 74.7% 15.5%;
+    --danger-dark: 0 70% 35.3%;
+    --danger-deep: 0 73.7% 41.8%;
+    --danger-light: 0 90.6% 70.8%;
+    --danger-muted: 0 96.3% 89.4%;
+    --danger-soft: 0 93.5% 81.8%;
+    --danger-strong: 0 72.2% 50.6%;
+    --danger-tint: 0 93.3% 94.1%;
+    --danger-wash: 0 85.7% 97.3%;
+    --grape: 258.3 89.5% 66.3%;
+    --grape-deep: 263.4 70% 50.4%;
+    --grape-strong: 262.1 83.3% 57.8%;
+    --hot: 330.4 81.2% 60.4%;
+    --hot-light: 328.6 85.5% 70.2%;
+    --hot-strong: 333.3 71.4% 50.6%;
+    --indigo: 238.7 83.5% 66.7%;
+    --indigo-strong: 243.4 75.4% 58.6%;
+    --info: 217.2 91.2% 59.8%;
+    --info-abyss: 226.2 57% 21%;
+    --info-deep: 224.3 76.3% 48%;
+    --info-light: 213.1 93.9% 67.8%;
+    --info-strong: 221.2 83.2% 53.3%;
+    --info-wash: 213.8 100% 96.9%;
+    --ink: 0 0% 0%;
+    --iris: 270.7 91% 65.1%;
+    --iris-deep: 272.1 71.7% 47.1%;
+    --iris-strong: 271.5 81.3% 55.9%;
+    --lagoon: 173.4 80.4% 40%;
+    --lagoon-abyss: 178.6 84.3% 10%;
+    --lagoon-strong: 174.7 83.9% 31.6%;
+    --lagoon-wash: 166.2 76.5% 96.7%;
+    --mint: 160.1 84.1% 39.4%;
+    --mint-light: 158.1 64.4% 51.6%;
+    --mint-strong: 161.4 93.5% 30.4%;
+    --neutral: 220 8.9% 46.1%;
+    --neutral-dark: 215 27.9% 16.9%;
+    --neutral-muted: 220 13% 91%;
+    --neutral-strong: 215 13.8% 34.1%;
+    --neutral-tint: 220 14.3% 95.9%;
+    --paper: 0 0% 100%;
+    --rating: 45.4 93.4% 47.5%;
+    --rating-light: 47.9 95.8% 53.1%;
+    --rating-strong: 40.6 96.1% 40.4%;
+    --rose: 349.7 89.2% 60.2%;
+    --rose-strong: 346.8 77.2% 49.8%;
+    --slate-inkish: 222.2 47.4% 11.2%;
+    --slate-tint: 210 40% 96.1%;
+    --success: 142.1 70.6% 45.3%;
+    --success-abyss: 144.9 80.4% 10%;
+    --success-dark: 142.8 64.2% 24.1%;
+    --success-deep: 142.4 71.8% 29.2%;
+    --success-light: 141.9 69.2% 58%;
+    --success-muted: 141 78.9% 85.1%;
+    --success-strong: 142.1 76.2% 36.3%;
+    --success-tint: 140.6 84.2% 92.5%;
+    --surface-raised: 0 0% 6.7%;
+    --warning: 37.7 92.1% 50.2%;
+    --warning-abyss: 20.9 91.7% 14.1%;
+    --warning-dark: 22.7 82.5% 31.4%;
+    --warning-light: 43.3 96.4% 56.3%;
+    --warning-muted: 48 96.6% 76.7%;
+    --warning-strong: 32.1 94.6% 43.7%;
+    --warning-tint: 48 96.5% 88.8%;
+    --zinc-dark: 240 3.7% 15.9%;
+    --zinc-light: 240 5% 64.9%;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 20 100% 60%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 30 100% 55%;
+    --secondary-foreground: 0 0% 5%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 20 100% 60%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(25 100% 55%), hsl(280 80% 55%));
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 5%), hsl(0 0% 10%));
+    --gradient-accent: linear-gradient(135deg, hsl(25 100% 55%), hsl(280 80% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(30 100% 60%), hsl(320 80% 55%), hsl(280 75% 50%));
+    
+    --shadow-elegant: 0 10px 40px -10px hsl(280 80% 50% / 0.4);
+    --shadow-card: 0 2px 12px -2px hsl(25 100% 50% / 0.3);
+    --shadow-glow: 0 0 40px hsl(280 80% 55% / 0.5);
+    --shadow-button: 0 4px 20px -4px hsl(280 80% 50% / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Safe area padding for mobile devices */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  
+  h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  
+  h2 {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  
+  h3, h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  
+  h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+  
+  p {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+  }
+  
+  .font-display {
+    font-family: 'Archivo Black', sans-serif;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Touch targets for mobile */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Hide scrollbar but allow scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Momentum scrolling for iOS */
+  .scroll-smooth {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Shimmer animation for image loading */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@layer components {
+  .shot-frame {
+    @apply w-full max-w-[430px] mx-auto min-h-screen bg-background;
+  }
+
+  .shot-phone {
+    @apply w-full max-w-[430px] h-full flex flex-col bg-background overflow-hidden relative sm:border sm:border-border sm:shadow-2xl;
+  }
+
+  .listing-tile {
+    @apply aspect-square rounded-2xl overflow-hidden relative ring-1 ring-border/70;
+  }
+}
+
+@keyframes splashZoom { from { transform: scale(1.12); } to { transform: scale(1.02); } }
