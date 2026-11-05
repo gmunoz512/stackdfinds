@@ -1,0 +1,78 @@
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+.app-preview-stage {
+  min-height: 100dvh;
+  background: #efe6d4 url("./assets/tulum-watercolor.png") center bottom/cover
+    fixed;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 16px 16px 20px;
+}
+.app-preview-note {
+  width: min(100%, 430px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #586b55;
+  padding: 0 3px 10px;
+  font:
+    9px Arial,
+    sans-serif;
+  letter-spacing: 1.5px;
+}
+.app-preview-note span:last-child {
+  letter-spacing: 0;
+  font-size: 9px;
+}
+.app-preview-phone {
+  width: 430px;
+  max-width: 100%;
+  height: calc(100dvh - 52px);
+  min-height: 560px;
+  max-height: 1000px;
+  border: 1px solid #ded3be;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px #4d3b201d;
+  background: #faf7ee;
+}
+.app-preview-phone iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+@media (max-width: 600px) {
+  .app-preview-stage {
+    padding: 0;
+    display: block;
+  }
+  .app-preview-note {
+    width: 100%;
+    height: 22px;
+    padding: 0 10px;
+    font-size: 7px;
+    background: #efe7d7;
+  }
+  .app-preview-note span:last-child {
+    font-size: 7px;
+  }
+  .app-preview-phone {
+    width: 100%;
+    max-width: none;
+    border: 0;
+    border-radius: 0;
+    height: calc(100dvh - 22px);
+    min-height: 0;
+    max-height: none;
+    box-shadow: none;
+  }
+}
+.app-preview-stage.preview-night { background-image:linear-gradient(#102218dc,#102218dc),url("./assets/tulum-watercolor.png"); background-color:#111b17; }
+.preview-night .app-preview-note { color:#bccbb8; background:#15271e; }
+.preview-night .app-preview-phone { background:#111b17; border-color:#405942; }

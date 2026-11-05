@@ -1,0 +1,70 @@
+:root {
+  /* 🌈 Global gradient variables */
+  --gradient-from: #ff6a00; /* orange */
+  --gradient-to: #ee0979; /* pink */
+
+  /* Optional text shadow and brand color */
+  --text-shadow-strong: 0 2px 20px rgba(0, 0, 0, 0.3);
+  --brand-color: #ff6a00;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* 🧠 Logo styling */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em var(--gradient-to));
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em var(--gradient-from));
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* 🪄 Card or section containers */
+.card {
+  padding: 2em;
+}
+
+/* 📚 Small text */
+.read-the-docs {
+  color: #888;
+}
+
+/* 🌇 Global gradient utility — apply anywhere */
+:root {
+  --gradient-from: #4b00e0; /* Indigo */
+  --gradient-to: #ff0080;   /* Pink Glow */
+}
+
+.bg-gradient {
+  background: linear-gradient(to right, var(--gradient-from), var(--gradient-to));
+}
+
+/* ✨ Optional text shadow utility */
+.text-glow {
+  text-shadow: var(--text-shadow-strong);
+}

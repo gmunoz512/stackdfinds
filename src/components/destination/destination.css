@@ -1,0 +1,1379 @@
+.destination-shell,
+html[data-stackd-theme="tulum"] {
+  --background: 42 56% 96%;
+  --foreground: 164 57% 12%;
+  --card: 40 60% 98%;
+  --card-foreground: 164 57% 12%;
+  --primary: 161 73% 16%;
+  --primary-foreground: 42 60% 96%;
+  --secondary: 46 22% 89%;
+  --secondary-foreground: 164 57% 12%;
+  --muted: 40 25% 91%;
+  --muted-foreground: 0 0% 42%;
+  --border: 38 17% 81%;
+  --input: 38 17% 81%;
+  --accent: 76 24% 88%;
+  --accent-foreground: 164 57% 12%;
+  --ring: 161 73% 16%;
+  color-scheme: light;
+}
+.destination-shell {
+  min-height: 100svh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  padding: 0 0 76px;
+  position: relative;
+  isolation: isolate;
+  color: #0d352b;
+  background: #f8f3e7;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.destination-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: url("../../assets/tulum-watercolor.png") center bottom/cover
+    no-repeat;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.destination-paper {
+  min-height: calc(100svh - 76px);
+  width: 100%;
+  max-width: 470px;
+  overflow-x: clip;
+  position: relative;
+  margin: auto;
+  background: #faf7eee8;
+}
+.page-border {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  fill: none;
+  stroke: #d7cebc;
+  stroke-width: 0.7;
+  z-index: 3;
+}
+.page-border rect {
+  stroke-dasharray: 1;
+}
+.destination-art {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+.destination-art-mobile {
+  display: none;
+}
+.destination-header {
+  height: 65px;
+  min-width: 0;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 60;
+  background: #faf7eef0;
+}
+.destination-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-right: auto;
+  flex-shrink: 0;
+}
+.destination-brand > span {
+  font-weight: 900;
+  font-size: 33px;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: #09352a;
+  min-width: 0;
+}
+.tulum-mascot {
+  width: 61px;
+  height: 49px;
+  color: #093c2b;
+  flex-shrink: 0;
+}
+.sea-wave {
+  stroke: #278fa2;
+}
+.my-stackd-pill {
+  padding: 8px 16px;
+  border: 1px solid #648279;
+  border-radius: 30px;
+  font-size: 13px;
+  white-space: nowrap;
+  line-height: 1.25;
+}
+.menu-toggle {
+  width: 25px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.header-back {
+  display: grid;
+  place-items: center;
+  margin-left: -5px;
+  color: #315648;
+}
+.inner-header {
+  gap: 7px;
+}
+.inner-header .destination-brand > span {
+  font-size: 29px;
+}
+.inner-header .tulum-mascot {
+  width: 48px;
+}
+.inner-header .my-stackd-pill {
+  padding: 7px 11px;
+  font-size: 12px;
+}
+.reference-menu {
+  position: absolute;
+  top: 62px;
+  left: 24px;
+  right: 24px;
+  background: rgba(255, 253, 245, 0.64);
+  border: 1px solid rgba(216, 208, 190, 0.72);
+  border-radius: 22px;
+  padding: 10px;
+  box-shadow: 0 12px 30px rgba(39, 66, 52, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.reference-menu a,
+.reference-menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 14px;
+  min-height: 50px;
+  font-size: 16px;
+  border-radius: 14px;
+  width: 100%;
+  gap: 8px;
+}
+.reference-menu a:hover,
+.reference-menu button:hover {
+  background: #e9ecdc;
+}
+.destination-main {
+  position: relative;
+}
+.destination-mobile-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 9px 7px max(11px, env(safe-area-inset-bottom));
+  border-top: 1px solid #ded6c7;
+  background: #faf7eef5;
+  backdrop-filter: blur(15px);
+}
+.destination-mobile-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #666;
+  font-size: 10px;
+  min-width: 45px;
+  line-height: 1.25;
+}
+.destination-mobile-nav svg {
+  height: 21px;
+  width: 21px;
+  stroke-width: 1.55;
+}
+.destination-mobile-nav a.active {
+  color: #063b2c;
+}
+.destination-mobile-nav a.active span {
+  font-weight: 600;
+}
+.destination-mobile-nav a.active:first-child svg {
+  fill: #06432f;
+  color: #fff;
+  border-radius: 50%;
+  background: #06432f;
+  padding: 3px;
+}
+.destination-shell h1,
+.destination-shell h2,
+.destination-shell h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #0b3428;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.reference-catalog {
+  padding: 0 18px 12px;
+}
+.reference-page-heading {
+  padding: 5px 4px 13px;
+}
+.reference-page-heading h1 {
+  font-size: 43px;
+  line-height: 0.94;
+  letter-spacing: -1.6px;
+  margin: 0 0 9px;
+}
+.reference-page-heading > p {
+  font-size: 18px;
+  line-height: 1.35;
+}
+.reference-search {
+  height: 41px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #d6cfc2;
+  background: #fffdfa9c;
+  border-radius: 30px;
+  padding: 0 17px;
+  margin-bottom: 12px;
+  color: #545759;
+}
+.reference-search input {
+  width: 100%;
+  min-width: 0;
+  outline: none;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  color: #243e35;
+}
+.reference-search input::placeholder {
+  color: #747476;
+}
+.reference-filters {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+.reference-filters button {
+  font-size: 12px;
+  border: 1px solid #bcb9ac;
+  border-radius: 24px;
+  min-width: 0;
+  flex: 1;
+  height: 32px;
+  white-space: nowrap;
+  padding: 0 6px;
+  background: #fffdf44f;
+}
+.reference-filters button.selected {
+  background: #004632;
+  color: #fff;
+  border-color: #004632;
+}
+.reference-listing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.reference-listing {
+  min-width: 0;
+  position: relative;
+  border: 1px solid #ded8ca;
+  border-radius: 13px;
+  overflow: hidden;
+  background: #fffdfa9c;
+}
+.reference-listing > a {
+  display: block;
+  height: 100%;
+}
+.reference-listing .reference-photo,
+.reference-listing > a > img {
+  width: 100%;
+  aspect-ratio: 1.4;
+  object-fit: cover;
+  display: block;
+  border-radius: 11px;
+}
+.reference-photo {
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+.listing-copy {
+  padding: 7px 11px 9px;
+}
+.listing-copy h2 {
+  font-size: 17px;
+  line-height: 1.02;
+  letter-spacing: -0.45px;
+  margin: 0 0 5px;
+  font-weight: 600;
+  min-height: 18px;
+}
+.listing-category {
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #74777a;
+}
+.listing-price {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+  margin-top: 3px;
+  color: #162c25;
+}
+.listing-price span {
+  font-weight: 400;
+}
+.listing-heart {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fffefa;
+  color: #103b2e;
+  box-shadow: 0 1px 5px #1232;
+}
+.listing-heart[aria-pressed="true"] {
+  color: #b24e3d;
+}
+.eat-area {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #5b655f;
+}
+.reference-empty {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #687168;
+}
+.reference-empty button,
+.reference-empty a {
+  text-decoration: underline;
+}
+.reference-listing.skeleton {
+  height: 205px;
+  background: #e3e5d7;
+  animation: soft-pulse 1.3s infinite alternate;
+}
+.reference-save-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 14px;
+  padding: 5px 12px;
+  margin-top: 9px;
+  background: #e2e7d7;
+  color: #183b2b;
+  min-height: 53px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.reference-save-banner > .tulum-mascot {
+  width: 78px;
+  height: 47px;
+}
+.reference-save-banner > svg:last-child {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.reference-planner {
+  padding-bottom: 8px;
+}
+.planner-scenic-hero {
+  height: 228px;
+  position: relative;
+  background-size: cover;
+  background-position: center 40%;
+  border-radius: 17px 17px 0 0;
+  overflow: hidden;
+}
+.planner-scenic-hero::after {
+  content: "";
+  position: absolute;
+  inset: 65px 0 0;
+  background: linear-gradient(
+    160deg,
+    #faf7ee 23%,
+    #faf7eef2 55%,
+    #faf7ee12 100%
+  );
+}
+.planner-hero-copy {
+  position: absolute;
+  top: 98px;
+  left: 21px;
+  right: 18px;
+  z-index: 1;
+}
+.planner-hero-copy h1 {
+  font-size: 40px;
+  line-height: 0.96;
+  letter-spacing: -1.3px;
+  margin: 0 0 9px;
+}
+.planner-hero-copy p {
+  font-size: 15px;
+  line-height: 1.3;
+}
+.reference-plan-form {
+  padding: 5px 18px 0;
+}
+.trip-selectors {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.trip-selectors > button,
+.trip-selectors > label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  border: 1px solid #b9b8ad;
+  border-radius: 25px;
+  font-size: 12px;
+  background: #fffdf68c;
+  white-space: nowrap;
+}
+.trip-selectors select {
+  appearance: none;
+  max-width: 69px;
+  outline: 0;
+  background: transparent;
+  font-size: 12px;
+}
+.trip-selectors .has-value {
+  background: #e2e9d8;
+}
+.trip-date-fields {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.trip-date-fields label {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  color: #657362;
+}
+.trip-date-fields input {
+  display: block;
+  width: 100%;
+  padding: 8px 6px;
+  border: 1px solid #ccc6b8;
+  border-radius: 8px;
+  background: #fffdf6;
+  color: #143d2d;
+  font: 12px Arial;
+}
+.plan-prompt-card {
+  border: 1px solid #dfd7ca;
+  border-radius: 15px;
+  padding: 13px;
+  background: #fffdf8a1;
+}
+.plan-prompt-card > label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  letter-spacing: -0.15px;
+}
+.plan-prompt-card textarea {
+  resize: vertical;
+  min-height: 44px;
+  height: 44px;
+  border: 1px solid #ddd7cc;
+  border-radius: 13px;
+  padding: 11px 12px;
+  font-size: 12px;
+  width: 100%;
+  background: #f9f7f2;
+  outline-color: #376c51;
+  color: #183b2a;
+}
+.build-plan-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  border-radius: 27px;
+  min-height: 40px;
+  background: #004832;
+  color: #fff8eb;
+  font-size: 16px;
+  margin-top: 10px;
+  letter-spacing: -0.3px;
+}
+.build-plan-button:disabled {
+  opacity: 0.6;
+}
+.trip-interest-chips {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+}
+.trip-interest-chips button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid #c9c4b5;
+  border-radius: 20px;
+  padding: 6px 5px;
+  font-size: 9px;
+  white-space: nowrap;
+  flex: 1;
+  background: #fffcf6;
+}
+.trip-interest-chips svg {
+  width: 13px;
+  height: 13px;
+}
+.trip-interest-chips [aria-pressed="true"] {
+  background: #dfe8d6;
+  border-color: #436d50;
+}
+.planner-preview-notice {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #edf0e5;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.planner-favorites {
+  margin: 15px 18px 0;
+  padding-top: 12px;
+  border-top: 1px solid #e1daca;
+}
+.planner-favorites > h2 {
+  font-size: 21px;
+  letter-spacing: -0.6px;
+  margin-bottom: 8px;
+}
+.planner-favorite-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.planner-favorite-grid > a {
+  border: 1px solid #ddd6c8;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fffcf7;
+}
+.planner-favorite-grid .reference-photo {
+  height: 69px;
+  width: 100%;
+}
+.planner-favorite-grid span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 7px 9px;
+  letter-spacing: -0.6px;
+}
+.planner-saved {
+  margin: 10px 18px 0;
+  font-size: 12px;
+  gap: 12px;
+}
+.planner-saved > .tulum-mascot {
+  width: 78px;
+}
+.destination-join {
+  padding-bottom: 0;
+}
+.destination-join .destination-paper {
+  min-height: 100svh;
+  background: #faf7ee;
+}
+.destination-join .destination-header {
+  height: 82px;
+  padding: 20px 24px 11px;
+}
+.destination-join .destination-brand > span {
+  font-size: 33px;
+}
+.destination-join .tulum-mascot {
+  width: 66px;
+}
+.join-page {
+  position: relative;
+  min-height: calc(100svh - 82px);
+  padding-bottom: 145px;
+  overflow: hidden;
+}
+.join-heading {
+  padding: 10px 24px 27px;
+}
+.join-heading h1 {
+  font-size: 43px;
+  line-height: 0.98;
+  letter-spacing: -1.5px;
+  margin: 0 0 12px;
+}
+.join-heading > p {
+  font-size: 19px;
+  line-height: 1.3;
+}
+.join-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 18px;
+  position: relative;
+  z-index: 1;
+}
+.join-card {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+  border: 1px solid #d9d1c2;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fffdf8bd;
+  min-height: 115px;
+}
+.join-card > .reference-photo {
+  width: 34%;
+  height: 115px;
+  flex-shrink: 0;
+}
+.join-card > div:not(.reference-photo) {
+  padding: 12px 10px 12px 16px;
+  flex: 1;
+  min-width: 0;
+}
+.join-card h2 {
+  font-size: 29px;
+  letter-spacing: -0.8px;
+  margin: 0 0 6px;
+  line-height: 1;
+}
+.join-card p {
+  color: #66696b;
+  font-size: 14px;
+  line-height: 1.25;
+}
+.join-card > svg {
+  margin-right: 12px;
+  flex-shrink: 0;
+  stroke-width: 1.5;
+}
+.join-card:disabled {
+  opacity: 0.6;
+}
+.join-signin {
+  padding: 31px 12px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #414a46;
+  position: relative;
+  z-index: 1;
+}
+.join-signin button {
+  font-family: Georgia, serif;
+  color: #163a2c;
+  font-weight: 600;
+  font-size: 14px;
+}
+.join-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  width: fit-content;
+  margin: 23px auto 0;
+  padding: 9px 14px;
+  border: 1px solid #d9d1c2;
+  border-radius: 999px;
+  background: #faf7eedb;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  color: #143e2e;
+  box-shadow: 0 5px 18px rgba(39, 66, 52, 0.08);
+}
+.join-page-decoration {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 150px;
+  background: url("../../assets/tulum-watercolor.png") center bottom/100% auto
+    no-repeat;
+  opacity: 0.52;
+  pointer-events: none;
+}
+.destination-route-content .min-h-screen {
+  min-height: 0;
+}
+.destination-route-content .min-h-screen > header {
+  position: relative;
+  top: auto;
+  z-index: 1;
+  background: transparent;
+}
+.destination-route-content [aria-label="Go back"],
+.destination-route-content [aria-label="Switch to light mode"],
+.destination-route-content [aria-label="Switch to dark mode"] {
+  display: none;
+}
+.destination-route-content img[alt="Stackd"],
+.destination-route-content img[alt="stackd"] {
+  display: none;
+}
+.destination-route-content .p-8 {
+  padding: 20px;
+}
+.destination-route-content .min-h-screen.flex.items-center.justify-center {
+  min-height: 340px;
+  padding-top: 26px;
+  padding-bottom: 30px;
+}
+.destination-route-content .planner-chat {
+  height: calc(100svh - 140px);
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+.destination-route-content .planner-chat:has(.reference-planner) {
+  height: auto;
+  min-height: 0;
+}
+.destination-route-content
+  .planner-chat
+  > div:first-child:not(.reference-planner) {
+  padding: 12px;
+}
+.destination-route-content .planner-chat h1.text-lg {
+  font: 600 14px Arial;
+  letter-spacing: 0;
+}
+.destination-route-content .fixed.bottom-0 {
+  bottom: 67px;
+  left: 12px;
+  right: 12px;
+  border-radius: 12px 12px 0 0;
+  padding: 12px;
+  z-index: 65;
+}
+.destination-route-content .min-h-screen.pb-\[100px\] {
+  padding-bottom: 185px;
+}
+.destination-route-content button[class*="bg-gradient"],
+.destination-catalog [class*="from-brand"] {
+  background: #004832;
+  color: #fff8eb;
+}
+.reference-detail {
+  padding: 10px 20px 25px;
+}
+.reference-detail > .reference-photo {
+  width: 100%;
+  aspect-ratio: 1.4;
+  border-radius: 13px;
+  margin-bottom: 17px;
+}
+.reference-detail h1 {
+  font-size: 32px;
+  line-height: 1.05;
+  margin: 10px 0;
+}
+.reference-detail > p:not(.listing-category) {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.reference-detail > .sample-note {
+  font-size: 12px !important;
+  color: #7c7c71;
+}
+.reference-detail .build-plan-button {
+  margin-top: 24px;
+}
+.destination-shell a:focus-visible,
+.destination-shell button:focus-visible,
+.destination-shell input:focus-visible,
+.destination-shell select:focus-visible {
+  outline: 2px solid #54745a;
+  outline-offset: 3px;
+}
+.destination-intro .page-border rect {
+  animation: reference-trace 2.2s ease both;
+}
+.destination-intro .destination-art path,
+.destination-intro .tulum-mascot path,
+.destination-intro .tulum-mascot circle {
+  stroke-dasharray: 1;
+  animation: reference-trace 2.6s 0.1s ease both;
+}
+.destination-intro .destination-main {
+  animation: reference-fade 0.8s 0.4s both;
+}
+.destination-intro::before {
+  animation: reference-fade 2s 0.5s both;
+}
+.palm-sway {
+  transform-origin: 120px 95px;
+  animation: palm-sway 7s ease-in-out infinite;
+}
+@keyframes reference-trace {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes reference-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes palm-sway {
+  50% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes soft-pulse {
+  to {
+    opacity: 0.45;
+  }
+}
+@media (max-width: 370px) {
+  .destination-header {
+    padding-left: 15px;
+    padding-right: 15px;
+    gap: 8px;
+  }
+  .destination-brand > span {
+    font-size: 30px;
+  }
+  .tulum-mascot {
+    width: 54px;
+  }
+  .my-stackd-pill {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+  .reference-catalog {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .reference-page-heading h1 {
+    font-size: 40px;
+  }
+  .reference-page-heading > p {
+    font-size: 17px;
+  }
+  .reference-filters {
+    gap: 8px;
+  }
+  .listing-copy {
+    padding-left: 9px;
+    padding-right: 8px;
+  }
+  .listing-copy h2 {
+    font-size: 16px;
+  }
+  .join-heading h1 {
+    font-size: 40px;
+  }
+  .join-card h2 {
+    font-size: 26px;
+  }
+  .join-card p {
+    font-size: 13px;
+  }
+  .join-card > div:not(.reference-photo) {
+    padding-left: 13px;
+  }
+  .join-card > svg {
+    margin-right: 9px;
+    width: 20px;
+  }
+  .planner-hero-copy h1 {
+    font-size: 37px;
+  }
+  .trip-interest-chips button {
+    font-size: 8px;
+    padding: 6px 4px;
+  }
+  .planner-favorite-grid span {
+    font-size: 13px;
+  }
+}
+@media (min-width: 600px) {
+  .destination-shell {
+    padding: 16px 20px 86px;
+  }
+  .destination-paper {
+    border-radius: 24px;
+    overflow: clip;
+  }
+  .destination-header {
+    border-radius: 24px 24px 0 0;
+  }
+  .destination-mobile-nav {
+    max-width: 470px;
+    margin: auto;
+  }
+  .destination-join {
+    padding-bottom: 16px;
+  }
+  .destination-art {
+    opacity: 0.7;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .destination-shell *,
+  .destination-shell::before {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-stackd-theme="tulum"] {
+  scrollbar-width: none;
+}
+html[data-stackd-theme="tulum"]::-webkit-scrollbar {
+  display: none;
+}
+html[data-stackd-theme="tulum"] body {
+  background: #faf7ee;
+}
+.destination-shell {
+  padding-bottom: 60px;
+}
+.destination-paper {
+  min-height: calc(100svh - 60px);
+  background: #faf7ee;
+}
+.destination-shell:not(.destination-join)::before {
+  opacity: 0.08;
+}
+.destination-join {
+  padding-bottom: 0;
+}
+.destination-join .destination-paper {
+  min-height: 100svh;
+}
+.palm-sway {
+  transform-origin: 37px 65px;
+}
+
+/* Proportions taken from the supplied three-screen mobile reference. */
+.reference-page-heading h1 {
+  font-size: 49px;
+  letter-spacing: -1.8px;
+}
+.reference-page-heading > p {
+  font-size: 19px;
+}
+.reference-search {
+  height: 43px;
+}
+.reference-search input {
+  font-size: 15px;
+}
+.listing-copy h2 {
+  font-size: 18px;
+}
+.listing-category {
+  font-size: 10.5px;
+}
+.listing-price {
+  font-size: 15px;
+}
+.join-heading h1 {
+  font-size: 51px;
+  letter-spacing: -1.8px;
+}
+.join-card,
+.join-card > .reference-photo {
+  min-height: 132px;
+  height: 132px;
+}
+.join-card h2 {
+  font-size: 32px;
+}
+.join-card p {
+  font-size: 15px;
+}
+.join-page {
+  padding-bottom: 120px;
+}
+.planner-scenic-hero::after {
+  inset: 85px 0 0;
+  background: linear-gradient(
+    155deg,
+    #faf7ee 23%,
+    #faf7eef2 58%,
+    #faf7ee00 100%
+  );
+}
+@media (max-width: 370px) {
+  .reference-page-heading h1 {
+    font-size: 44px;
+  }
+  .reference-page-heading > p {
+    font-size: 17px;
+  }
+  .join-heading h1 {
+    font-size: 45px;
+  }
+  .join-card,
+  .join-card > .reference-photo {
+    min-height: 119px;
+    height: 119px;
+  }
+  .join-card h2 {
+    font-size: 28px;
+  }
+  .join-card p {
+    font-size: 13px;
+  }
+}
+
+/* Keep the destination drawing visible inside the phone canvas. */
+.destination-paper { background: transparent; z-index: 1; }
+.destination-shell::before { z-index: 0; opacity: .22 !important; }
+.destination-art { z-index: 0; opacity: .85; }
+.destination-art-mobile { display: block; max-width: 470px; left: 50%; right: auto; transform: translateX(-50%); opacity: 1; }
+.destination-art:not(.destination-art-mobile) { display: none; }
+.destination-header { background: #faf7eedb; }
+.tulum-category-tabs { display:flex; gap:8px; padding:8px 22px 12px; position:relative; z-index:2; }
+.tulum-category-tabs a { display:flex; align-items:center; justify-content:center; gap:7px; flex:1; min-height:42px; border:1px solid #8b9c86; border-radius:24px; background:#faf7eee8; font-size:13px; font-weight:600; }
+.tulum-category-tabs a.active { background:#123d30; color:#fff9ed; border-color:#123d30; }
+.reference-catalog { padding-top:32px; padding-bottom:65px; }
+.reference-page-heading { background: #faf7eeab; border-radius:18px; }
+.reference-listing { background:#fffdf5f5; }
+.tulum-home { padding: 26px 22px 72px; }
+.tulum-home-hero { position:relative; height:250px; margin-bottom:68px; border-radius:90px 18px 80px 18px; overflow:hidden; }
+.tulum-home-hero img { width:100%; height:100%; object-fit:cover; }
+.tulum-home-hero::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,#062e32bb,transparent); }
+.tulum-home-hero > div { position:absolute; top:40px; left:25px; right:15px; z-index:1; color:#fff9ed; }
+.tulum-home-hero p,.home-category header > p { font-size:10px; letter-spacing:2px; font-weight:700; }
+.tulum-home-hero h1 { font:42px/1.06 Georgia,serif; margin:12px 0; }
+.tulum-home-hero span { font-size:13px; }
+/* Warm glass keeps the drawing visible without fading text or photos. */
+.home-category {
+  margin-bottom:76px;
+  padding:6px 10px 14px;
+  background:rgba(250,247,238,.62);
+  border:1px solid rgba(255,253,245,.78);
+  border-radius:18px;
+  -webkit-backdrop-filter:blur(7px) saturate(110%);
+  backdrop-filter:blur(7px) saturate(110%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 6px 24px rgba(45,65,43,.035);
+}
+@supports not ((backdrop-filter:blur(7px)) or (-webkit-backdrop-filter:blur(7px))) {
+  .home-category { background:rgba(250,247,238,.82); }
+}
+.home-category header { padding:14px 0 18px; background:transparent; }
+.home-category h2 { font:30px/1.08 Georgia,serif; margin:9px 0; }
+.home-category header > span { font-size:13px; color:#526557; }
+.home-category header > a { display:flex; align-items:center; gap:6px; margin-top:14px; font-size:13px; font-weight:600; text-decoration:underline; }
+.home-category h3 { font:19px/1.1 Georgia,serif; margin-bottom:6px; }
+.home-preview-note { font-size:10px; margin-top:10px; color:#526557; }
+.home-plan-link { display:flex; align-items:center; justify-content:space-between; padding:17px; background:#123d30; color:#fff9ed; border-radius:14px; }
+@media (min-width:600px) { .destination-art:not(.destination-art-mobile) { display:block; } }
+.tulum-home-hero h1 { color:#fff9ed; }
+.destination-art-mobile use { stroke-width: 1.8; }
+.destination-art-mobile > g { opacity: .85; }
+
+/* Independent, touch-native carousels; the next card peeks into view. */
+.home-card-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 44%;
+  gap: 12px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+  padding: 2px 2px 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #839780 #e8e4d7;
+}
+.home-card-rail > article { min-width: 0; scroll-snap-align: start; }
+.home-card-rail:focus-visible { outline: 2px solid #123d30; outline-offset: 4px; border-radius: 12px; }
+.home-card-rail .reference-listing > a > img,
+.home-card-rail .reference-photo { width: 100%; aspect-ratio: 1.4; }
+
+/* Each catalog row shares its section's continuous cream surface. */
+.home-card-rail .reference-listing {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.home-card-rail .listing-copy { padding: 10px 2px 6px; }
+/* Wishlist actions sit outside the card's detail link. */
+.listing-heart { z-index: 2; width: 36px; height: 36px; }
+.home-card-rail .reference-listing { position: relative; }
+.wishlist-plan-button { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:11px 14px; background:#123d30; color:#fff9ed; border-radius:10px; font-size:14px; }
+.saved-plan-button { margin-top:24px; }
+.planner-wishlist-summary { margin:0 22px 20px; padding:16px; border-radius:16px; background:#faf7ee; border:1px solid #d8decb; }
+.planner-wishlist-summary h2,.experience-price-comparison h2 { font:23px/1.15 Georgia,serif; margin:0 0 10px; }
+.planner-wishlist-summary p { font-size:13px; }
+.planner-wishlist-chips { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.planner-wishlist-chips a { font-size:12px; background:#e5ebdb; padding:7px 9px; border-radius:20px; }
+.planner-wishlist-summary > a { font-size:12px; text-decoration:underline; }
+.detail-photo-wrap { position:relative; }
+.detail-photo-wrap > .reference-photo { aspect-ratio:1.4; width:100%; border-radius:14px; }
+.experience-price-comparison { margin:22px 0; padding:16px; border:1px solid #d8decb; border-radius:16px; background:#faf7ee; }
+.price-comparison-unavailable { font-size:12px; line-height:1.5; color:#566459; }
+.price-meter-pending { height:10px; border-radius:10px; background:linear-gradient(90deg,#dce5d2,#e7dfcb); margin-top:16px; }
+.price-meter-labels { display:flex; justify-content:space-between; margin:5px 0 12px; font-size:10px; }
+
+/* Original Stackd wishlist pattern: full photo cards in normal page flow. */
+.home-wishlists { margin-bottom:0; }
+.home-wishlists-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.home-wishlists-heading > span { font-size:12px; color:#607062; white-space:nowrap; }
+.home-wishlists-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 12px; padding:2px 0 20px; }
+.home-wishlist-card { position:relative; min-width:0; }
+.home-wishlist-card > a { display:block; }
+.home-wishlist-card img,.home-wishlist-card .reference-photo { width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; }
+.home-wishlist-card .listing-copy { padding:10px 1px 0; }
+.home-wishlist-card h3 { font-size:19px; }
+.home-wishlists-empty { display:flex; flex-direction:column; align-items:center; gap:8px; padding:24px 8px 28px; text-align:center; color:#647365; }
+.home-wishlists-empty p { font-size:14px; }
+.home-wishlists-empty span { font-size:12px; }
+.saved-count-badge { display:inline-block; min-width:18px; border-radius:20px; background:#dfe7d6; padding:1px 5px; margin-left:5px; font-size:10px; text-align:center; }
+/* Listing gallery: one large photo with four companion tiles. */
+.detail-gallery { position:relative; width:100%; }
+.detail-gallery-mosaic { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:repeat(2,minmax(0,1fr)); gap:2px; width:100%; aspect-ratio:1.42; border-radius:14px; overflow:hidden; background:#d7ddcf; }
+.detail-gallery-tile { display:block; min-width:0; min-height:0; width:100%; height:100%; overflow:hidden; }
+.detail-gallery-photo { display:block; width:100%; height:100%; object-fit:cover; }
+.detail-gallery-mosaic .detail-gallery-tile:first-child { grid-row:1 / span 2; }
+.detail-gallery-mosaic.photos-1 { grid-template-columns:1fr; }
+.detail-gallery-mosaic.photos-2 { grid-template-columns:1fr 1fr; }
+.detail-gallery-mosaic.photos-2 .detail-gallery-tile { grid-row:1 / span 2; }
+.detail-gallery-mosaic.photos-3 .detail-gallery-tile:not(:first-child) { grid-column:2 / span 2; }
+.detail-gallery-mosaic.photos-4 .detail-gallery-tile:last-child { grid-column:2 / span 2; }
+.detail-gallery-show-all { position:absolute; right:10px; bottom:10px; display:flex; align-items:center; gap:7px; padding:9px 12px; border-radius:22px; border:1px solid #ffffff40; background:#1a211ee8; color:#fff; font:12px/1.2 Arial,sans-serif; box-shadow:0 2px 10px #0002; }
+.detail-gallery-tile:focus-visible,.detail-gallery-show-all:focus-visible { outline:3px solid #67c3b1; outline-offset:-3px; }
+.detail-photo-dialog { position:fixed; inset:0; top:0!important; left:0!important; transform:none!important; width:100vw; max-width:none!important; height:100dvh; padding:60px 14px; border:0; border-radius:0; display:flex; align-items:center; justify-content:center; background:#101310fa; color:white; }
+.detail-photo-dialog > button:last-child:not([class^="detail-viewer"]) { display:none; }
+.detail-viewer-photo { display:block; max-width:100%; max-height:calc(100dvh - 120px); width:auto; height:auto; object-fit:contain; }
+.detail-viewer-crop { width:min(100%,720px); aspect-ratio:1.4; }
+.detail-viewer-close,.detail-viewer-prev,.detail-viewer-next { position:absolute; display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:#ffffff20; z-index:2; color:white; }
+.detail-viewer-close { left:16px; top:max(16px,env(safe-area-inset-top)); }
+.detail-viewer-count { position:absolute; right:20px; top:max(27px,env(safe-area-inset-top)); font-size:14px; }
+.detail-viewer-prev { left:12px; top:calc(50% - 21px); }
+.detail-viewer-next { right:12px; top:calc(50% - 21px); }
+.detail-photo-wrap .listing-heart { top:9px; right:9px; }
+/* Day/night control and destination palette. Photos keep their original color. */
+.night-mode-toggle { display:flex; align-items:center; justify-content:center; gap:8px; padding:8px 10px; min-height:40px; border:1px solid #8b9c86; border-radius:24px; color:#153d30; background:#faf7eea8; }
+.night-mode-track { display:block; width:28px; height:16px; border-radius:20px; background:#c5cebb; padding:2px; }
+.night-mode-track > span { display:block; width:12px; height:12px; background:#fffdf5; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px #0003; }
+.night-mode-toggle[aria-checked="true"] .night-mode-track { background:#70ad99; }
+.night-mode-toggle[aria-checked="true"] .night-mode-track > span { transform:translateX(12px); }
+.night-mode-toggle:focus-visible { outline:2px solid #70ad99; outline-offset:3px; }
+.destination-brand .tulum-mascot { width:74px; height:54px; }
+html.dark[data-stackd-theme="tulum"], .dark .destination-shell {
+ --background:158 20% 9%; --foreground:45 40% 92%; --card:158 18% 13%; --card-foreground:45 40% 92%; --primary:158 33% 69%; --primary-foreground:158 40% 10%; --secondary:158 15% 19%; --secondary-foreground:45 40% 92%; --muted:158 13% 18%; --muted-foreground:145 12% 69%; --border:155 14% 29%; --input:155 14% 29%; --accent:158 20% 23%; --accent-foreground:45 40% 92%; --ring:158 33% 69%; color-scheme:dark;
+}
+html.dark[data-stackd-theme="tulum"] body,.dark .destination-shell { background:#111b17; color:#efece0; }
+.dark .destination-shell::before { filter:brightness(.48) saturate(.65); opacity:.23!important; }
+.dark .destination-art { filter:brightness(1.6); opacity:.52; }
+.dark .destination-paper { background:transparent; }
+.dark .destination-header,.dark .destination-mobile-nav { background:#14221de8; border-color:#3b5045; }
+.dark .destination-brand > span,.dark .tulum-mascot,.dark .destination-shell h1,.dark .destination-shell h2,.dark .destination-shell h3 { color:#f1eddd; }
+.dark .sea-wave { stroke:#77bfc0; }
+.dark .night-mode-toggle { background:#253b30b8; border-color:#668472; color:#d9e9d9; }
+.dark .page-border { stroke:#496252; }
+.dark .home-category { background:rgba(22,39,31,.66); border-color:#c0d5bb35; box-shadow:inset 0 1px 0 #f0f5db12,0 6px 24px #0002; }
+.dark .home-category header,.dark .home-wishlist-card { background:transparent; }
+.dark .reference-page-heading { background:#15261bc2; }
+.dark .reference-listing,.dark .join-card,.dark .planner-favorite-grid > a,.dark .experience-price-comparison,.dark .planner-wishlist-summary { background:rgba(28,48,37,.38); border-color:#c0d5bb42; -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px); }
+.dark .home-card-rail .reference-listing { background:transparent; border:0; }
+.dark .home-category header > span,.dark .home-wishlists-heading > span,.dark .home-wishlists-empty,.dark .listing-category,.dark .eat-area,.dark .reference-empty,.dark .price-comparison-unavailable,.dark .trip-date-fields label,.dark .sample-note { color:#b2c0b2; }
+.dark .listing-price,.dark .reference-search input,.dark .plan-prompt-card textarea,.dark .trip-date-fields input { color:#f2eedf; }
+.dark .reference-search,.dark .reference-filters button,.dark .trip-selectors > button,.dark .trip-selectors > label,.dark .plan-prompt-card,.dark .trip-interest-chips button { background:#20382ab8; border-color:#526754; color:#e1e8d8; }
+.dark .reference-search input::placeholder,.dark .plan-prompt-card textarea::placeholder { color:#aebaaa; }
+.dark .reference-filters button.selected,.dark .tulum-category-tabs a.active { background:#b4d7ba; color:#142b20; border-color:#b4d7ba; }
+.dark .tulum-category-tabs a { background:#1d3228bd; border-color:#647b68; color:#e9edde; }
+.dark .plan-prompt-card textarea,.dark .trip-date-fields input { background:#15271e; border-color:#53664e; }
+.dark .trip-selectors select option { background:#1c3025; color:#efece0; }
+.dark .trip-interest-chips [aria-pressed="true"],.dark .trip-selectors .has-value,.dark .planner-wishlist-chips a,.dark .planner-preview-notice { background:#3c5740; border-color:#799b76; color:#edf0de; }
+.dark .reference-save-banner { background:#2a4432; color:#e8ebd9; }
+.dark .reference-menu { background:rgba(26,44,34,.68); border-color:#526754; color:#efece0; }
+.dark .reference-menu a:hover,.dark .reference-menu button:hover { background:#314c38; }
+.dark .listing-heart { background:#14291fed; color:#d9e9d2; }
+.dark .listing-heart[aria-pressed="true"] { color:#f2947e; }
+.dark .destination-mobile-nav a { color:#adbcad; }
+.dark .destination-mobile-nav a.active { color:#d0e7c8; }
+.dark .destination-mobile-nav a.active:first-child svg { background:#c0d7b5; fill:#c0d7b5; color:#142d20; }
+.dark .planner-scenic-hero::after { background:linear-gradient(155deg,#111b17 23%,#111b17e8 58%,#111b1700); }
+.dark .join-heading,.dark .join-footer { color:#d1dccb; }
+.dark .join-card p,.dark .join-signin { color:#b8c9bc; }
+.dark .join-signin button { color:#a7d9ba; }
+.dark .join-back { color:#d1dccb; background:rgba(20,34,29,.88); border-color:#668472; box-shadow:0 5px 18px rgba(0,0,0,.2); }
+.dark .price-meter-pending { background:linear-gradient(90deg,#35583d,#726b48); }
+.dark .tulum-home-hero h1 { color:#fff9ed; }
+.dark .home-card-rail { scrollbar-color:#6a8b70 #20382a; }
+.tulum-about { padding:28px 22px 48px; }
+.about-intro { margin-bottom:42px; }
+.about-eyebrow { font-size:9px; line-height:1.5; letter-spacing:1.7px; font-weight:700; margin-bottom:12px; }
+.about-intro h1 { font-size:44px; line-height:1.05; margin-bottom:16px; }
+.about-intro > p:last-child { font-size:17px; line-height:1.55; }
+.tulum-about .about-panel { padding:20px 17px; margin-bottom:24px; }
+.about-panel h2 { font-size:27px; margin-bottom:12px; }
+.about-panel p { font-size:15px; line-height:1.65; }
+.about-panel ul { display:flex; flex-direction:column; gap:19px; }
+.about-panel li { display:flex; align-items:flex-start; gap:12px; font-size:14px; line-height:1.5; }
+.about-panel li svg { flex-shrink:0; margin-top:2px; }
+.about-contact-link { display:flex; align-items:center; gap:9px; width:fit-content; margin-top:18px; font-size:14px; text-decoration:underline; text-underline-offset:4px; }
+/* Partner pages share the destination's paper, glass, and night palette. */
+.tulum-partner { padding:28px 22px 48px; }
+.destination-route-content { width:100%; min-width:0; max-width:100%; overflow-x:clip; }
+.tulum-partner { width:100%; max-width:100%; min-width:0; box-sizing:border-box; overflow-wrap:break-word; }
+.partner-intro { margin-bottom:44px; }
+.partner-symbol { display:grid; place-items:center; width:52px; height:52px; margin-bottom:22px; border:1px solid hsl(var(--border)); border-radius:50%; background:hsl(var(--card) / .45); }
+.partner-intro .about-eyebrow { text-transform:uppercase; }
+.partner-intro h1 { max-width:100%; font-size:clamp(40px,10.7vw,46px); line-height:1.04; letter-spacing:-1.5px; margin:0 0 18px; overflow-wrap:anywhere; text-wrap:balance; }
+.partner-description { max-width:100%; font-size:16px; line-height:1.65; color:hsl(var(--muted-foreground)); margin-bottom:24px; overflow-wrap:anywhere; }
+.tulum-partner .wishlist-plan-button { padding:15px 17px; min-height:48px; }
+.tulum-partner h2 { font-size:30px; line-height:1.15; letter-spacing:-.5px; margin-bottom:22px; }
+.partner-benefits { margin-bottom:32px; }
+.partner-feature-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.tulum-partner .partner-feature { padding:19px 14px; margin:0; border-radius:18px; }
+.partner-feature > svg { margin-bottom:17px; }
+.tulum-partner h3 { font-size:21px; line-height:1.15; margin-bottom:9px; }
+.partner-feature p,.partner-steps li p { font-size:13px; line-height:1.6; color:hsl(var(--muted-foreground)); }
+.tulum-partner .partner-steps { padding:24px 19px; margin-bottom:32px; }
+.partner-steps ol { list-style:none; padding:0; margin:0; }
+.partner-steps li { display:flex; align-items:flex-start; gap:14px; padding:20px 0; border-bottom:1px solid hsl(var(--border) / .6); }
+.partner-steps li:first-child { padding-top:2px; }
+.partner-steps li:last-child { border-bottom:0; padding-bottom:0; }
+.partner-step-number { flex-shrink:0; display:grid; place-items:center; width:33px; height:33px; border-radius:50%; background:hsl(var(--accent) / .7); font-size:11px; letter-spacing:1px; }
+.partner-types { margin-bottom:32px; }
+.partner-types ul { display:flex; flex-wrap:wrap; gap:8px; list-style:none; }
+.partner-types li { padding:8px 12px; border:1px solid hsl(var(--border)); border-radius:20px; background:hsl(var(--card) / .4); font-size:12px; }
+.tulum-partner .partner-cta { padding:25px 19px; margin:0; }
+.partner-cta h2 { margin-bottom:14px; }
+.partner-cta p { font-size:15px; line-height:1.6; color:hsl(var(--muted-foreground)); margin-bottom:22px; }
+.tulum-partner a:focus-visible { outline:2px solid hsl(var(--ring)); outline-offset:4px; }
+@media (max-width:360px) { .partner-feature-grid { grid-template-columns:1fr; } .partner-intro h1 { font-size:40px; } }
+
+.tulum-faq .about-intro h1 { font-size:40px; }
+.faq-group { margin-bottom:32px; }
+.faq-group > h2 { font-size:27px; margin-bottom:17px; }
+.tulum-faq .faq-item { padding:0; margin-bottom:12px; border-radius:18px; }
+.faq-item summary { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:19px 17px; cursor:pointer; list-style:none; font-size:15px; line-height:1.4; font-weight:600; }
+.faq-item summary::-webkit-details-marker { display:none; }
+.faq-item summary svg { flex-shrink:0; transition:transform .2s; }
+.faq-item[open] summary svg { transform:rotate(180deg); }
+.faq-item summary:focus-visible { outline:2px solid hsl(var(--ring)); outline-offset:3px; border-radius:18px; }
+.faq-item > p { padding:0 17px 20px; font-size:14px; line-height:1.7; color:hsl(var(--muted-foreground)); }
+.faq-item a { color:hsl(var(--foreground)); text-decoration:underline; text-underline-offset:3px; }
+@media (prefers-reduced-motion:reduce) { .faq-item summary svg { transition:none; } }
+/* A tighter discovery rhythm, with the existing photography left intact. */
+.tulum-home { padding-top:18px; padding-bottom:36px; }
+.tulum-home-hero { margin-bottom:28px; }
+.tulum-home > .home-category { margin-bottom:30px; }
+.tulum-home > .home-category:last-child { margin-bottom:0; }
+.home-category { --glass-surface:rgba(250,247,238,.44); background:var(--glass-surface); border-radius:18px; border:1px solid rgba(255,253,245,.78); -webkit-backdrop-filter:blur(10px) saturate(115%); backdrop-filter:blur(10px) saturate(115%); box-shadow:inset 0 1px 0 #ffffff80,0 6px 24px #2d412b09; }
+.dark .home-category { --glass-surface:rgba(22,39,31,.30); background:var(--glass-surface); border-color:#c0d5bb42; -webkit-backdrop-filter:blur(5px) saturate(110%); backdrop-filter:blur(5px) saturate(110%); box-shadow:inset 0 1px 0 #f0f5db0d,0 4px 18px #00000012; }
+.home-category:is(.about-panel,.partner-steps,.partner-cta,.faq-item,.trip-step,.detail-essentials,.detail-inclusions) { --glass-surface:rgba(250,247,238,.84); }
+.dark .home-category:is(.about-panel,.partner-steps,.partner-cta,.faq-item,.trip-step,.detail-essentials,.detail-inclusions) { --glass-surface:rgba(22,39,31,.42); }
+@supports not ((backdrop-filter:blur(10px)) or (-webkit-backdrop-filter:blur(10px))) { .home-category { --glass-surface:rgba(250,247,238,.78); } .dark .home-category { --glass-surface:#16271ff5; } }
+.footer-wishlist-icon { position:relative; display:inline-flex; }
+.footer-wishlist-count { position:absolute; top:-4px; right:-9px; display:grid; place-items:center; min-width:17px; height:17px; padding:0 4px; border-radius:12px; background:#123d30; color:#fff9ed; font:10px/1 Arial,sans-serif; border:1px solid #faf7ee; }
+.dark .footer-wishlist-count { background:#b4d7ba; color:#142b20; border-color:#14221d; }
+html[data-stackd-theme="tulum"] [data-sonner-toast] { background:#faf7eef5; border:1px solid #b8c4af; border-radius:18px; color:#123d30; box-shadow:0 4px 20px #193e3020; }
+html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5; color:#f1eddd; border-color:#5b7664; }
+.detail-essentials { padding:17px; margin:20px 0; }
+.detail-essentials dl { display:grid; gap:13px; }
+.detail-essentials dl > div { display:flex; justify-content:space-between; gap:18px; font-size:14px; line-height:1.4; }
+.detail-essentials dt { color:hsl(var(--muted-foreground)); }
+.detail-essentials dd { text-align:right; font-weight:600; }
+.reference-detail .detail-description h2,.reference-detail .detail-inclusions h2 { font-size:24px; margin-bottom:12px; }
+.detail-description { margin:24px 0; }
+.detail-description p,.detail-inclusions p { font-size:15px; line-height:1.65; color:hsl(var(--muted-foreground)); }
+.reference-detail .detail-inclusions { padding:18px; margin:24px 0; }
+.restaurant-plan-link { margin-bottom:22px; }
+.restaurant-detail-polished .fixed.bottom-0 { position:static; margin:24px 16px 0; border-radius:18px; padding:16px; background:hsl(var(--card) / .8); }
+.destination-route-content .restaurant-detail-polished.min-h-screen { padding-bottom:30px; }
+.trip-steps-form { padding-top:0; }
+.trip-steps-form .trip-step { padding:22px 17px; margin-bottom:20px; }
+.trip-step h2 { font-size:27px; margin:8px 0 13px; }
+.trip-step-hint { font-size:13px; line-height:1.5; color:hsl(var(--muted-foreground)); margin-bottom:17px; }
+.trip-step .trip-date-fields { margin:0 0 16px; }
+.trip-date-fields input { min-width:0; width:100%; min-height:44px; }
+.trip-date-fields label > span,.trip-basics-selects label > span { display:flex; align-items:center; gap:6px; margin-bottom:8px; font-size:12px; color:hsl(var(--muted-foreground)); }
+.trip-basics-selects { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.trip-basics-selects label,.trip-date-fields label { min-width:0; }
+.trip-basics-selects select,.trip-step textarea { width:100%; padding:12px; border:1px solid hsl(var(--border)); border-radius:12px; background:hsl(var(--card) / .7); color:hsl(var(--foreground)); font:14px Arial,sans-serif; }
+.trip-basics-selects select { min-height:44px; }
+.trip-favorite-options { display:flex; flex-direction:column; gap:10px; }
+.trip-favorite-option { display:flex; align-items:center; gap:12px; padding:12px; border:1px solid hsl(var(--border)); border-radius:12px; cursor:pointer; background:hsl(var(--card) / .4); }
+.trip-favorite-option:has(input:checked) { border-color:hsl(var(--ring)); background:hsl(var(--accent) / .55); }
+.trip-favorite-option input { width:18px; height:18px; flex-shrink:0; accent-color:hsl(var(--primary)); }
+.trip-favorite-option strong { display:block; font-size:14px; line-height:1.4; font-weight:500; }
+.trip-favorite-option small { display:block; margin-top:4px; font-size:11px; color:hsl(var(--muted-foreground)); }
+.trip-selection-count { font-size:12px; color:hsl(var(--muted-foreground)); }
+.trip-empty-favorites { display:flex; gap:12px; align-items:center; padding:4px 0 12px; font-size:13px; line-height:1.5; color:hsl(var(--muted-foreground)); }
+.trip-empty-favorites > svg { flex-shrink:0; }
+.trip-explore-links { display:flex; gap:15px; flex-wrap:wrap; margin-top:17px; }
+.trip-explore-links a { display:flex; align-items:center; gap:5px; font-size:12px; text-decoration:underline; text-underline-offset:3px; }
+.trip-step .trip-interest-chips { padding:0; margin:0 0 20px; }
+.trip-notes-label { display:block; font-size:14px; margin-bottom:10px; }
+.trip-notes-label span { font-size:12px; color:hsl(var(--muted-foreground)); margin-left:5px; }
+.trip-step textarea { min-height:100px; resize:vertical; line-height:1.6; }
+.trip-brief dl { display:grid; gap:12px; font-size:13px; margin:18px 0; }
+.trip-brief dl > div { display:flex; justify-content:space-between; gap:12px; }
+.trip-brief dt { color:hsl(var(--muted-foreground)); }
+.trip-brief dd { text-align:right; }
+.trip-brief-favorites { display:flex; flex-direction:column; gap:9px; padding:15px 0; border-top:1px solid hsl(var(--border)); font-size:13px; }
+.trip-brief-favorites li { display:flex; align-items:center; gap:8px; }
+.trip-preview-note { font-size:12px; line-height:1.6; color:hsl(var(--muted-foreground)); margin-top:15px; }
+.trip-validation { margin-top:14px; font-size:13px; line-height:1.5; color:#a13e2e; }
+.dark .trip-validation { color:#ffb19c; }
+.trip-step .build-plan-button { width:100%; margin-top:10px; }
+@media (prefers-reduced-transparency:reduce) { .home-category { --glass-surface:#faf7ee!important; } .dark .home-category { --glass-surface:#16271f!important; } }
