@@ -78,69 +78,19 @@ const AppView = () => {
     fetchPublishedVendors();
   }, [destination]);
 
-  // Enrich the curated home cards with live Google photos when available.
+  // Catalog card photos come from the static Google snapshot in
+  // src/data/googlePlaces.json / public/google-photos — no live Places calls.
   useEffect(() => {
-    const fetchPhotosForRestaurants = async () => {
-      const curatedForCity = mockRestaurants.filter(
-        (r) => r.city.toLowerCase() === destination.toLowerCase(),
-      );
-      const photosMap: Record<string, string> = {};
-      const toFetch: typeof curatedForCity = [];
-
-      for (const r of curatedForCity) {
-        try {
-          const cached = localStorage.getItem(`google_reviews_detail_${r.id}`);
-          if (cached) {
-            const parsed = JSON.parse(cached);
-            if (parsed.photos?.length > 0) {
-              photosMap[r.id] = parsed.photos[0];
-              continue;
-            }
-          }
-        } catch {
-          // Ignore unreadable cached review payloads.
-        }
-        toFetch.push(r);
-      }
-
-      if (Object.keys(photosMap).length > 0) {
-        setGooglePhotos((prev) => ({ ...prev, ...photosMap }));
-      }
-
-      // Fetch missing ones in parallel with simplified search queries
-      await Promise.all(
-        toFetch.map(async (r) => {
-          try {
-            // Use just name + city for better Google match rates
-            const query = `${r.name} ${r.city}`;
-            const { data } = await supabase.functions.invoke("google-reviews", {
-              body: {
-                searchQuery: query,
-                lat: r.coordinates?.lat,
-                lng: r.coordinates?.lng,
-              },
-            });
-            if (data?.photos?.length > 0) {
-              try {
-                localStorage.setItem(
-                  `google_reviews_detail_${r.id}`,
-                  JSON.stringify({ ...data, timestamp: Date.now() }),
-                );
-              } catch {
-                // Ignore quota errors when caching review photos.
-              }
-              setGooglePhotos((prev) => ({ ...prev, [r.id]: data.photos[0] }));
-            } else {
-              // Keep the labeled illustrative fallback when no live photo is available.
-              setGooglePhotos((prev) => ({ ...prev, [r.id]: "" }));
-            }
-          } catch {
-            setGooglePhotos((prev) => ({ ...prev, [r.id]: "" }));
-          }
-        }),
-      );
-    };
-    // Live image enrichment is enabled in the production implementation.
+    const curatedForCity = mockRestaurants.filter(
+      (r) => r.city.toLowerCase() === destination.toLowerCase(),
+    );
+    const photosMap: Record<string, string> = {};
+    for (const r of curatedForCity) {
+      if (r.photos?.[0]) photosMap[r.id] = r.photos[0];
+    }
+    if (Object.keys(photosMap).length > 0) {
+      setGooglePhotos((prev) => ({ ...prev, ...photosMap }));
+    }
   }, [destination]);
 
   const fetchMyBusinesses = async () => {

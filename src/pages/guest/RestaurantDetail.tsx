@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { mockRestaurants, isRestaurantOpen, type Restaurant } from "@/data/mockRestaurants";
 import { formatDistance } from "@/services/googleMapsService";
 import StackedPhotoGrid from "@/components/ui/stacked-photo-grid";
-import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/integrations/supabase/client";
 import { GuestGuideButton } from "@/components/GuestGuideButton";
 import { useSearch } from "@/contexts/SearchContext";
 import { buildReservationLink, googleMapsSearchUrl } from "@/lib/reservations";
@@ -63,15 +63,6 @@ const getCachedReviews = (restaurantId: string): GoogleReviewsData | null => {
     return reviewData;
   } catch {
     return null;
-  }
-};
-
-const setCachedReviews = (restaurantId: string, data: GoogleReviewsData) => {
-  try {
-    const cacheData: CachedGoogleReviews = { ...data, timestamp: Date.now() };
-    localStorage.setItem(getDetailCacheKey(restaurantId), JSON.stringify(cacheData));
-  } catch (error) {
-    console.error('Error caching Google reviews:', error);
   }
 };
 
@@ -138,34 +129,12 @@ const RestaurantDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    const fetchGoogleReviews = async () => {
-      if (!restaurant || !id) return;
-      // Catalog restaurants use the static Google Maps snapshot (no paid Places lookup).
-      if (!isSupabaseConfigured || /^r\d+$/.test(id)) {
-        setDisplayPhotos(restaurant.googleFetchedAt ? restaurant.photos.slice(0, 1) : restaurant.photos);
-        setIsLoadingReviews(false);
-        return;
-      }
-      const hasCachedData = googleReviews !== null;
-      if (!hasCachedData) {
-        setIsLoadingReviews(true);
-      }
-      try {
-        const searchQuery = `${restaurant.name} ${restaurant.city}`;
-        const { data, error } = await supabase.functions.invoke('google-reviews', {
-          body: { searchQuery, lat: restaurant.coordinates?.lat, lng: restaurant.coordinates?.lng }
-        });
-        if (error) { console.error('Error fetching Google reviews:', error); return; }
-        setGoogleReviews(data);
-        setCachedReviews(id, data);
-        setDisplayPhotos(data.photos && data.photos.length > 0 ? data.photos : []);
-      } catch (error) {
-        console.error('Error fetching Google reviews:', error);
-      } finally {
-        setIsLoadingReviews(false);
-      }
-    };
-    fetchGoogleReviews();
+    // Paid Google Places lookups are off. Use static snapshot photos only.
+    if (!restaurant || !id) return;
+    setDisplayPhotos(
+      restaurant.googleFetchedAt ? restaurant.photos.slice(0, 1) : restaurant.photos
+    );
+    setIsLoadingReviews(false);
   }, [restaurant, id]);
 
   const toggleFavorite = () => {
