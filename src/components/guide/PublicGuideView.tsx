@@ -21,6 +21,7 @@ export interface GuideCardData {
 export interface PublicGuideViewProps {
   hostId: string;
   hostFirstName: string | null;
+  guestName?: string | null;
   property: GuideProperty | null;
   top: GuideCardData[];
   more: GuideCardData[];
@@ -43,7 +44,7 @@ function SaveButton({ item, saved, onToggle }: { item: GuideCardData; saved: boo
 }
 
 /** Public host profile: header plus a photo grid of the host's Top 8, then More picks. */
-export function PublicGuideView({ hostId, hostFirstName, property, top, more, saves, onToggleSave }: PublicGuideViewProps) {
+export function PublicGuideView({ hostId, hostFirstName, guestName, property, top, more, saves, onToggleSave }: PublicGuideViewProps) {
   const title = property?.name || (hostFirstName ? `${hostFirstName}'s place` : "Your host's place");
   const ownerLabel = hostFirstName ? `${hostFirstName}'s` : 'My';
 
@@ -71,6 +72,9 @@ export function PublicGuideView({ hostId, hostFirstName, property, top, more, sa
               )}
               {hostFirstName && <span>Picked by {hostFirstName}</span>}
             </div>
+            {guestName && (
+              <p className="mt-2 text-sm text-foreground">Welcome, {guestName}. Here are my favorite spots for your stay.</p>
+            )}
           </div>
         </header>
 

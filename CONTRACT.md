@@ -11,3 +11,5 @@
 
 - Host-facing commission reads `vendor_profiles.commission_percentage`; guest pages must not render it.
 - Guide entry order (`position`) defines the Top 8: positions 0-7 are the Top 8. Tiles link to `/vendor/:id/book?host=<hostUserId>`.
+
+- Share links: `/guide/<hostId>?host=<hostId>[&guest=<name>]` (src/lib/shareGuide.ts). `guest` is display-only (max 40 chars, no markup) and is never stored. No SMS service is called.

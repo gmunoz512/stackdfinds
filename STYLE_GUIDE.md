@@ -17,3 +17,7 @@
 ### Host commission badge / Top 8 tiles
 - Use `HostCommissionBadge` (src/components/host) on host-only screens. Never on guest screens.
 - Top 8 tiles: 3:4 photo, 18px radius, dark bottom gradient with white name, category and rating. 2 columns on phones, 4 on wide screens.
+
+### Share by text
+- Primary action is "Share by text"; secondary are "More options" and "Copy link" (outline). Always say the text is not sent until the host hits send.
+- QR code uses pine green on white inside a card.

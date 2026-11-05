@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowDown, ArrowLeft, ArrowUp, Camera, ExternalLink, Loader2, Store, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, Camera, ExternalLink, Loader2, MessageSquare, Store, Trash2 } from 'lucide-react';
+import { ShareGuideDialog } from '@/components/host/ShareGuideDialog';
 import { toast } from 'sonner';
 import HostBottomNav from '@/components/HostBottomNav';
 import { HostCommissionBadge } from '@/components/host/HostCommissionBadge';
@@ -53,6 +54,7 @@ export interface GuideEditorProps {
   dirty: boolean;
   onSave: () => void;
   guideUrl: string | null;
+  hostId?: string | null;
   onBack?: () => void;
 }
 
@@ -69,8 +71,10 @@ export function GuideEditor({
   dirty,
   onSave,
   guideUrl,
+  hostId,
   onBack,
 }: GuideEditorProps) {
+  const [shareOpen, setShareOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const update = (i: number, patch: Partial<GuideEntry>) =>
     onRowsChange(rows.map((r, idx) => (idx === i ? { ...r, entry: { ...r.entry, ...patch } } : r)));
@@ -86,15 +90,26 @@ export function GuideEditor({
         )}
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
+            {hostId && (
+              <ShareGuideDialog open={shareOpen} onOpenChange={setShareOpen} hostId={hostId} propertyName={property.name} />
+            )}
             <h1 className="text-2xl font-bold text-foreground">Your guest guide</h1>
             <p className="text-sm text-muted-foreground">Set up your place, then order your picks and add a tip for each.</p>
           </div>
+          <div className="flex flex-wrap items-center gap-3">
+          {hostId && (
+            <Button size="sm" className="gap-1.5" onClick={() => setShareOpen(true)} disabled={!property.name.trim() || dirty}>
+              <MessageSquare className="h-4 w-4" />
+              Share by text
+            </Button>
+          )}
           {guideUrl && (
             <Link to={guideUrl} className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
               View your profile
               <ExternalLink className="h-3.5 w-3.5" />
             </Link>
           )}
+          </div>
         </div>
       </div>
 
@@ -247,6 +262,7 @@ export function GuideEditor({
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {dirty ? 'Save guide' : 'Saved'}
         </Button>
+        {hostId && dirty && property.name.trim() && <p className="mt-1 text-center text-xs text-muted-foreground">Save your guide before sharing it.</p>}
         {!property.name.trim() && <p className="mt-1 text-center text-xs text-muted-foreground">Add a property name to save.</p>}
       </div>
     </div>
@@ -383,6 +399,7 @@ const HostGuideBuilder = () => {
           dirty={dirty}
           onSave={handleSave}
           guideUrl={user ? guidePath(user.id) : null}
+          hostId={user?.id ?? null}
           onBack={goBack}
         />
       )}

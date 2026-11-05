@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { cleanGuestName } from '@/lib/shareGuide';
 import { Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { PublicGuideView, type GuideCardData } from '@/components/guide/PublicGuideView';
@@ -33,6 +34,8 @@ const deviceStorage = () => (typeof window !== 'undefined' ? window.localStorage
 /** Public guest guide at /guide/:hostId. No login required. */
 const GuestGuide = () => {
   const { hostId } = useParams<{ hostId: string }>();
+  const [searchParams] = useSearchParams();
+  const guestName = cleanGuestName(searchParams.get('guest')) || null;
   const [hostName, setHostName] = useState<string | null>(null);
   const [guide, setGuide] = useState<ParsedGuide | null>(null);
   const [vendors, setVendors] = useState<Map<string, VendorRow>>(new Map());
@@ -116,6 +119,16 @@ const GuestGuide = () => {
     return splitTopPicks(cards);
   }, [guide, vendors, hostId]);
 
+  const propertyName = guide?.property?.name;
+  useEffect(() => {
+    if (!propertyName) return;
+    const prev = document.title;
+    document.title = `${propertyName} · Local picks on stackd`;
+    return () => {
+      document.title = prev;
+    };
+  }, [propertyName]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -140,6 +153,7 @@ const GuestGuide = () => {
       hostId={hostId}
       hostFirstName={hostName?.trim().split(/\s+/)[0] || null}
       property={guide?.property ?? null}
+      guestName={guestName}
       top={sections.top}
       more={sections.more}
       saves={saves}

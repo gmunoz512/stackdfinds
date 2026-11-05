@@ -39,3 +39,9 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - /host/guide rows show the same badge. First 8 picks are labelled "Top 8"; the rest are "More picks". Reorder with the arrows.
 - /guide/:hostId is a picture-first host profile: property photo, name, area, "Picked by", then a Top 8 photo grid. Each tile goes straight to /vendor/:id/book?host=<hostId>. Picks past 8 show in a smaller "More picks" list.
 - Commission is never shown on the public guide (guarded by a test).
+
+### Phase 4: Share by text
+- /host/guide has a "Share by text" button (after the guide is saved). It opens a form: guest name, optional phone, optional arrival date, editable message.
+- "Share by text" is an `sms:` link with the message and the link prefilled. It only opens the messages app; nothing is sent by stackd.
+- "More options" uses the phone's share sheet (Web Share API) when available. "Copy link" always works. A QR code is shown for in-person sharing. "Pick from contacts" appears only where the browser supports the Contact Picker, and only when the host taps it.
+- Link format: https://stackdfinds.com/guide/<hostId>?host=<hostId>&guest=<name>. The guest page greets the guest by name.
