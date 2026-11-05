@@ -1,3 +1,4 @@
+import { parseGuide } from '@/lib/hostGuide';
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -129,9 +130,7 @@ const HostDashboard = () => {
   useEffect(() => {
     // Show onboarding if profile is incomplete (no property name set)
     if (profileData !== undefined) {
-      const hasPropertyInfo = profileData?.recommendations && 
-        typeof profileData.recommendations === 'object' && 
-        'property' in (profileData.recommendations as object);
+      const hasPropertyInfo = !!parseGuide(profileData?.recommendations ?? null).property;
       setShowOnboarding(!hasPropertyInfo && !profileData?.full_name);
     }
   }, [profileData]);

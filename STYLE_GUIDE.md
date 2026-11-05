@@ -10,3 +10,6 @@
 - Marketplace chips: pill outline; active = solid primary (pine), inactive = card border. No emoji chips.
 - Commission preview cards: muted rows + one bordered "You keep" row; money in USD; no sparkle icons.
 - Prefer `Badge variant="secondary"` over gradient commission badges on new screens.
+
+- Public guide: serif title, small uppercase "Local guide" eyebrow, 18px-radius cards with photo 4:3, heart in a cream circle top-right, host tip in a muted rounded box, one solid pine "See details" pill per card. No gradient footers or sparkle CTAs.
+- Builder: one card per pick; order with arrow buttons (not drag) so it works in the phone frame; native select for sections.

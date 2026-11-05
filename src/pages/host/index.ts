@@ -11,3 +11,4 @@ export { default as HostRatings } from './Ratings';
 export { default as HostStorefront } from './Storefront';
 export { default as HostVendorManagement } from './VendorManagement';
 export { default as HostVendors } from './Vendors';
+export { default as HostGuideBuilder } from './GuideBuilder';

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { addEntryRaw, removeEntryRaw } from '@/lib/hostGuide';
 import type { RecommendationItem, UserProfile } from '@/types';
 import type { Json } from '@/integrations/supabase/types';
 
@@ -15,6 +16,11 @@ interface ProfileContextType {
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
+
+const readRawRecommendations = async (userId: string): Promise<Json | null> => {
+  const { data } = await supabase.from('profiles').select('recommendations').eq('user_id', userId).maybeSingle();
+  return data?.recommendations ?? null;
+};
 
 // Helper to safely parse recommendations from JSON
 const parseRecommendations = (data: Json | null): RecommendationItem[] => {
@@ -149,10 +155,12 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     if (exists) return;
 
     const updatedRecommendations = [...recommendations, newItem];
+    // Re-read the raw JSON so guide extras (property, notes, order) are kept.
+    const raw = await readRawRecommendations(user.id);
 
     const { error } = await supabase
       .from('profiles')
-      .update({ recommendations: updatedRecommendations as unknown as Json })
+      .update({ recommendations: addEntryRaw(raw, item) as unknown as Json })
       .eq('user_id', user.id);
 
     if (error) {
@@ -172,10 +180,11 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     const updatedRecommendations = recommendations.filter(
       r => !(r.id === id && r.type === type)
     );
+    const raw = await readRawRecommendations(user.id);
 
     const { error } = await supabase
       .from('profiles')
-      .update({ recommendations: updatedRecommendations as unknown as Json })
+      .update({ recommendations: removeEntryRaw(raw, { id, type }) as unknown as Json })
       .eq('user_id', user.id);
 
     if (error) {

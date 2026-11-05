@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, UserCircle } from "lucide-react";
+import { BookOpen, LayoutDashboard, Users, UserCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,11 @@ const HostBottomNav = () => {
       name: "Marketplace", 
       path: "/host/marketplace", 
       icon: Users 
+    },
+    {
+      name: "Guide",
+      path: "/host/guide",
+      icon: BookOpen
     },
     { 
       name: "Profile", 

@@ -1,3 +1,5 @@
+import { parseGuide, serializeGuide } from '@/lib/hostGuide';
+import type { Json } from '@/integrations/supabase/types';
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,24 +56,25 @@ const HostOnboardingCard = ({ onComplete }: HostOnboardingCardProps) => {
     setIsSubmitting(true);
     
     try {
-      // Update the user's profile with property information
+      // Keep any existing guide picks; only public-safe property fields go into
+      // recommendations (the public guide returns this JSON to anyone).
+      const { data: current } = await supabase
+        .from('profiles')
+        .select('recommendations')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      const guide = parseGuide(current?.recommendations ?? null);
+      guide.property = {
+        name: formData.propertyName,
+        area: formData.city,
+        photoUrl: guide.property?.photoUrl ?? null,
+      };
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: formData.propertyName,
           city: formData.city,
           zip_code: formData.zip,
-          // Store additional data in recommendations JSON field for now
-          recommendations: {
-            property: {
-              name: formData.propertyName,
-              airbnbUrl: formData.airbnbUrl,
-              address: formData.address,
-              city: formData.city,
-              state: formData.state,
-              zip: formData.zip,
-            }
-          }
+          recommendations: serializeGuide(guide) as unknown as Json,
         })
         .eq('user_id', user.id);
 
