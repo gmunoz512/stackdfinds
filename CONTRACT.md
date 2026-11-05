@@ -19,3 +19,10 @@
 - Pricing is computed server-side in create-booking-checkout (the tier is priced there). The client summary is only for display. Guests pay $0 in fees. The vendor pays stackd's cut, and the host keeps the full commission.
 - Stripe stays in test mode. No live charges until the owner configures them.
 - Schema changes ship as migration files only. Never apply them to the shared Supabase project from an agent.
+
+## Affiliate accounting (Phase 6)
+- Ledger status comes from `classifyAffiliateStatus` in `src/lib/affiliateAccounting.ts` (pending / confirmed / paid / refunded / failed). Do not invent a second status map in pages.
+- Host, vendor, and admin earnings views are read-only over `bookings`. They never create transfers, call release-payouts, or write payout_status.
+- Amounts on `bookings` are dollars (webhook stores cents/100). Never divide by 100 again in UI formatters.
+- Money rules stay in `src/lib/commissions.ts`. Vendor pays stackd's cut; host keeps the full commission; guests pay listed price.
+- Admin affiliate summary requires the existing admin role check (`has_role` / ProtectedAdminRoute).

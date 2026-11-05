@@ -110,10 +110,11 @@ const VendorPayoutHistory = () => {
   };
 
   const formatCurrency = (amount: number, currency: string = 'USD') => {
+    // Bookings store dollar amounts (stripe-webhook writes cents/100).
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency.toUpperCase(),
-    }).format(amount / 100); // Assuming amounts are in cents
+    }).format(amount);
   };
 
   return (

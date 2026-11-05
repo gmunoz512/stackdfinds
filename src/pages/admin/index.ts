@@ -6,3 +6,4 @@ export { default as MessageModeration } from './MessageModeration';
 export { default as FraudAlerts } from './FraudAlerts';
 export { default as TrustScoreMonitoring } from './TrustScoreMonitoring';
 export { default as RefundRequests } from './RefundRequests';
+export { default as AffiliateSummary } from './AffiliateSummary';
