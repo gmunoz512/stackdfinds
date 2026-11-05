@@ -21,3 +21,8 @@
 ### Share by text
 - Primary action is "Share by text"; secondary are "More options" and "Copy link" (outline). Always say the text is not sent until the host hits send.
 - QR code uses pine green on white inside a card.
+
+### Guest booking
+- Price summary card: plain rows (Guests, Subtotal, Service fees, Total); the total is bold. Fees always show, even at $0.
+- "Who's booking?" card: an outline button for sign-in, then guest fields. Notices use the soft peach notice box, in plain language, and say whether anything was charged.
+- Empty or retired states: one sentence plus one link back to /experiences. No placeholder data.

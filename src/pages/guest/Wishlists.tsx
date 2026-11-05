@@ -11,8 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ArrowLeft, Plus, Heart, Trash2, MoreHorizontal, Star, Utensils, Compass } from "lucide-react";
 import { toast } from "sonner";
-import { experiences } from "@/data/mockData";
-import { mockRestaurants, type Restaurant } from "@/data/mockRestaurants";
+import { type Restaurant } from "@/data/mockRestaurants";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageTransition } from "@/components/PageTransition";
@@ -161,12 +160,7 @@ const Wishlists = () => {
           console.error("Error parsing cached restaurant:", e);
         }
       }
-      
-      // Fallback to mock restaurants if not in cache
-      const mockRestaurant = mockRestaurants.find(r => r.id === id);
-      if (mockRestaurant) {
-        restaurants.push({ ...mockRestaurant, favoriteId: id });
-      }
+      // No cached copy means we can't show real details, so skip it.
     });
     
     setFavoriteRestaurants(restaurants);
@@ -300,12 +294,9 @@ const Wishlists = () => {
 
   // Detail view for selected wishlist
   if (selectedWishlist) {
-    const wishlistExperiences = (selectedWishlist.items || [])
-      .map((item) => ({
-        ...experiences.find((e) => e.id === item.experience_id),
-        itemId: item.id,
-      }))
-      .filter((e) => e.id);
+    // Wishlist items pointed at built-in sample listings, which are gone.
+    // Real saves live in the Favorites tabs, so this list is honestly empty.
+    const wishlistExperiences: Array<{ id?: number; name?: string; vendor?: string; price?: number; itemId: string }> = [];
 
     return (
       <PageTransition className="min-h-screen bg-background">

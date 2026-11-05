@@ -45,3 +45,10 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - "Share by text" is an `sms:` link with the message and the link prefilled. It only opens the messages app; nothing is sent by stackd.
 - "More options" uses the phone's share sheet (Web Share API) when available. "Copy link" always works. A QR code is shown for in-person sharing. "Pick from contacts" appears only where the browser supports the Contact Picker, and only when the host taps it.
 - Link format: https://stackdfinds.com/guide/<hostId>?host=<hostId>&guest=<name>. The guest page greets the guest by name.
+
+### Phase 5: Guest booking (branch phase5-guest-booking, not merged)
+- /vendor/<id>/book?host=<hostId>: pick date, time, party size; price summary shows subtotal, "Service fees $0" (guests pay no separate fee) and total. No sign-in needed to get this far.
+- The host is remembered in localStorage/sessionStorage (`stackd_host_ref`, 30 days, latest host link wins) and carried through sign-in, payment and confirmation.
+- Payment step: "Sign in or create an account", or "Continue as guest" with name + email. Payment uses the existing Stripe Checkout (test mode only). If guest checkout isn't available yet, the page says "Guest checkout is coming soon… Nothing was charged."
+- Guest checkout needs migration 20261105020000_phase5_guest_bookings.sql plus redeploying create-booking-checkout and stripe-webhook. Neither is done yet.
+- Sample listings are gone: old /experience/:id and /book/:id sample links show "This listing isn't available". Wishlists and guides no longer show mock experiences or restaurants.
