@@ -6,7 +6,6 @@ import mexican1 from '@/assets/restaurants/mexican-1.jpg';
 import mexican2 from '@/assets/restaurants/mexican-2.jpg';
 import mediterranean1 from '@/assets/restaurants/mediterranean-1.jpg';
 import mexican4 from '@/assets/restaurants/mexican-4.jpg';
-import japanese1 from '@/assets/restaurants/japanese-1.jpg';
 import mediterranean2 from '@/assets/restaurants/mediterranean-2.jpg';
 import mexican5 from '@/assets/restaurants/mexican-5.jpg';
 import vegan1 from '@/assets/restaurants/vegan-1.jpg';
