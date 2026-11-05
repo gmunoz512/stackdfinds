@@ -52,3 +52,11 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Payment step: "Sign in or create an account", or "Continue as guest" with name + email. Payment uses the existing Stripe Checkout (test mode only). If guest checkout isn't available yet, the page says "Guest checkout is coming soon… Nothing was charged."
 - Guest checkout needs migration 20261105020000_phase5_guest_bookings.sql plus redeploying create-booking-checkout and stripe-webhook. Neither is done yet.
 - Sample listings are gone: old /experience/:id and /book/:id sample links show "This listing isn't available". Wishlists and guides no longer show mock experiences or restaurants.
+
+### Vendor accounts (branch vendor-accounts, not merged)
+- /admin/vendors/new (admins only): enter a vendor name and category. It creates a login `<name>@stackdfinds.com` (lowercase letters and numbers only; `tacosnumerouno2@` etc. if taken), the vendor role, and a draft (unpublished) vendor profile in Tulum.
+- A 20-character random password is generated on the server, shown once with Copy buttons, and never stored in plain text (Supabase Auth keeps only the hash; it's never logged).
+- New accounts carry `user_metadata.must_change_password = true` (no schema change).
+- First login: while that flag is set, every page redirects to /set-password (New password + Confirm password, same rules as sign-up: 6–72 characters, breach check from Supabase). No skip. On save, the password is updated and the flag cleared in one call, then the vendor lands on /vendor/edit-profile. Sign out still works.
+- Creation runs in the `create-vendor-account` edge function (needs the service role key). Not deployed yet; until it is, the admin page shows "Couldn't create the account. Is the function deployed?".
+- Vendor mail: see docs/email-routing-plan.md (Cloudflare catch-all forwarding, not applied).

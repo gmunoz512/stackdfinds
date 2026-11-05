@@ -62,3 +62,6 @@ verify_jwt = false
 
 [functions.vendor-review]
 verify_jwt = true
+
+[functions.create-vendor-account]
+verify_jwt = true

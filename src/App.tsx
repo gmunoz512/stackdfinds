@@ -15,6 +15,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { RouteSeo } from "./components/RouteSeo";
 import { Loader2 } from "lucide-react";
 
+import MustChangePasswordGate from "./components/MustChangePasswordGate";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -112,6 +113,8 @@ const RefundRequests = lazy(() => import("./pages/admin/RefundRequests"));
 const TrustScoreMonitoring = lazy(() => import("./pages/admin/TrustScoreMonitoring"));
 
 // Standalone pages
+const SetPassword = lazy(() => import("./pages/auth/SetPassword"));
+const NewVendorAccount = lazy(() => import("./pages/admin/NewVendorAccount"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const PageLoader = () => (
@@ -221,6 +224,7 @@ const AppRoutes = () => (
     <Route path="/storefront/:hostId" element={<HostStorefront />} />
     <Route path="/auth" element={<Auth />} />
     <Route path="/reset-password" element={<ResetPassword />} />
+    <Route path="/set-password" element={<SetPassword />} />
     <Route path="/profile" element={<Profile />} />
     <Route path="/bookings" element={<MyBookings />} />
     <Route path="/bookings/:bookingId/chat" element={<ProtectedRoute><Conversation /></ProtectedRoute>} />
@@ -254,6 +258,7 @@ const AppRoutes = () => (
     <Route path="/vendor/:id/confirmed" element={<BookingConfirmation />} />
     
     {/* Admin Routes */}
+    <Route path="/admin/vendors/new" element={<ProtectedAdminRoute><NewVendorAccount /></ProtectedAdminRoute>} />
     <Route path="/admin/settings" element={<ProtectedAdminRoute><PlatformSettings /></ProtectedAdminRoute>} />
     <Route path="/admin/promo-codes" element={<ProtectedAdminRoute><AdminPromoCodes /></ProtectedAdminRoute>} />
     <Route path="/admin/vendor-approvals" element={<ProtectedAdminRoute><VendorApprovals /></ProtectedAdminRoute>} />
@@ -427,7 +432,7 @@ const App = () => {
                   <BrowserRouter>
                     <RouteSeo />
                     <ScrollToTop />
-                    <DestinationRouteFrame><AppRoutes /></DestinationRouteFrame>
+                    <DestinationRouteFrame><MustChangePasswordGate><AppRoutes /></MustChangePasswordGate></DestinationRouteFrame>
                   </BrowserRouter>
                 </TooltipProvider>
               </UserProvider>
