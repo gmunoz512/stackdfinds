@@ -1437,3 +1437,17 @@ html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5;
 .eats-light .font-semibold,
 .eats-light .font-bold { font-weight: 500; }
 .eats-light strong { font-weight: 500; }
+
+/* Keep the "Local Favorite Eats" title on one line from 320px phones up to desktop. */
+.reference-catalog.eats-light .reference-page-heading h1,
+.destination-shell .reference-catalog.eats-light .reference-page-heading h1 {
+  font-size: clamp(26px, 10vw, 56px);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.home-category.eats-light header h2,
+.eats-section.eats-light .section-title h2,
+.destination-shell .home-category.eats-light header h2 {
+  font-size: clamp(24px, 8.6vw, 40px);
+  white-space: nowrap;
+}
