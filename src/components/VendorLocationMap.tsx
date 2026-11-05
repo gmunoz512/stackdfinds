@@ -79,28 +79,45 @@ export function VendorLocationMap({ vendorName, vendorAddress, placeId, mode = '
     checkAuthAndSaved();
   }, [vendorName]);
 
-  // Fetch initial directions data
+  // Resolve vendor pin with Mapbox geocoding (no Google Places / Directions).
   useEffect(() => {
-    const fetchDirections = async () => {
+    const resolveLocation = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const { data, error: fnError } = await supabase.functions.invoke('vendor-directions', {
-          body: { vendorName, vendorAddress, placeId }
+        const token = await getMapboxToken();
+        if (!token) {
+          setError('Unable to load location data');
+          return;
+        }
+
+        const query = (vendorAddress || `${vendorName} Tulum Mexico`).trim();
+        const url =
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json` +
+          `?access_token=${token}&proximity=${TULUM_CENTRO.lng},${TULUM_CENTRO.lat}&limit=1&country=mx`;
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Geocode failed (${response.status})`);
+        const payload = await response.json();
+        const feature = payload?.features?.[0];
+        if (!feature?.center || feature.center.length < 2) {
+          setError('Location not found');
+          return;
+        }
+
+        const [lng, lat] = feature.center as [number, number];
+        setDirectionsData({
+          distance: '',
+          duration: '',
+          durationValue: 0,
+          origin: 'Tulum Centro',
+          destination: feature.place_name || query,
+          vendorLocation: { lat, lng },
+          arrivalTips: [],
         });
-
-        if (fnError) {
-          throw new Error(fnError.message);
-        }
-
-        if (data?.error && !data?.vendorLocation) {
-          setError(data.error);
-        } else {
-          setDirectionsData(data);
-        }
       } catch (err) {
-        console.error('Error fetching directions:', err);
+        console.error('Error resolving vendor location:', err);
         setError('Unable to load location data');
       } finally {
         setIsLoading(false);
@@ -108,7 +125,7 @@ export function VendorLocationMap({ vendorName, vendorAddress, placeId, mode = '
     };
 
     if (vendorName || vendorAddress || placeId) {
-      fetchDirections();
+      resolveLocation();
     }
   }, [vendorName, vendorAddress, placeId]);
 
@@ -405,6 +422,15 @@ export function VendorLocationMap({ vendorName, vendorAddress, placeId, mode = '
   }, [mapRouteData]);
 
   const openInGoogleMaps = () => {
+    // Opening maps.google.com in the browser is free — no billed API key.
+    if (placeId) {
+      window.open(
+        `https://www.google.com/maps/place/?q=place_id:${encodeURIComponent(placeId)}`,
+        '_blank',
+        'noopener,noreferrer',
+      );
+      return;
+    }
     if (directionsData?.vendorLocation) {
       const { lat, lng } = directionsData.vendorLocation;
       const url = `https://www.google.com/maps/dir/${TULUM_CENTRO.lat},${TULUM_CENTRO.lng}/${lat},${lng}`;
