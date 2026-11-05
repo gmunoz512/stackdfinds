@@ -26,7 +26,7 @@ The dev server runs at http://localhost:8080.
 | --- | --- | --- |
 | `VITE_SUPABASE_URL` | Vite client | Supabase project URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Vite client | Supabase anon key |
-| `VITE_GOOGLE_MAPS_API_KEY` | Vite client | Optional Google Maps calls from the browser |
+| ~~`VITE_GOOGLE_MAPS_API_KEY`~~ | — | Removed. Site never calls billed Google Maps/Places APIs from the browser. |
 | `VITE_SITE_URL` | Vite client | Public origin for titles, Open Graph, and absolute links. No trailing slash. |
 
 Edge functions read secrets from the Supabase project, not from the Vite bundle:
