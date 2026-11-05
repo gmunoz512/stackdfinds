@@ -9,6 +9,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useBooking } from "@/contexts/BookingContext";
 import { useToast } from "@/hooks/use-toast";
+import VendorThumb from "@/components/vendor/VendorThumb";
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_TIME_SLOTS, formatUsd, priceSummary, resolveHostAttribution } from "@/lib/guestBooking";
 
@@ -25,23 +26,8 @@ interface VendorProfile {
   price_tiers: PriceTier[] | null;
   duration: string | null;
   max_guests: number | null;
+  photos: string[] | null;
 }
-
-// Category to icon mapping
-const categoryIcons: Record<string, string> = {
-  'Private Chef': '👨‍🍳',
-  'Massage & Spa': '💆',
-  'Yacht Charter': '🛥️',
-  'Photography': '📸',
-  'Tour Guide': '🗺️',
-  'Fitness & Yoga': '🧘',
-  'Wine Tasting': '🍷',
-  'Fishing Charter': '🎣',
-  'Water Sports': '🌊',
-  'Cooking Class': '👩‍🍳',
-  'Transportation': '🚗',
-  'default': '✨',
-};
 
 const VendorBookingForm = () => {
   const { id } = useParams();
@@ -74,7 +60,7 @@ const VendorBookingForm = () => {
     try {
       const { data, error } = await supabase
         .from('vendor_profiles')
-        .select('id, name, category, price_per_person, price_tiers, duration, max_guests')
+        .select('id, name, category, price_per_person, price_tiers, duration, max_guests, photos')
         .eq('id', id)
         .eq('is_published', true)
         .maybeSingle();
@@ -170,7 +156,6 @@ const VendorBookingForm = () => {
   const pricePerPerson = selectedTier ? selectedTier.price : (vendor.price_per_person || 0);
   const summary = priceSummary(pricePerPerson, formData.guests);
   const subtotal = summary.subtotal;
-  const categoryIcon = categoryIcons[vendor.category] || categoryIcons['default'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -254,7 +239,7 @@ const VendorBookingForm = () => {
           {/* Experience Summary */}
           <Card className="p-4">
             <div className="flex items-start gap-3">
-              <span className="text-3xl">{categoryIcon}</span>
+              <VendorThumb name={vendor.name} photo={vendor.photos?.[0]} />
               <div className="flex-1">
                 <h3 className="font-semibold">{vendor.name}</h3>
                 <p className="text-sm text-muted-foreground">{vendor.category}</p>
