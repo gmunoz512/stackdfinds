@@ -17,6 +17,7 @@ import {
   summarizeVendorOwed,
   type AffiliateBookingRow,
   type AffiliateLedgerStatus,
+  parseBookingDate,
 } from '@/lib/affiliateAccounting';
 
 type Filter = 'all' | (typeof PRIMARY_LEDGER_STATUSES)[number];
@@ -159,7 +160,7 @@ const VendorAffiliateAccounting = () => {
                     <div className="min-w-0">
                       <h3 className="font-semibold text-sm truncate">{line.experienceName}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(line.bookingDate).toLocaleDateString('en-US', {
+                        {parseBookingDate(line.bookingDate).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',

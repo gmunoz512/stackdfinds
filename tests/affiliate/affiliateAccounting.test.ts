@@ -170,3 +170,11 @@ describe('summarizeStackd', () => {
     expect(countsTowardEarnings('refunded')).toBe(false);
   });
 });
+
+import { parseBookingDate } from '@/lib/affiliateAccounting';
+describe('parseBookingDate', () => {
+  it('keeps the calendar day for YYYY-MM-DD', () => {
+    const d = parseBookingDate('2026-12-12');
+    expect([d.getFullYear(), d.getMonth(), d.getDate()]).toEqual([2026, 11, 12]);
+  });
+});

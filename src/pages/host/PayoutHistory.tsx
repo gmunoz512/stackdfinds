@@ -16,6 +16,7 @@ import {
   ledgerStatusTone,
   summarizeHostEarnings,
   type AffiliateBookingRow,
+  parseBookingDate,
 } from '@/lib/affiliateAccounting';
 
 const PayoutHistory = () => {
@@ -102,7 +103,7 @@ const PayoutHistory = () => {
                 </div>
                 <div className="flex justify-between text-sm pt-2 border-t border-border/50">
                   <span className="text-muted-foreground">
-                    {new Date(line.bookingDate).toLocaleDateString('en-US', {
+                    {parseBookingDate(line.bookingDate).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',

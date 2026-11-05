@@ -292,3 +292,9 @@ export function ledgerStatusTone(status: AffiliateLedgerStatus): string {
       return 'bg-danger/10 text-danger-strong border-danger/20';
   }
 }
+
+/** Parse a YYYY-MM-DD booking date as a local calendar day (avoids the UTC off-by-one). */
+export function parseBookingDate(value: string): Date {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(value);
+}

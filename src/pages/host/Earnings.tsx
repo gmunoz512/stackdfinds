@@ -17,6 +17,7 @@ import {
   summarizeHostEarnings,
   type AffiliateBookingRow,
   type AffiliateLedgerStatus,
+  parseBookingDate,
 } from '@/lib/affiliateAccounting';
 
 type Filter = 'all' | (typeof PRIMARY_LEDGER_STATUSES)[number];
@@ -162,7 +163,7 @@ const HostEarnings = () => {
                   </div>
                   <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                     <span>
-                      {new Date(line.bookingDate).toLocaleDateString('en-US', {
+                      {parseBookingDate(line.bookingDate).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
