@@ -6,16 +6,12 @@ import mexican1 from '@/assets/restaurants/mexican-1.jpg';
 import mexican2 from '@/assets/restaurants/mexican-2.jpg';
 import mediterranean1 from '@/assets/restaurants/mediterranean-1.jpg';
 import mexican4 from '@/assets/restaurants/mexican-4.jpg';
-import mediterranean2 from '@/assets/restaurants/mediterranean-2.jpg';
-import mexican5 from '@/assets/restaurants/mexican-5.jpg';
 import vegan1 from '@/assets/restaurants/vegan-1.jpg';
 import fineDining1 from '@/assets/restaurants/fine-dining-1.jpg';
 import mediterranean3 from '@/assets/restaurants/mediterranean-3.jpg';
 import japanese2 from '@/assets/restaurants/japanese-2.jpg';
 import bbq1 from '@/assets/restaurants/bbq-1.jpg';
-import pizza1 from '@/assets/restaurants/pizza-1.jpg';
 import vegan2 from '@/assets/restaurants/vegan-2.jpg';
-import italian1 from '@/assets/restaurants/italian-1.jpg';
 
 export const expandedTulumRestaurants: Restaurant[] = [
   {
@@ -130,62 +126,6 @@ export const expandedTulumRestaurants: Restaurant[] = [
     hasOutdoorSeating: true,
     reservationPlatform: null,
     coordinates: { lat: 20.2046, lng: -87.4311 },
-  },
-  {
-    id: 'r14',
-    name: "Rosa del Viento",
-    cuisine: "Mediterranean",
-    rating: 4.3,
-    reviewCount: 1432,
-    priceRange: '$$$',
-    address: "Carr. Tulum-Boca Paila km 10",
-    neighborhood: "Tulum Beach",
-    city: "Tulum",
-    zipCode: "77780",
-    phone: "+52 984 134 8901",
-    hours: {
-      monday: { open: "8:00 AM", close: "10:00 PM" },
-      tuesday: { open: "8:00 AM", close: "10:00 PM" },
-      wednesday: { open: "8:00 AM", close: "10:00 PM" },
-      thursday: { open: "8:00 AM", close: "10:00 PM" },
-      friday: { open: "8:00 AM", close: "11:00 PM" },
-      saturday: { open: "8:00 AM", close: "11:00 PM" },
-      sunday: { open: "8:00 AM", close: "10:00 PM" },
-    },
-    description: "Serene beachfront restaurant with Mediterranean-inspired plates. Known for fresh grilled fish, homemade hummus, and a wine list featuring organic selections. A peaceful retreat.",
-    photos: [mediterranean2],
-    features: ["Beachfront", "Organic Wine", "Grilled Seafood", "Peaceful"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.1912, lng: -87.4258 },
-  },
-  {
-    id: 'r15',
-    name: "Cenzontle",
-    cuisine: "Mexican",
-    rating: 4.6,
-    reviewCount: 1678,
-    priceRange: '$$$',
-    address: "Av. Tulum entre Calle Beta y Osiris",
-    neighborhood: "Tulum Centro",
-    city: "Tulum",
-    zipCode: "77760",
-    phone: "+52 984 871 3456",
-    hours: {
-      monday: { open: "Closed", close: "Closed" },
-      tuesday: { open: "5:00 PM", close: "11:00 PM" },
-      wednesday: { open: "5:00 PM", close: "11:00 PM" },
-      thursday: { open: "5:00 PM", close: "11:00 PM" },
-      friday: { open: "5:00 PM", close: "11:30 PM" },
-      saturday: { open: "5:00 PM", close: "11:30 PM" },
-      sunday: { open: "5:00 PM", close: "10:00 PM" },
-    },
-    description: "Refined Mexican gastronomy celebrating Yucatecan heritage. Creative mole dishes, handmade tortillas, and an extensive mezcal collection. A culinary gem in Tulum Pueblo.",
-    photos: [mexican5],
-    features: ["Mezcal Bar", "Yucatecan Cuisine", "Handmade Tortillas", "Intimate"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.2108, lng: -87.4638 },
   },
   {
     id: 'r16',
@@ -329,34 +269,6 @@ export const expandedTulumRestaurants: Restaurant[] = [
     coordinates: { lat: 20.2121, lng: -87.4649 },
   },
   {
-    id: 'r21',
-    name: "La Nave Pizzeria",
-    cuisine: "Italian",
-    rating: 4.6,
-    reviewCount: 1987,
-    priceRange: '$$',
-    address: "Calle Orion Sur",
-    neighborhood: "Tulum Centro",
-    city: "Tulum",
-    zipCode: "77760",
-    phone: "+52 984 871 2456",
-    hours: {
-      monday: { open: "12:00 PM", close: "11:00 PM" },
-      tuesday: { open: "12:00 PM", close: "11:00 PM" },
-      wednesday: { open: "12:00 PM", close: "11:00 PM" },
-      thursday: { open: "12:00 PM", close: "11:00 PM" },
-      friday: { open: "12:00 PM", close: "11:30 PM" },
-      saturday: { open: "12:00 PM", close: "11:30 PM" },
-      sunday: { open: "12:00 PM", close: "11:00 PM" },
-    },
-    description: "Best pizza in Tulum. Neapolitan-style wood-fired pizzas with imported Italian ingredients. Rustic, lively atmosphere and excellent craft beer selection. Always packed.",
-    photos: [pizza1],
-    features: ["Wood-Fired Pizza", "Craft Beer", "Casual", "Family Friendly"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.2103, lng: -87.4631 },
-  },
-  {
     id: 'r22',
     name: "Matcha Mama",
     cuisine: "Healthy",
@@ -383,33 +295,5 @@ export const expandedTulumRestaurants: Restaurant[] = [
     hasOutdoorSeating: true,
     reservationPlatform: null,
     coordinates: { lat: 20.2045, lng: -87.4308 },
-  },
-  {
-    id: 'r23',
-    name: "Trattoria Romana",
-    cuisine: "Italian",
-    rating: 4.3,
-    reviewCount: 1234,
-    priceRange: '$$$',
-    address: "Av. Tulum Pte.",
-    neighborhood: "Tulum Centro",
-    city: "Tulum",
-    zipCode: "77760",
-    phone: "+52 984 871 3890",
-    hours: {
-      monday: { open: "12:00 PM", close: "10:30 PM" },
-      tuesday: { open: "12:00 PM", close: "10:30 PM" },
-      wednesday: { open: "12:00 PM", close: "10:30 PM" },
-      thursday: { open: "12:00 PM", close: "10:30 PM" },
-      friday: { open: "12:00 PM", close: "11:00 PM" },
-      saturday: { open: "12:00 PM", close: "11:00 PM" },
-      sunday: { open: "12:00 PM", close: "10:30 PM" },
-    },
-    description: "Classic Italian trattoria with homemade pastas, risottos, and tiramisu. Cozy, family-run spot in Tulum Pueblo with an authentic Roman-inspired menu and warm service.",
-    photos: [italian1],
-    features: ["Homemade Pasta", "Family-Run", "Cozy Atmosphere", "Wine Selection"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.2116, lng: -87.4651 },
   },
 ];
