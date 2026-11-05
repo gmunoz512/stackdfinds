@@ -1,8 +1,9 @@
+import '@/styles/ledger.css';
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Receipt } from 'lucide-react';
+import { ArrowLeft, Wallet } from 'lucide-react';
 import VendorBottomNav from '@/components/VendorBottomNav';
 import { useSmartBack } from '@/hooks/use-smart-back';
 import { useQuery } from '@tanstack/react-query';
@@ -14,7 +15,7 @@ import {
   formatLedgerMoney,
   ledgerStatusLabel,
   ledgerStatusTone,
-  summarizeVendorOwed,
+  summarizeVendorPayouts,
   type AffiliateBookingRow,
   type AffiliateLedgerStatus,
   parseBookingDate,
@@ -49,7 +50,7 @@ const VendorAffiliateAccounting = () => {
         .order('booking_date', { ascending: false });
 
       if (error) {
-        console.error('vendor affiliate read failed', error);
+        console.error('vendor payout read failed', error);
         return [];
       }
       return (data || []) as AffiliateBookingRow[];
@@ -57,14 +58,14 @@ const VendorAffiliateAccounting = () => {
     enabled: !!user,
   });
 
-  const summary = useMemo(() => summarizeVendorOwed(rows), [rows]);
+  const summary = useMemo(() => summarizeVendorPayouts(rows), [rows]);
   const visible = useMemo(() => {
     if (filter === 'all') return summary.lines;
     return summary.lines.filter((line) => line.status === filter);
   }, [summary.lines, filter]);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="stackd-ledger min-h-screen pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
         <button
           onClick={goBack}
@@ -75,46 +76,34 @@ const VendorAffiliateAccounting = () => {
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Affiliate fees</h1>
+          <h1 className="text-2xl font-normal">Your payouts</h1>
           <p className="text-sm text-muted-foreground">
-            What you owe hosts and stackd on each booking. Guests still pay your listed price —
-            these come out of your payout.
+            Guests pay your listed price. Host commission and stackd&apos;s fee come out of the
+            payout. Money is held until 24 hours after the reservation date, then released.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3">
-          <Card className="p-4 border-border/60">
-            <p className="text-xs text-muted-foreground">Owed to hosts</p>
+        <div className="grid grid-cols-2 gap-3">
+          <Card className="p-4 border-border/60 ledger-card">
+            <p className="text-xs text-muted-foreground">Upcoming</p>
             {isLoading ? (
-              <Skeleton className="h-8 w-24 mt-2" />
+              <Skeleton className="h-8 w-20 mt-2" />
             ) : (
-              <p className="text-2xl font-bold mt-1">
-                {formatLedgerMoney(summary.totalOwedToHosts)}
+              <p className="text-2xl font-normal mt-1">
+                {formatLedgerMoney(summary.totalUpcoming)}
               </p>
             )}
           </Card>
-          <div className="grid grid-cols-2 gap-3">
-            <Card className="p-4 border-border/60">
-              <p className="text-xs text-muted-foreground">Owed to stackd</p>
-              {isLoading ? (
-                <Skeleton className="h-7 w-16 mt-2" />
-              ) : (
-                <p className="text-xl font-bold mt-1">
-                  {formatLedgerMoney(summary.totalOwedToStackd)}
-                </p>
-              )}
-            </Card>
-            <Card className="p-4 border-border/60">
-              <p className="text-xs text-muted-foreground">You keep</p>
-              {isLoading ? (
-                <Skeleton className="h-7 w-16 mt-2" />
-              ) : (
-                <p className="text-xl font-bold mt-1">
-                  {formatLedgerMoney(summary.totalVendorKeeps)}
-                </p>
-              )}
-            </Card>
-          </div>
+          <Card className="p-4 border-border/60 ledger-card">
+            <p className="text-xs text-muted-foreground">Released</p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-20 mt-2" />
+            ) : (
+              <p className="text-2xl font-normal mt-1">
+                {formatLedgerMoney(summary.totalReleased)}
+              </p>
+            )}
+          </Card>
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-1">
@@ -136,7 +125,7 @@ const VendorAffiliateAccounting = () => {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Per booking</h2>
+          <h2 className="text-lg font-normal">Per booking</h2>
           {isLoading ? (
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
@@ -144,22 +133,23 @@ const VendorAffiliateAccounting = () => {
               ))}
             </div>
           ) : visible.length === 0 ? (
-            <Card className="p-8 text-center space-y-3">
-              <Receipt className="h-10 w-10 mx-auto text-muted-foreground" />
-              <p className="font-medium">No affiliate fees yet</p>
+            <Card className="p-8 text-center space-y-3 ledger-card">
+              <Wallet className="h-10 w-10 mx-auto text-muted-foreground" />
+              <p className="font-medium">No payouts yet</p>
               <p className="text-sm text-muted-foreground">
-                When guests book through a host&apos;s guide, you&apos;ll see host commission and
-                stackd&apos;s fee for each booking here.
+                When guests book, you&apos;ll see upcoming and released payouts here — net of host
+                commission and stackd&apos;s fee.
               </p>
             </Card>
           ) : (
             <div className="space-y-3">
               {visible.map((line) => (
-                <Card key={line.id} className="p-4 border-border/60 space-y-3">
+                <Card key={line.id} className="p-4 border-border/60 space-y-3 ledger-card">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-sm truncate">{line.experienceName}</h3>
+                      <h3 className="font-medium text-sm truncate">{line.experienceName}</h3>
                       <p className="text-xs text-muted-foreground mt-1">
+                        Reservation{' '}
                         {parseBookingDate(line.bookingDate).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -173,26 +163,36 @@ const VendorAffiliateAccounting = () => {
                       {ledgerStatusLabel(line.status)}
                     </Badge>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div className="flex items-center justify-between text-sm pt-1 border-t border-border/50">
+                    <span className="text-muted-foreground">You receive</span>
+                    <span className="font-medium">
+                      {formatLedgerMoney(line.vendorReceives, line.currency)}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-center text-xs">
                     <div className="rounded-lg bg-muted/40 p-2">
-                      <p className="text-muted-foreground">Host</p>
-                      <p className="font-semibold mt-0.5">
-                        {formatLedgerMoney(line.owedToHost, line.currency)}
+                      <p className="text-muted-foreground">Host commission</p>
+                      <p className="font-medium mt-0.5">
+                        {formatLedgerMoney(line.hostCommission, line.currency)}
                       </p>
                     </div>
                     <div className="rounded-lg bg-muted/40 p-2">
-                      <p className="text-muted-foreground">stackd</p>
-                      <p className="font-semibold mt-0.5">
-                        {formatLedgerMoney(line.owedToStackd, line.currency)}
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-muted/40 p-2">
-                      <p className="text-muted-foreground">You keep</p>
-                      <p className="font-semibold mt-0.5">
-                        {formatLedgerMoney(line.vendorKeeps, line.currency)}
+                      <p className="text-muted-foreground">stackd fee</p>
+                      <p className="font-medium mt-0.5">
+                        {formatLedgerMoney(line.stackdFee, line.currency)}
                       </p>
                     </div>
                   </div>
+                  {line.status === 'upcoming' && (
+                    <p className="text-[11px] text-muted-foreground">
+                      Releases {line.releaseDate} (24 hours after the reservation).
+                    </p>
+                  )}
+                  {line.status === 'released' && (
+                    <p className="text-[11px] text-muted-foreground">
+                      Released on {line.releaseDate}.
+                    </p>
+                  )}
                   {!line.hasHost && (
                     <p className="text-[11px] text-muted-foreground">
                       Direct booking — no host commission on this one.
