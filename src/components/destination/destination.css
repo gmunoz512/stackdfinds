@@ -1420,3 +1420,20 @@ html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5;
 .dark .join-menu a:hover { background: #314c38; }
 .dark .join-menu strong { color: #efece0; }
 .dark .join-menu span, .dark .reference-menu-label, .dark .reference-menu .reference-menu-join small { color: #adbcad; }
+
+/* Local Favorite Eats: lighter serif headings and weights, matching the ledger pages (STYLE_GUIDE.md). */
+.eats-light h1,
+.eats-light h2,
+.eats-light h3,
+.destination-shell .eats-light h1,
+.destination-shell .eats-light h2,
+.destination-shell .eats-light h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #153d30;
+}
+.eats-light .detail-essentials dd,
+.eats-light .font-semibold,
+.eats-light .font-bold { font-weight: 500; }
+.eats-light strong { font-weight: 500; }

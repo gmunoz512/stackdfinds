@@ -239,7 +239,7 @@ const RestaurantDetail = () => {
     : null;
 
   return (
-    <div className="min-h-screen bg-background pb-[100px] restaurant-detail-polished">
+    <div className="min-h-screen bg-background pb-[100px] restaurant-detail-polished eats-light">
       <div className="max-w-[375px] md:max-w-3xl lg:max-w-5xl mx-auto">
 
         {/* Floating header bar */}

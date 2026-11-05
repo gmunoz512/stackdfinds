@@ -193,7 +193,7 @@ export function GuestExploreTab(props: GuestExploreTabProps) {
       <section
         id="local-eats"
         aria-labelledby="eats-heading"
-        className="destination-section eats-section"
+        className="destination-section eats-section eats-light"
       >
         <div className="section-title">
           <div>

@@ -54,7 +54,7 @@ export default function AllRestaurants() {
   );
 
   return (
-    <div className="reference-catalog">
+    <div className="reference-catalog eats-light">
       <div className="reference-page-heading">
         <h1>
           Local Favorite
