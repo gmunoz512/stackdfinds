@@ -435,6 +435,13 @@ const HostDashboard = () => {
               <Handshake className="h-5 w-5 text-warning" />
               <h2 className="text-xl font-bold">Partner Commissions</h2>
             </div>
+            <button
+              type="button"
+              onClick={() => navigate('/host/marketplace')}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Marketplace
+            </button>
           </div>
           
           <p className="text-sm text-muted-foreground">
@@ -452,10 +459,10 @@ const HostDashboard = () => {
               <Store className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
               <p className="text-sm font-medium mb-1">No partner rates yet</p>
               <p className="text-sm text-muted-foreground mb-4">
-                Published vendors with a commission % will show here after you apply the demo seed.
+                Published vendors who set a host commission appear in the marketplace.
               </p>
-              <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/explore?mode=host')}>
-                Browse vendors
+              <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate('/host/marketplace')}>
+                Open marketplace
               </Button>
             </Card>
           ) : (
@@ -500,7 +507,7 @@ const HostDashboard = () => {
                     
                     {/* Commission Badge */}
                     <div className="flex-shrink-0 text-right">
-                      <Badge className="bg-gradient-to-r from-warning to-brand text-paper text-lg px-3 py-1 font-bold">
+                      <Badge variant="secondary" className="text-lg px-3 py-1 font-bold">
                         {vendor.commission_percentage}%
                       </Badge>
                       <p className="text-[10px] text-muted-foreground mt-1">per booking</p>

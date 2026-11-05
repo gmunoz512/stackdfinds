@@ -105,6 +105,7 @@ serve(async (req) => {
 
     // The vendor chooses one of the supported host commission tiers. The
     // corresponding stackd fee is paid by the vendor from the booking payout.
+    // Keep in sync with src/lib/commissions.ts (HOST_COMMISSION_TIERS / platformFeePercentFor).
     const configuredHostCommission = Number(vendorProfile?.commission_percentage || 0);
     const hostCommissionPercent = [10, 11, 12, 15, 17].includes(configuredHostCommission)
       ? configuredHostCommission

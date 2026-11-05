@@ -144,16 +144,16 @@ const HostVendors = () => {
             <h1 className="text-3xl font-bold">My Vendors</h1>
           </div>
           <p className="text-muted-foreground">
-            Browse vendors from Explore to add them to your list
+            Vendors you added from the marketplace for your guest guide
           </p>
           
           {/* Action Buttons */}
           <div className="flex items-center justify-center gap-3 pt-2">
             <Link 
-              to="/explore?mode=host"
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-gradient-to-r from-brand to-hot text-paper font-medium hover:scale-105 transition-all text-sm"
+              to="/host/marketplace"
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all text-sm"
             >
-              Explore Vendors
+              Browse marketplace
             </Link>
             
             {savedVendorIds.length > 0 && (
@@ -197,7 +197,7 @@ const HostVendors = () => {
             <Store className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No Vendors Yet</h3>
             <p className="text-muted-foreground mb-4">
-              Browse experiences and click "Add to Vendor List" to add vendors here.
+              Open the marketplace and tap Add to guide.
             </p>
           </Card>
         ) : (

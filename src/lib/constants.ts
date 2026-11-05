@@ -27,10 +27,12 @@ export const UI_CONSTANTS = {
   debounceMs: 300,
 } as const;
 
-// Commission rates (percentages)
+// Host affiliate commission defaults — see src/lib/commissions.ts for tiers + stackd fees.
+export { HOST_COMMISSION_TIERS, platformFeePercentFor } from '@/lib/commissions';
 export const COMMISSION_RATES = {
   default: 15,
-  premium: 20,
+  /** @deprecated Use HOST_COMMISSION_TIERS — 20% is not an offered tier. */
+  premium: 15,
   host: 10,
 } as const;
 

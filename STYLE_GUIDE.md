@@ -6,3 +6,7 @@
 - Type: serif display headings already in `destination.css`; 13–16px UI text.
 - Every new style needs a `.dark` counterpart (night mode).
 - Mobile first: the web build is shown inside a 430px phone frame; check at 390px.
+
+- Marketplace chips: pill outline; active = solid primary (pine), inactive = card border. No emoji chips.
+- Commission preview cards: muted rows + one bordered "You keep" row; money in USD; no sparkle icons.
+- Prefer `Badge variant="secondary"` over gradient commission badges on new screens.

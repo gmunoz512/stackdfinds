@@ -1,3 +1,4 @@
+import { HOST_COMMISSION_TIERS } from '@/lib/commissions';
 import { z } from 'zod';
 
 export interface PriceTier {
@@ -23,7 +24,7 @@ export const vendorProfileSchema = z.object({
   googleRating: z.coerce.number().optional(),
   googleReviewsUrl: z.string().optional(),
   commissionPercentage: z.coerce.number().refine(
-    (value) => [10, 11, 12, 15, 17].includes(value),
+    (value) => (HOST_COMMISSION_TIERS as readonly number[]).includes(value),
     'Choose a host commission between 10% and 12%, or select 15% or 17%',
   ).optional(),
 });

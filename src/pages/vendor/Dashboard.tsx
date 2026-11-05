@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { VendorOnboardingWizard } from "@/components/onboarding";
 import HostVerificationCard from "@/components/onboarding/HostVerificationCard";
 import { resolveGoogleRating } from "@/lib/googleRating";
+import { CommissionPreviewCard } from "@/components/CommissionPreviewCard";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
@@ -140,6 +141,26 @@ const VendorDashboard = () => {
       return data;
     },
     enabled: !!user,
+  });
+
+  // Affiliate commission for payout preview
+  const { data: vendorAffiliate } = useQuery({
+    queryKey: ['vendorAffiliatePreview', user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase
+        .from('vendor_profiles')
+        .select('id, commission_percentage, name, is_published')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error) {
+        console.error('vendor affiliate preview failed', error);
+        return null;
+      }
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 60 * 1000,
   });
 
   // Handle Stripe Connect return
@@ -295,6 +316,41 @@ const VendorDashboard = () => {
               existingSelfieUrl={profileStatus.selfie_url}
               onStatusChange={() => refetchProfile()}
             />
+          )}
+        </div>
+
+        {/* Affiliate commission preview */}
+        <div className="px-4 relative z-20 mt-4">
+          {vendorAffiliate?.commission_percentage != null ? (
+            <CommissionPreviewCard
+              hostCommissionPercent={vendorAffiliate.commission_percentage}
+              sampleTotal={100}
+              title="Your affiliate split"
+              className="bg-card/90 backdrop-blur-sm border-2"
+            />
+          ) : (
+            <Card className="p-4 bg-card/90 backdrop-blur-sm border-2">
+              <p className="text-sm font-medium text-foreground">Set your host commission</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Choose a tier so hosts can recommend you in the marketplace.
+              </p>
+              <Button
+                className="mt-3 w-full"
+                variant="outline"
+                onClick={() => navigate('/vendor/create-profile')}
+              >
+                Open business profile
+              </Button>
+            </Card>
+          )}
+          {vendorAffiliate?.commission_percentage != null && (
+            <button
+              type="button"
+              onClick={() => navigate('/vendor/create-profile')}
+              className="mt-2 text-xs font-medium text-primary hover:underline"
+            >
+              Change commission tier
+            </button>
           )}
         </div>
 

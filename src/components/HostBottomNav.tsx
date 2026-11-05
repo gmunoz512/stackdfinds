@@ -13,8 +13,8 @@ const HostBottomNav = () => {
       icon: LayoutDashboard 
     },
     { 
-      name: "Vendors", 
-      path: "/host/vendors", 
+      name: "Marketplace", 
+      path: "/host/marketplace", 
       icon: Users 
     },
     { 

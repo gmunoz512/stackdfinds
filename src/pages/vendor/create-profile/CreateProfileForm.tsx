@@ -13,6 +13,8 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useCreateProfileForm } from './form-context';
+import { CommissionPreviewCard } from '@/components/CommissionPreviewCard';
+import { HOST_COMMISSION_TIERS, tierLabel } from '@/lib/commissions';
 
 export function CreateProfileForm() {
   const {
@@ -738,7 +740,8 @@ export function CreateProfileForm() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              💰 Affiliate Program
+              <DollarSign className="h-5 w-5" />
+              Affiliate Program
             </CardTitle>
             <CardDescription>
               Choose what you pay a host when a guest books through their guide. stackd’s fee is deducted from your payout, so guests still see your listed price.
@@ -757,11 +760,11 @@ export function CreateProfileForm() {
                   <SelectValue placeholder="Choose a commission" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="10">10% host commission · 3% stackd fee</SelectItem>
-                  <SelectItem value="11">11% host commission · 3% stackd fee</SelectItem>
-                  <SelectItem value="12">12% host commission · 3% stackd fee</SelectItem>
-                  <SelectItem value="15">15% host commission · 2.5% stackd fee</SelectItem>
-                  <SelectItem value="17">17% host commission · 2% stackd fee</SelectItem>
+                  {HOST_COMMISSION_TIERS.map((tier) => (
+                    <SelectItem key={tier} value={String(tier)}>
+                      {tierLabel(tier)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {errors.commissionPercentage && (
@@ -771,6 +774,10 @@ export function CreateProfileForm() {
                 The host commission is paid only when a guest books through that host’s linked guide.
               </p>
             </div>
+            <CommissionPreviewCard
+              hostCommissionPercent={watchedValues.commissionPercentage}
+              sampleTotal={100}
+            />
           </CardContent>
         </Card>
 

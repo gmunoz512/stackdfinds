@@ -1,36 +1,61 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Store, Percent } from "lucide-react";
+import { Link } from "react-router-dom";
 import HostBottomNav from "@/components/HostBottomNav";
 import { useSmartBack } from "@/hooks/use-smart-back";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+
+const isMissingRelation = (error: { code?: string; message?: string } | null) => {
+  if (!error) return false;
+  const msg = (error.message || '').toLowerCase();
+  return (
+    error.code === '42P01' ||
+    error.code === 'PGRST205' ||
+    msg.includes('does not exist') ||
+    msg.includes('could not find the table')
+  );
+};
 
 const HostActiveVendors = () => {
   const goBack = useSmartBack("/host/dashboard");
   const { user } = useAuthContext();
 
   const { data: vendors = [], isLoading } = useQuery({
-    queryKey: ['hostLinkedVendors', user?.id],
+    queryKey: ['hostLinkedVendorsActive', user?.id],
     queryFn: async () => {
       if (!user) return [];
 
-      // Get linked vendor IDs
-      const { data: links } = await supabase
+      const { data: links, error: linksError } = await supabase
         .from('host_vendor_links')
         .select('vendor_profile_id')
         .eq('host_user_id', user.id);
+
+      if (linksError) {
+        if (isMissingRelation(linksError)) return [];
+        console.error('host_vendor_links read failed', linksError);
+        return [];
+      }
 
       if (!links || links.length === 0) return [];
 
       const vendorIds = links.map(l => l.vendor_profile_id);
 
-      // Fetch vendor profiles
-      const { data: profiles } = await supabase
+      // commission_percentage is the live affiliate rate vendors set at onboarding.
+      // Do not use host_commission_percentage (legacy / unused for payouts).
+      const { data: profiles, error: profilesError } = await supabase
         .from('vendor_profiles')
-        .select('id, name, category, description, host_commission_percentage')
+        .select('id, name, category, description, commission_percentage')
         .in('id', vendorIds);
+
+      if (profilesError) {
+        if (isMissingRelation(profilesError)) return [];
+        console.error('vendor_profiles read failed', profilesError);
+        return [];
+      }
 
       return profiles || [];
     },
@@ -40,7 +65,6 @@ const HostActiveVendors = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
-        {/* Header */}
         <div className="space-y-4">
           <button
             onClick={goBack}
@@ -55,7 +79,6 @@ const HostActiveVendors = () => {
           </div>
         </div>
 
-        {/* Vendors List */}
         <div className="space-y-3">
           {isLoading ? (
             <>
@@ -67,9 +90,12 @@ const HostActiveVendors = () => {
             <Card className="p-8 text-center">
               <Store className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
               <p className="font-medium text-foreground">No linked vendors yet</p>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground mt-1 mb-4">
                 Partner with vendors to earn commissions on guest referrals
               </p>
+              <Button asChild>
+                <Link to="/host/marketplace">Browse marketplace</Link>
+              </Button>
             </Card>
           ) : (
             vendors.map((vendor) => (
@@ -92,7 +118,8 @@ const HostActiveVendors = () => {
                       <div className="flex items-center gap-1">
                         <Percent className="h-3 w-3 text-primary" />
                         <p className="text-sm font-bold text-primary">
-                          {vendor.host_commission_percentage || 15}%
+                          {vendor.commission_percentage ?? '—'}
+                          {vendor.commission_percentage != null ? '%' : ''}
                         </p>
                       </div>
                     </div>

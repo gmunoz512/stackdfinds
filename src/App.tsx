@@ -65,6 +65,7 @@ const HostEarnings = lazy(() => import("./pages/host/Earnings"));
 const HostRatings = lazy(() => import("./pages/host/Ratings"));
 const HostStorefront = lazy(() => import("./pages/host/Storefront"));
 const HostVendorManagement = lazy(() => import("./pages/host/VendorManagement"));
+const HostMarketplace = lazy(() => import("./pages/host/Marketplace"));
 
 // Vendor pages (lazy)
 const VendorDashboard = lazy(() => import("./pages/vendor/Dashboard"));
@@ -276,6 +277,7 @@ const AppRoutes = () => (
     <Route path="/host/bookings" element={<ProtectedHostRoute><HostBookings /></ProtectedHostRoute>} />
     <Route path="/host/vendors/active" element={<ProtectedHostRoute><HostActiveVendors /></ProtectedHostRoute>} />
     <Route path="/host/vendors/manage" element={<ProtectedHostRoute><HostVendorManagement /></ProtectedHostRoute>} />
+    <Route path="/host/marketplace" element={<ProtectedHostRoute><HostMarketplace /></ProtectedHostRoute>} />
     <Route path="/host/earnings" element={<ProtectedHostRoute><HostEarnings /></ProtectedHostRoute>} />
     <Route path="/host/ratings" element={<ProtectedHostRoute><HostRatings /></ProtectedHostRoute>} />
     <Route 
