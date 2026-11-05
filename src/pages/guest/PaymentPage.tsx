@@ -26,7 +26,8 @@ const PaymentPage = () => {
   const [promoApplied, setPromoApplied] = useState(!!bookingData.promoCode);
   const [promoError, setPromoError] = useState('');
   const [checkoutUnavailable, setCheckoutUnavailable] = useState(false);
-  const [guestMode, setGuestMode] = useState(Boolean(guestData.email));
+  // Guest checkout stays off until the database supports it; accounts only.
+  const guestMode = false;
   const [guestErrors, setGuestErrors] = useState<{ fullName?: string; email?: string }>({});
   const [guestCheckoutOff, setGuestCheckoutOff] = useState(false);
 
@@ -350,34 +351,9 @@ const PaymentPage = () => {
               <Button asChild variant="outline" className="w-full">
                 <Link to={signInPath(`${location.pathname}${location.search}`)}>Sign in or create an account</Link>
               </Button>
-              {!guestMode ? (
-                <Button variant="ghost" className="w-full" onClick={() => setGuestMode(true)}>
-                  Continue as guest
-                </Button>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">Or book as a guest. We'll send your confirmation here.</p>
-                  <div className="space-y-1">
-                    <Label htmlFor="guest-name">Full name</Label>
-                    <Input id="guest-name" autoComplete="name" value={guestData.fullName}
-                      onChange={(e) => updateGuestData({ fullName: e.target.value })}
-                      aria-invalid={Boolean(guestErrors.fullName)} />
-                    {guestErrors.fullName && <p className="text-sm text-destructive">{guestErrors.fullName}</p>}
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="guest-email">Email</Label>
-                    <Input id="guest-email" type="email" autoComplete="email" inputMode="email" value={guestData.email}
-                      onChange={(e) => updateGuestData({ email: e.target.value })}
-                      aria-invalid={Boolean(guestErrors.email)} />
-                    {guestErrors.email && <p className="text-sm text-destructive">{guestErrors.email}</p>}
-                  </div>
-                </div>
-              )}
-              {guestCheckoutOff && (
-                <p className="text-sm rounded-lg border border-brand/30 bg-brand/5 p-3" role="status">
-                  Guest checkout is coming soon. For now, sign in or create an account to pay. Nothing was charged.
-                </p>
-              )}
+              <p className="text-sm text-muted-foreground" role="status">
+                Guest checkout is coming soon. For now, sign in or create an account to pay. It only takes a minute, and you'll come right back here. Nothing has been charged.
+              </p>
             </Card>
           )}
 
