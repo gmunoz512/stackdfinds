@@ -1,0 +1,97 @@
+{
+ "fetchedAt": "2026-11-05",
+ "source": "Google Maps public place pages",
+ "places": {
+  "ARCA": {
+   "googleName": "ARCA",
+   "rating": 4.4,
+   "photo": "/google-photos/arca.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/ARCA/@20.1495855,-87.45959,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd0cb6c21ea27:0x2dac408939cf2253!8m2!3d20.1495855!4d-87.45959!16s%2Fg%2F11bx2khpzk",
+   "status": null
+  },
+  "Hartwood": {
+   "googleName": "Hartwood",
+   "rating": 4.4,
+   "photo": "/google-photos/hartwood.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Hartwood/@20.1498756,-87.459374,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd0cb15155795:0x8c9a045ea8bdb975!8m2!3d20.1498756!4d-87.459374!16s%2Fg%2F11b5s2dy8b",
+   "status": null
+  },
+  "Burrito Amor": {
+   "googleName": "Burrito Amor",
+   "rating": 4.6,
+   "photo": "/google-photos/burrito-amor.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Burrito+Amor/@20.2011283,-87.4791857,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd6aee29d2c25:0xb5b63cd38bcbdc32!8m2!3d20.2011283!4d-87.4791857!16s%2Fg%2F11ckvvfkml",
+   "status": null
+  },
+  "Taquería Honorio": {
+   "googleName": "Taqueria Honorio",
+   "rating": 4.7,
+   "photo": "/google-photos/taqueria-honorio.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Taqueria+Honorio/@20.2116442,-87.4578724,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd17d74e618df:0xe986801f39e7c2ab!8m2!3d20.2116442!4d-87.4578724!16s%2Fg%2F11sn3y48mz",
+   "status": null
+  },
+  "Posada Margherita": {
+   "googleName": "Posada Margherita",
+   "rating": 4.4,
+   "photo": "/google-photos/posada-margherita.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Posada+Margherita/@20.1649099,-87.4524341,17z/data=!4m9!3m8!1s0x8f4fd136bc10371f:0x83290c37416849d9!5m2!4m1!1i2!8m2!3d20.1649099!4d-87.4524341!16s%2Fg%2F11rqbdf9qb",
+   "status": "Temporarily closed"
+  },
+  "Chamicos Tulum": {
+   "googleName": "Chamicos Tulum",
+   "rating": 4.4,
+   "photo": "/google-photos/chamicos-tulum.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Chamicos+Tulum/@20.209238,-87.458303,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd1530c02d221:0xdb4cd536f4ec90af!8m2!3d20.209238!4d-87.458303!16s%2Fg%2F11c5qsfw_l",
+   "status": null
+  },
+  "Gitano": {
+   "googleName": "Gitano Jungle Tulum",
+   "rating": 4.7,
+   "photo": "/google-photos/gitano.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Gitano+Jungle+Tulum/@20.1500881,-87.4771362,15z/data=!4m10!1m2!2m1!1sGitano+Tulum+Quintana+Roo!3m6!1s0x8f4fd0cb15944a15:0x1d87fa7c461e751f!8m2!3d20.1500881!4d-87.4591118!15sChlHaXRhbm8gVHVsdW0gUXVpbnRhbmEgUm9vIgOIAQFaGyIZZ2l0YW5vIHR1bHVtIHF1aW50YW5hIHJvb5IBEm1leGljYW5fcmVzdGF1cmFudJoBI0NoWkRTVWhOTUc5blMwVkpRMEZuU1VSbWVtSnBiMk4zRUFF4AEA-gEECDcQRQ!16s%2Fg%2F11cjvcl1mn",
+   "status": null
+  },
+  "Ziggy Beach": {
+   "googleName": "ZIGGY - Beach Club & Restaurant",
+   "rating": 4.6,
+   "photo": "/google-photos/ziggy-beach.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/ZIGGY+-+Beach+Club+%26+Restaurant/@20.156147,-87.4564234,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd0cddd94591f:0x76677cf26ff3b936!8m2!3d20.156147!4d-87.4564234!16s%2Fg%2F11bxf4mw0v",
+   "status": null
+  },
+  "Casa Jaguar": {
+   "googleName": "Casa Jaguar",
+   "rating": 4.1,
+   "photo": "/google-photos/casa-jaguar.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Casa+Jaguar/@20.1519355,-87.458435,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd0cc83eeb65f:0xe89882d23793b1c4!8m2!3d20.1519355!4d-87.458435!16s%2Fg%2F11bv1bwppf",
+   "status": null
+  },
+  "La Zebra": {
+   "googleName": "La Zebra Tulum, a Small Luxury Hotel",
+   "rating": 4.6,
+   "photo": "/google-photos/la-zebra.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/La+Zebra+Tulum,+a+Small+Luxury+Hotel/@20.145755,-87.459984,17z/data=!4m9!3m8!1s0x8f4fd0b550a861bf:0xe47700cf4ba0149!5m2!4m1!1i2!8m2!3d20.145755!4d-87.459984!16s%2Fg%2F1tl1phnp",
+   "status": null
+  },
+  "Taboo": {
+   "googleName": "Taboo | Best Beach Club Tulum",
+   "rating": 4.3,
+   "photo": "/google-photos/taboo.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Taboo+%7C+Best+Beach+Club+Tulum/@20.1589409,-87.4554713,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd7c6e0f9e411:0x9d2307e3cbafe374!8m2!3d20.1589409!4d-87.4554713!16s%2Fg%2F11gy0s3n_z",
+   "status": null
+  },
+  "Tseen Ja": {
+   "googleName": "Tseen Ja",
+   "rating": 3.4,
+   "photo": "/google-photos/tseen-ja.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/Tseen+Ja/@20.1786113,-87.4457392,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd15c2e7587f9:0x328de5bcf602284b!8m2!3d20.1786113!4d-87.4457392!16s%2Fg%2F11f6589dbb",
+   "status": "Temporarily closed"
+  },
+  "El Asadero": {
+   "googleName": "El Asadero Tulum",
+   "rating": 4.5,
+   "photo": "/google-photos/el-asadero.jpg",
+   "mapsUrl": "https://www.google.com/maps/place/El+Asadero+Tulum/@20.214056,-87.4590912,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4fd154e0f33797:0x39b69feda9adada3!8m2!3d20.214056!4d-87.4590912!16s%2Fg%2F1tqp_99z",
+   "status": null
+  }
+ }
+}

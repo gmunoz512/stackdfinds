@@ -6,7 +6,6 @@ import mexican1 from '@/assets/restaurants/mexican-1.jpg';
 import mexican2 from '@/assets/restaurants/mexican-2.jpg';
 import mediterranean1 from '@/assets/restaurants/mediterranean-1.jpg';
 import mexican4 from '@/assets/restaurants/mexican-4.jpg';
-import japanese1 from '@/assets/restaurants/japanese-1.jpg';
 import mediterranean2 from '@/assets/restaurants/mediterranean-2.jpg';
 import mexican5 from '@/assets/restaurants/mexican-5.jpg';
 import vegan1 from '@/assets/restaurants/vegan-1.jpg';
@@ -131,34 +130,6 @@ export const expandedTulumRestaurants: Restaurant[] = [
     hasOutdoorSeating: true,
     reservationPlatform: null,
     coordinates: { lat: 20.2046, lng: -87.4311 },
-  },
-  {
-    id: 'r13',
-    name: "Noma Tulum",
-    cuisine: "Japanese",
-    rating: 4.7,
-    reviewCount: 1245,
-    priceRange: '$$$$',
-    address: "Carr. Tulum-Boca Paila km 5",
-    neighborhood: "Tulum Beach",
-    city: "Tulum",
-    zipCode: "77780",
-    phone: "+52 984 168 2341",
-    hours: {
-      monday: { open: "1:00 PM", close: "11:00 PM" },
-      tuesday: { open: "1:00 PM", close: "11:00 PM" },
-      wednesday: { open: "1:00 PM", close: "11:00 PM" },
-      thursday: { open: "1:00 PM", close: "11:00 PM" },
-      friday: { open: "1:00 PM", close: "11:30 PM" },
-      saturday: { open: "1:00 PM", close: "11:30 PM" },
-      sunday: { open: "1:00 PM", close: "11:00 PM" },
-    },
-    description: "Japanese-Mexican fusion with omakase-style dining. Fresh sashimi, creative maki rolls with local ingredients, and premium sake. An elevated culinary experience on the beach road.",
-    photos: [japanese1],
-    features: ["Omakase", "Sushi Bar", "Sake Selection", "Fine Dining"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.2001, lng: -87.4291 },
   },
   {
     id: 'r14',

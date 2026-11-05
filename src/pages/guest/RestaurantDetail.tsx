@@ -102,7 +102,7 @@ const RestaurantDetail = () => {
   });
   useEffect(() => {
     if (!restaurant) return;
-    const data = { "@context": "https://schema.org", "@type": "Restaurant", name: restaurant.name, description: restaurant.description, image: displayPhotos, servesCuisine: restaurant.cuisine, address: { "@type": "PostalAddress", streetAddress: restaurant.address, addressLocality: restaurant.city }, aggregateRating: placeRating ? { "@type": "AggregateRating", ratingValue: placeRating.rating, reviewCount: placeRating.reviewCount, bestRating: 5 } : undefined };
+    const data = { "@context": "https://schema.org", "@type": "Restaurant", name: restaurant.name, description: restaurant.description, image: displayPhotos, servesCuisine: restaurant.cuisine, address: { "@type": "PostalAddress", streetAddress: restaurant.address, addressLocality: restaurant.city }, aggregateRating: placeRating?.reviewCount ? { "@type": "AggregateRating", ratingValue: placeRating.rating, reviewCount: placeRating.reviewCount, bestRating: 5 } : undefined };
     const script = document.createElement("script"); script.type = "application/ld+json"; script.textContent = JSON.stringify(data); document.head.appendChild(script);
     return () => script.remove();
   }, [restaurant, displayPhotos, placeRating?.rating, placeRating?.reviewCount]);
@@ -125,7 +125,7 @@ const RestaurantDetail = () => {
     }
     setRestaurant(found || null);
     if (found && id) {
-      const cached = getCachedReviews(id);
+      const cached = /^r\d+$/.test(id) ? null : getCachedReviews(id);
       if (cached) {
         setGoogleReviews(cached);
         setDisplayPhotos(cached.photos && cached.photos.length > 0 ? cached.photos : []);
@@ -140,8 +140,9 @@ const RestaurantDetail = () => {
   useEffect(() => {
     const fetchGoogleReviews = async () => {
       if (!restaurant || !id) return;
-      if (!isSupabaseConfigured) {
-        setDisplayPhotos(restaurant.photos);
+      // Catalog restaurants use the static Google Maps snapshot (no paid Places lookup).
+      if (!isSupabaseConfigured || /^r\d+$/.test(id)) {
+        setDisplayPhotos(restaurant.googleFetchedAt ? restaurant.photos.slice(0, 1) : restaurant.photos);
         setIsLoadingReviews(false);
         return;
       }
@@ -268,7 +269,7 @@ const RestaurantDetail = () => {
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
         {photos.length > 0 ? (
           <div className="px-4 lg:px-6 lg:pt-2">
-            {!isSupabaseConfigured && <p className="text-[10px] text-muted-foreground mb-2">Illustrative photo · design preview</p>}
+            {!restaurant.googleFetchedAt && <p className="text-[10px] text-muted-foreground mb-2">Illustrative photo</p>}
             <StackedPhotoGrid photos={photos} alt={restaurant.name} />
           </div>
         ) : isLoadingReviews ? (
@@ -295,6 +296,11 @@ const RestaurantDetail = () => {
             
             <div className="flex items-center gap-1.5 flex-wrap">
               <GoogleRating value={placeRating} className="text-[15px]" starClassName="h-4 w-4" />
+              {placeRating && restaurant.googleFetchedAt ? (
+                <a href={restaurant.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground underline-offset-2 hover:underline">
+                  Google Maps, checked {new Date(restaurant.googleFetchedAt + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </a>
+              ) : null}
               <span className="text-muted-foreground text-[15px]">·</span>
               <span className="text-[15px] text-muted-foreground">{restaurant.cuisine}</span>
               <span className="text-muted-foreground text-[15px]">·</span>
