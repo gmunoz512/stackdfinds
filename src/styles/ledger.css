@@ -1,0 +1,35 @@
+/* Cream stackd look for host/vendor/admin ledger pages (see STYLE_GUIDE.md). */
+.stackd-ledger {
+  --background: 42 56% 96%;
+  --foreground: 150 26% 20%;
+  --card: 45 100% 98%;
+  --card-foreground: 150 26% 20%;
+  --primary: 161 73% 16%;
+  --primary-foreground: 42 60% 96%;
+  --muted: 40 25% 91%;
+  --muted-foreground: 133 7% 45%;
+  --border: 41 26% 80%;
+  --input: 41 26% 80%;
+  --accent: 70 25% 89%;
+  --accent-foreground: 150 26% 20%;
+  --ring: 161 73% 16%;
+  background: #f8f3e7;
+  color: #274234;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.stackd-ledger h1,
+.stackd-ledger h2,
+.stackd-ledger h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #153d30;
+}
+.stackd-ledger h1 {
+  letter-spacing: -0.5px;
+}
+.stackd-ledger [class*="rounded-lg"][class*="border"],
+.stackd-ledger .ledger-card {
+  background: rgba(255, 253, 245, 0.86);
+  border-color: rgba(216, 208, 190, 0.72);
+}

@@ -1,3 +1,4 @@
+import '@/styles/ledger.css';
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -64,7 +65,7 @@ const VendorAffiliateAccounting = () => {
   }, [summary.lines, filter]);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="stackd-ledger min-h-screen pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
         <button
           onClick={goBack}
@@ -75,7 +76,7 @@ const VendorAffiliateAccounting = () => {
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Affiliate fees</h1>
+          <h1 className="text-2xl font-normal">Affiliate fees</h1>
           <p className="text-sm text-muted-foreground">
             What you owe hosts and stackd on each booking. Guests still pay your listed price —
             these come out of your payout.
@@ -88,7 +89,7 @@ const VendorAffiliateAccounting = () => {
             {isLoading ? (
               <Skeleton className="h-8 w-24 mt-2" />
             ) : (
-              <p className="text-2xl font-bold mt-1">
+              <p className="text-2xl font-normal mt-1">
                 {formatLedgerMoney(summary.totalOwedToHosts)}
               </p>
             )}
@@ -99,7 +100,7 @@ const VendorAffiliateAccounting = () => {
               {isLoading ? (
                 <Skeleton className="h-7 w-16 mt-2" />
               ) : (
-                <p className="text-xl font-bold mt-1">
+                <p className="text-xl font-normal mt-1">
                   {formatLedgerMoney(summary.totalOwedToStackd)}
                 </p>
               )}
@@ -109,7 +110,7 @@ const VendorAffiliateAccounting = () => {
               {isLoading ? (
                 <Skeleton className="h-7 w-16 mt-2" />
               ) : (
-                <p className="text-xl font-bold mt-1">
+                <p className="text-xl font-normal mt-1">
                   {formatLedgerMoney(summary.totalVendorKeeps)}
                 </p>
               )}
@@ -176,19 +177,19 @@ const VendorAffiliateAccounting = () => {
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
                     <div className="rounded-lg bg-muted/40 p-2">
                       <p className="text-muted-foreground">Host</p>
-                      <p className="font-semibold mt-0.5">
+                      <p className="font-medium mt-0.5">
                         {formatLedgerMoney(line.owedToHost, line.currency)}
                       </p>
                     </div>
                     <div className="rounded-lg bg-muted/40 p-2">
                       <p className="text-muted-foreground">stackd</p>
-                      <p className="font-semibold mt-0.5">
+                      <p className="font-medium mt-0.5">
                         {formatLedgerMoney(line.owedToStackd, line.currency)}
                       </p>
                     </div>
                     <div className="rounded-lg bg-muted/40 p-2">
                       <p className="text-muted-foreground">You keep</p>
-                      <p className="font-semibold mt-0.5">
+                      <p className="font-medium mt-0.5">
                         {formatLedgerMoney(line.vendorKeeps, line.currency)}
                       </p>
                     </div>

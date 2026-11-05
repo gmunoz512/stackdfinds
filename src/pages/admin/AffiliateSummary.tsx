@@ -1,3 +1,4 @@
+import '@/styles/ledger.css';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -36,7 +37,7 @@ const AffiliateSummary = () => {
   const summary = useMemo(() => summarizeStackd(rows), [rows]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="stackd-ledger min-h-screen">
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
         <Link
           to="/admin/settings"
@@ -47,7 +48,7 @@ const AffiliateSummary = () => {
         </Link>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Affiliate summary</h1>
+          <h1 className="text-2xl font-normal">Affiliate summary</h1>
           <p className="text-sm text-muted-foreground">
             Read-only view of host commissions and stackd fees from existing bookings. No payouts
             are sent from this screen.
@@ -66,7 +67,7 @@ const AffiliateSummary = () => {
               {isLoading ? (
                 <Skeleton className="h-7 w-20 mt-2" />
               ) : (
-                <p className="text-xl font-bold mt-1">{card.value}</p>
+                <p className="text-xl font-normal mt-1">{card.value}</p>
               )}
             </Card>
           ))}
@@ -78,7 +79,7 @@ const AffiliateSummary = () => {
             {isLoading ? (
               <Skeleton className="h-7 w-12 mt-2" />
             ) : (
-              <p className="text-xl font-bold mt-1">{summary.bookingCount}</p>
+              <p className="text-xl font-normal mt-1">{summary.bookingCount}</p>
             )}
           </Card>
           <Card className="p-4 border-border/60">
@@ -86,7 +87,7 @@ const AffiliateSummary = () => {
             {isLoading ? (
               <Skeleton className="h-7 w-12 mt-2" />
             ) : (
-              <p className="text-xl font-bold mt-1">{summary.attributedBookingCount}</p>
+              <p className="text-xl font-normal mt-1">{summary.attributedBookingCount}</p>
             )}
           </Card>
         </div>
@@ -109,7 +110,7 @@ const AffiliateSummary = () => {
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
                     {ledgerStatusLabel(status)}
                   </p>
-                  <p className="font-semibold mt-1">
+                  <p className="font-medium mt-1">
                     {formatLedgerMoney(summary.byStatusFees[status])}
                   </p>
                 </div>

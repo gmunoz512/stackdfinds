@@ -1,3 +1,4 @@
+import '@/styles/ledger.css';
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -56,7 +57,7 @@ const HostEarnings = () => {
   }, [summary.lines, filter]);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="stackd-ledger min-h-screen pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
         <button
           onClick={goBack}
@@ -67,7 +68,7 @@ const HostEarnings = () => {
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Your earnings</h1>
+          <h1 className="text-2xl font-normal">Your earnings</h1>
           <p className="text-sm text-muted-foreground">
             Commission from guests who booked through your guide. You keep the full host commission —
             stackd&apos;s fee comes from the vendor.
@@ -80,7 +81,7 @@ const HostEarnings = () => {
             {isLoading ? (
               <Skeleton className="h-8 w-20 mt-2" />
             ) : (
-              <p className="text-2xl font-bold mt-1">{formatLedgerMoney(summary.totalEarned)}</p>
+              <p className="text-2xl font-normal mt-1">{formatLedgerMoney(summary.totalEarned)}</p>
             )}
           </Card>
           <Card className="p-4 border-border/60">
@@ -88,7 +89,7 @@ const HostEarnings = () => {
             {isLoading ? (
               <Skeleton className="h-8 w-12 mt-2" />
             ) : (
-              <p className="text-2xl font-bold mt-1">{summary.bookingCount}</p>
+              <p className="text-2xl font-normal mt-1">{summary.bookingCount}</p>
             )}
           </Card>
         </div>
@@ -102,7 +103,7 @@ const HostEarnings = () => {
               {isLoading ? (
                 <Skeleton className="h-5 w-12 mt-1" />
               ) : (
-                <p className="text-sm font-semibold mt-1">
+                <p className="text-sm font-medium mt-1">
                   {formatLedgerMoney(summary.byStatus[status])}
                 </p>
               )}
@@ -175,7 +176,7 @@ const HostEarnings = () => {
                   </div>
                   <div className="mt-2 pt-2 border-t border-border/50 flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">Your commission</span>
-                    <span className="inline-flex items-center gap-1 font-semibold text-foreground">
+                    <span className="inline-flex items-center gap-1 font-medium text-foreground">
                       <DollarSign className="h-3.5 w-3.5" />
                       {formatLedgerMoney(line.commissionEarned, line.currency)}
                     </span>
