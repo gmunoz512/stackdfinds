@@ -9,6 +9,7 @@ import kitchenTableTulum from '@/assets/restaurants/kitchen-table-tulum.jpg';
 import rawLoveTulum from '@/assets/restaurants/raw-love-tulum.jpg';
 
 import { expandedTulumRestaurants } from './tulumRestaurantsExpanded';
+import googlePlaces from './googlePlaces.json';
 
 // Mock restaurant data with realistic information
 export interface Restaurant {
@@ -36,6 +37,8 @@ export interface Restaurant {
   coordinates?: { lat: number; lng: number };
   distance?: number; // Distance in meters from user location
   isFromApi?: boolean; // Flag to identify API-fetched restaurants
+  googleFetchedAt?: string; // Date the Google rating/photo snapshot was taken
+  googleMapsUrl?: string;
 }
 
 // Unique restaurant photos for each Tulum restaurant
@@ -50,7 +53,7 @@ const uniqueRestaurantPhotos: Record<string, string[]> = {
   r8: [rawLoveTulum], // Raw Love
 };
 
-export const mockRestaurants: Restaurant[] = [
+const catalog: Restaurant[] = [
   // ==================== TULUM RESTAURANTS ====================
   {
     id: 'r1',
@@ -278,6 +281,24 @@ export const mockRestaurants: Restaurant[] = [
   },
   ...expandedTulumRestaurants,
 ];
+
+// The ratings typed into the catalog above are sample numbers, not Google's.
+// Only the snapshot in googlePlaces.json (pulled from public Google Maps pages)
+// counts as a Google rating; everything else shows no rating.
+type GooglePlace = { rating: number; photo: string; mapsUrl: string };
+const places = googlePlaces.places as Record<string, GooglePlace>;
+
+export const mockRestaurants: Restaurant[] = catalog.map((r) => {
+  const g = places[r.name];
+  return {
+    ...r,
+    rating: g?.rating,
+    reviewCount: undefined,
+    photos: g ? [g.photo, ...r.photos] : r.photos,
+    googleFetchedAt: g ? googlePlaces.fetchedAt : undefined,
+    googleMapsUrl: g?.mapsUrl,
+  };
+});
 // Location suggestions for autocomplete
 export const locationSuggestions = [
   { type: 'city', value: 'Tulum', state: 'QR', zipCode: '77780' },

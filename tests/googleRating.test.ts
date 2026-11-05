@@ -7,10 +7,11 @@ test("resolveGoogleRating returns real Google ratings and never invents one", ()
 
 assert.equal(resolveGoogleRating({}), null);
 assert.equal(resolveGoogleRating({ googleRating: null }), null);
-// Catalog ratings were copied from Google, so they are shown like Lovable does.
+// Catalog ratings only exist when they came from the Google Maps snapshot.
 assert.deepEqual(resolveGoogleRating({ place: { rating: 4.9, reviewCount: 2847 } }), { rating: 4.9, reviewCount: 2847 });
 assert.equal(resolveGoogleRating({ place: { rating: 7 } }), null);
-assert.deepEqual(resolveGoogleRating({ googleRating: 4.5 }), { rating: 4.5, reviewCount: undefined });
+// Vendor-typed ratings are not Google ratings, so they're hidden.
+assert.equal(resolveGoogleRating({ googleRating: 4.5 }), null);
 assert.deepEqual(
   resolveGoogleRating({ google: { rating: 4.8, totalReviews: 12 }, googleRating: 3 }),
   { rating: 4.8, reviewCount: 12 },

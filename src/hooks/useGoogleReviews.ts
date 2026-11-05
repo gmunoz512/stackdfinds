@@ -77,11 +77,13 @@ export function useGoogleReviews({
 
   return useQuery<GoogleReviewsData | null>({
     queryKey: ["google-reviews", cacheId],
-    enabled: Boolean(enabled && cacheId && (placeId || searchQuery)),
+    // Catalog restaurants (ids like r1) use the static Google snapshot in
+    // src/data/googlePlaces.json, so they never hit the paid Places lookup.
+    enabled: Boolean(enabled && cacheId && (placeId || searchQuery) && !/^r\d+$/.test(id ?? "")),
     staleTime: CACHE_DURATION_MS,
     gcTime: CACHE_DURATION_MS,
     retry: false,
-    initialData: () => (cacheId ? readCache(cacheId) ?? undefined : undefined),
+    initialData: () => (cacheId && !/^r\d+$/.test(id ?? "") ? readCache(cacheId) ?? undefined : undefined),
     queryFn: async () => {
       const cached = readCache(cacheId);
       if (cached) return cached;
