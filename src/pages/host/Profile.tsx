@@ -146,6 +146,12 @@ const HostProfile = () => {
       gradient: false
     },
     { 
+      label: "Your earnings", 
+      icon: Receipt, 
+      action: "/host/earnings",
+      gradient: false
+    },
+    { 
       label: "Payout History", 
       icon: Receipt, 
       action: "/host/payout-history",

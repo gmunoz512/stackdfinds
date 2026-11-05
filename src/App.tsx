@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserProvider } from "./contexts/UserContext";
 import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { ProfileProvider } from "./contexts/ProfileContext";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -78,6 +79,7 @@ const VendorPayoutHistory = lazy(() => import("./pages/vendor/PayoutHistory"));
 const AllBookings = lazy(() => import("./pages/vendor/AllBookings"));
 const ActiveHosts = lazy(() => import("./pages/vendor/ActiveHosts"));
 const RevenueBreakdown = lazy(() => import("./pages/vendor/RevenueBreakdown"));
+const VendorAffiliateAccounting = lazy(() => import("./pages/vendor/AffiliateAccounting"));
 const VendorRatings = lazy(() => import("./pages/vendor/Ratings"));
 const CreateVendorProfile = lazy(() => import("./pages/vendor/CreateProfile"));
 const VendorProfilePreview = lazy(() => import("./pages/vendor/ProfilePreview"));
@@ -110,6 +112,7 @@ const MessageModeration = lazy(() => import("./pages/admin/MessageModeration"));
 const FraudAlerts = lazy(() => import("./pages/admin/FraudAlerts"));
 const RefundRequests = lazy(() => import("./pages/admin/RefundRequests"));
 const TrustScoreMonitoring = lazy(() => import("./pages/admin/TrustScoreMonitoring"));
+const AffiliateSummary = lazy(() => import("./pages/admin/AffiliateSummary"));
 
 // Standalone pages
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -125,28 +128,44 @@ const PageLoader = () => (
 const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading, user } = useAuthContext();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  
+
   useEffect(() => {
     const checkAdmin = async () => {
-      if (!user) { setIsAdmin(false); return; }
-      const { data } = await import('@/integrations/supabase/client').then(m => 
-        m.supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' })
-      );
-      setIsAdmin(!!data);
+      if (isLoading) return;
+      if (!isAuthenticated || !user) {
+        setIsAdmin(false);
+        return;
+      }
+      try {
+        const { data, error } = await supabase.rpc('has_role', {
+          _user_id: user.id,
+          _role: 'admin',
+        });
+        if (error) {
+          console.error('has_role check failed', error);
+          setIsAdmin(false);
+          return;
+        }
+        setIsAdmin(!!data);
+      } catch (err) {
+        console.error('has_role check failed', err);
+        setIsAdmin(false);
+      }
     };
-    if (isAuthenticated) checkAdmin();
-  }, [user, isAuthenticated]);
-  
-  if (isLoading || isAdmin === null) {
+    checkAdmin();
+  }, [user, isAuthenticated, isLoading]);
+
+  if (isLoading || (isAuthenticated && isAdmin === null)) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
-  
+
   if (!isAuthenticated || !isAdmin) {
     return <Navigate to="/appview" replace />;
   }
-  
+
   return <>{children}</>;
 };
+
 
 const ProtectedHostRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading, role } = useAuthContext();
@@ -262,6 +281,7 @@ const AppRoutes = () => (
     <Route path="/admin/fraud-alerts" element={<ProtectedAdminRoute><FraudAlerts /></ProtectedAdminRoute>} />
     <Route path="/admin/refund-requests" element={<ProtectedAdminRoute><RefundRequests /></ProtectedAdminRoute>} />
     <Route path="/admin/trust-scores" element={<ProtectedAdminRoute><TrustScoreMonitoring /></ProtectedAdminRoute>} />
+    <Route path="/admin/affiliate" element={<ProtectedAdminRoute><AffiliateSummary /></ProtectedAdminRoute>} />
     
     {/* Host Routes */}
     <Route path="/auth/host" element={<Navigate to="/auth?role=host" replace />} />
@@ -348,6 +368,14 @@ const AppRoutes = () => (
       element={
         <ProtectedVendorRoute>
           <ActiveHosts />
+        </ProtectedVendorRoute>
+      } 
+    />
+    <Route 
+      path="/vendor/affiliate" 
+      element={
+        <ProtectedVendorRoute>
+          <VendorAffiliateAccounting />
         </ProtectedVendorRoute>
       } 
     />

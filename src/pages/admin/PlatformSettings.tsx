@@ -307,6 +307,23 @@ const PlatformSettings = () => {
           </Link>
 
           {/* Trust Score Monitoring Link */}
+          <Link to="/admin/affiliate">
+            <Card className="p-4 hover:bg-muted/40 transition-colors cursor-pointer">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-muted">
+                    <Percent className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Affiliate summary</p>
+                    <p className="text-xs text-muted-foreground">Host commissions and stackd fees</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </Card>
+          </Link>
+
           <Link to="/admin/trust-scores">
             <Card className="p-4 hover:bg-muted/50 transition-colors cursor-pointer group">
               <div className="flex items-center gap-4">

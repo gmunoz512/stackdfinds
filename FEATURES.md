@@ -24,7 +24,7 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ **Vendor management** restyled cream/pine (no gradient header); links to marketplace; graceful empty states if link tables are missing.
 - ✅ **og meta** in `index.html` points at `https://stackdfinds.com` (was chatgpt.site).
 - 🟡 Migration `supabase/migrations/20261105010000_phase2_commission_tiers.sql` — CHECK constraint + comment; **German must review/apply** (Lovable-controlled Supabase). UI works without it.
-- ⏳ Host guide builder (Phase 3) + text share (Phase 4); guest booking polish (Phase 5); affiliate ledger (Phase 6).
+- ✅ Host guide builder, text share, guest booking, and affiliate ledger land in later phase sections below.
 
 ## Phase 3 — host guides (branch `phase3-host-guides`)
 - ✅ **Guide builder** `/host/guide` (new "Guide" tab in host bottom nav): property profile (name e.g. Casa Sol, area, photo uploaded to `vendor-photos/<user id>/property-*`), list of vendors the host added in `/host/marketplace`, move up/down to order, section per vendor (Tours & adventures, Water & beach, Food & drink, Wellness, Culture, Nightlife, Getting around, Other), optional tip per vendor (280 chars). Save writes `profiles.recommendations`.
@@ -52,3 +52,14 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Payment step: "Sign in or create an account", or "Continue as guest" with name + email. Payment uses the existing Stripe Checkout (test mode only). If guest checkout isn't available yet, the page says "Guest checkout is coming soon… Nothing was charged."
 - Guest checkout needs migration 20261105020000_phase5_guest_bookings.sql plus redeploying create-booking-checkout and stripe-webhook. Neither is done yet.
 - Sample listings are gone: old /experience/:id and /book/:id sample links show "This listing isn't available". Wishlists and guides no longer show mock experiences or restaurants.
+
+## Phase 6 — affiliate accounting (live on stackdfinds.com)
+- ✅ **Commission math** stays in `src/lib/commissions.ts` (host 10/11/12% → stackd 3%; 15% → 2.5%; 17% → 2%). Vendor pays stackd's cut; host keeps the full commission.
+- ✅ **Ledger helpers** in `src/lib/affiliateAccounting.ts`: map booking payment/payout/status → pending / confirmed / paid (plus refunded / failed); summarize host, vendor, and stackd totals from existing `bookings` rows. Read-only — no payouts or money movement.
+- ✅ **Host earnings** `/host/earnings`: attributed bookings (`host_user_id`), commission earned, status chips, totals by pending/confirmed/paid. Empty state when none. Linked from host dashboard + profile.
+- ✅ **Vendor affiliate fees** `/vendor/affiliate`: per booking owed to host, owed to stackd, vendor keeps; totals. Linked from vendor dashboard revenue tile + profile. `/vendor/revenue` still shows by-service revenue.
+- ✅ **Admin affiliate summary** `/admin/affiliate` (admin role via `has_role`): booking volume, stackd fees, host commissions, vendor payouts, attributed count. Linked from admin settings.
+- ✅ **Payout history** host + vendor: dollar amounts (fixed incorrect /100), status via the same ledger classifier. No fake sample rows shipped.
+- ✅ Booking dates render as local calendar days (no UTC off-by-one).
+- ✅ Tests: `tests/affiliate/affiliateAccounting.test.ts` + existing `tests/commissions/*`.
+- ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run; real payout release remains behind Stripe connect + release-payouts (unchanged).
