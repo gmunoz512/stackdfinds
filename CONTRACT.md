@@ -13,3 +13,9 @@
 - Guide entry order (`position`) defines the Top 8: positions 0-7 are the Top 8. Tiles link to `/vendor/:id/book?host=<hostUserId>`.
 
 - Share links: `/guide/<hostId>?host=<hostId>[&guest=<name>]` (src/lib/shareGuide.ts). `guest` is display-only (max 40 chars, no markup) and is never stored. No SMS service is called.
+
+## Booking & attribution (Phase 5)
+- Host attribution: `src/lib/guestBooking.ts` is the only reader and writer of `stackd_host_ref`. A `?host=` in the URL beats the stored value.
+- Pricing is computed server-side in create-booking-checkout (the tier is priced there). The client summary is only for display. Guests pay $0 in fees. The vendor pays stackd's cut, and the host keeps the full commission.
+- Stripe stays in test mode. No live charges until the owner configures them.
+- Schema changes ship as migration files only. Never apply them to the shared Supabase project from an agent.

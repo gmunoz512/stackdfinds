@@ -34,29 +34,44 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id, email: user.email });
-
-    const { 
-      experienceName, 
-      vendorName, 
-      date, 
-      time, 
-      guests, 
+    const body = await req.json();
+    const {
+      experienceName,
+      vendorName,
+      date,
+      time,
+      guests,
       totalPrice,
       originalPrice,
       vendorId,
       hostId,
+      tierIndex,
+      guestName,
+      guestEmail,
       promoCode,
       discountAmount
-    } = await req.json();
+    } = body;
+
+    // Signed-in user, or (Phase 5) guest checkout with name + email.
+    // Guest bookings need migration 20261105020000_phase5_guest_bookings.sql.
+    let user: { id: string | null; email: string };
+    const authHeader = req.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "") ?? "";
+    const { data: userData } = token
+      ? await supabaseClient.auth.getUser(token)
+      : { data: { user: null } };
+    if (userData?.user?.email) {
+      user = { id: userData.user.id, email: userData.user.email };
+      logStep("User authenticated", { userId: user.id });
+    } else {
+      const email = typeof guestEmail === "string" ? guestEmail.trim() : "";
+      const name = typeof guestName === "string" ? guestName.trim() : "";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || name.length < 2) {
+        throw new Error("Sign in, or add your name and email to book as a guest");
+      }
+      user = { id: null, email };
+      logStep("Guest checkout");
+    }
 
     logStep("Booking details received", { experienceName, vendorName, date, time, guests, totalPrice, vendorId, hostId });
 
@@ -67,7 +82,7 @@ serve(async (req) => {
     // Get vendor profile with commission settings AND price
     const { data: vendorProfile, error: vendorError } = await supabaseAdmin
       .from("vendor_profiles")
-      .select("stripe_account_id, stripe_onboarding_complete, commission_percentage, price_per_person, name")
+      .select("stripe_account_id, stripe_onboarding_complete, commission_percentage, price_per_person, price_tiers, name")
       .eq("id", vendorId)
       .single();
 
@@ -78,7 +93,11 @@ serve(async (req) => {
     logStep("Vendor profile fetched", { id: vendorId, name: vendorProfile.name, price: vendorProfile.price_per_person });
 
     // SECURITY: Calculate total price server-side
-    let calculatedTotal = (vendorProfile.price_per_person || 0) * guests;
+    // Use the selected price tier when one was picked, else the base price.
+    const tiers = Array.isArray(vendorProfile.price_tiers) ? vendorProfile.price_tiers : [];
+    const tier = Number.isInteger(tierIndex) && tierIndex >= 0 && tierIndex < tiers.length ? tiers[tierIndex] : null;
+    const unitPrice = Number(tier?.price ?? vendorProfile.price_per_person ?? 0);
+    let calculatedTotal = unitPrice * guests;
     let finalDiscountAmount = 0;
 
     if (promoCode) {
@@ -200,8 +219,9 @@ serve(async (req) => {
         date: date,
         time: time,
         guests: guests.toString(),
-        user_id: user.id,
+        user_id: user.id ?? "",
         guest_email: user.email,
+        guest_name: user.id ? "" : String(guestName ?? "").slice(0, 120),
         host_user_id: validHostId || "",
         platform_fee_cents: platformFeeCents.toString(),
         vendor_payout_cents: vendorPayoutCents.toString(),

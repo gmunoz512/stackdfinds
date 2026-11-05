@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { useBooking } from "@/contexts/BookingContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useRequireSignIn } from "@/hooks/useRequireSignIn";
+import { DEFAULT_TIME_SLOTS, formatUsd, priceSummary, resolveHostAttribution } from "@/lib/guestBooking";
 
 interface PriceTier {
   name: string;
@@ -49,7 +49,6 @@ const VendorBookingForm = () => {
   const navigate = useNavigate();
   const { updateBookingData } = useBooking();
   const { toast } = useToast();
-  const { requireSignIn } = useRequireSignIn();
   
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +61,8 @@ const VendorBookingForm = () => {
   });
 
   // Get hostId from URL if guest came from a host's guide
-  const hostId = searchParams.get('host');
+  // URL ?host= wins; otherwise the host remembered from an earlier guide visit.
+  const [hostId] = useState<string | null>(() => resolveHostAttribution(searchParams.get('host')));
 
   useEffect(() => {
     if (id) {
@@ -168,14 +168,15 @@ const VendorBookingForm = () => {
   const hasTiers = vendor.price_tiers && vendor.price_tiers.length > 0;
   const selectedTier = hasTiers ? vendor.price_tiers![selectedTierIndex] : null;
   const pricePerPerson = selectedTier ? selectedTier.price : (vendor.price_per_person || 0);
-  const subtotal = pricePerPerson * formData.guests;
+  const summary = priceSummary(pricePerPerson, formData.guests);
+  const subtotal = summary.subtotal;
   const categoryIcon = categoryIcons[vendor.category] || categoryIcons['default'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!requireSignIn("book")) return;
-    
+    // Guests can pick details signed out. Sign-in or guest details happen on the next step.
+
     if (!formData.date || !formData.time) {
       toast({
         title: "Missing information",
@@ -194,6 +195,7 @@ const VendorBookingForm = () => {
       time: formData.time,
       guests: formData.guests,
       pricePerPerson: pricePerPerson,
+      tierIndex: selectedTier ? selectedTierIndex : undefined,
       totalPrice: subtotal,
       hostId: hostId || undefined, // Pass hostId for commission tracking
     });
@@ -315,14 +317,9 @@ const VendorBookingForm = () => {
                   <SelectValue placeholder="Choose a time" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="9:00 AM">9:00 AM</SelectItem>
-                  <SelectItem value="10:00 AM">10:00 AM</SelectItem>
-                  <SelectItem value="11:00 AM">11:00 AM</SelectItem>
-                  <SelectItem value="12:00 PM">12:00 PM</SelectItem>
-                  <SelectItem value="2:00 PM">2:00 PM</SelectItem>
-                  <SelectItem value="3:00 PM">3:00 PM</SelectItem>
-                  <SelectItem value="4:00 PM">4:00 PM</SelectItem>
-                  <SelectItem value="6:00 PM">6:00 PM</SelectItem>
+                  {DEFAULT_TIME_SLOTS.map((slot) => (
+                    <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -362,20 +359,29 @@ const VendorBookingForm = () => {
               </Card>
             </div>
 
-            {/* Subtotal */}
-            <Card className="p-4 bg-muted/30">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    ${pricePerPerson} × {formData.guests} {formData.guests === 1 ? 'guest' : 'guests'}
-                  </p>
-                  <p className="text-lg font-bold mt-1">Total: ${subtotal}</p>
+            {/* Price summary */}
+            <Card className="p-4 bg-muted/30" aria-live="polite">
+              <h3 className="font-semibold mb-2">Price summary</h3>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {formatUsd(pricePerPerson)} × {formData.guests} {formData.guests === 1 ? 'guest' : 'guests'}
+                  </span>
+                  <span>{formatUsd(subtotal)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Service fees</span>
+                  <span>$0</span>
+                </div>
+                <div className="flex justify-between pt-2 mt-1 border-t font-semibold text-base">
+                  <span>Total</span>
+                  <span>{formatUsd(subtotal)}</span>
                 </div>
               </div>
             </Card>
 
             <Button type="submit" variant="gradient" className="w-full" size="lg">
-              Continue to Payment
+              Continue
             </Button>
           </form>
         </div>

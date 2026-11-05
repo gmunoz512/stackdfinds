@@ -11,6 +11,7 @@ export interface BookingData {
   guests: number;
   pricePerPerson: number;
   totalPrice: number;
+  tierIndex?: number; // Selected vendor price tier, priced server-side
   hostId?: string; // The host who referred the guest (for commission tracking)
   promoCode?: string;
   discountAmount?: number;

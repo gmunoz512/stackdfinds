@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { PublicGuideView, type GuideCardData } from '@/components/guide/PublicGuideView';
 import { supabase } from '@/integrations/supabase/client';
-import { mockRestaurants } from '@/data/mockRestaurants';
 import { resolveGoogleRating } from '@/lib/googleRating';
 import {
   defaultGuideCategory,
@@ -85,22 +84,9 @@ const GuestGuide = () => {
   const sections = useMemo(() => {
     if (!guide) return { top: [] as GuideCardRow[], more: [] as GuideCardRow[] };
     const cards: GuideCardRow[] = guide.entries.flatMap((entry): GuideCardRow[] => {
-      if (entry.type === 'restaurant') {
-        const r = mockRestaurants.find((x) => x.id === entry.id);
-        if (!r) return [];
-        return [{
-          id: `restaurant:${r.id}`,
-          name: r.name,
-          subtitle: r.cuisine,
-          photo: r.photos[0] ?? null,
-          rating: resolveGoogleRating({ place: r }),
-          avgCost: null,
-          note: entry.note,
-          href: bookingHrefFor(entry, hostId ?? ''),
-          category: entry.category,
-          fallback: 'Food & drink',
-        }];
-      }
+      // Restaurant entries pointed at built-in sample data; skip them until
+      // restaurants come from a real source. Vendors are the guide.
+      if (entry.type === 'restaurant') return [];
       const v = vendors.get(entry.id);
       if (!v) return [];
       return [{

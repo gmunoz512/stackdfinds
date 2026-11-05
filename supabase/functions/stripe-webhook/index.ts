@@ -94,8 +94,10 @@ serve(async (req) => {
         platformFeeCents, vendorPayoutCents, hostPayoutCents, hostUserId, isEscrow
       });
 
-      if (!userId) {
-        logStep("No user_id in metadata, skipping booking creation");
+      const guestEmailMeta = metadata.guest_email || null;
+      const guestNameMeta = metadata.guest_name || null;
+      if (!userId && !guestEmailMeta) {
+        logStep("No user_id or guest email in metadata, skipping booking creation");
         return new Response(JSON.stringify({ received: true, skipped: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -122,7 +124,9 @@ serve(async (req) => {
       const { data: booking, error: insertError } = await supabaseAdmin
         .from("bookings")
         .insert({
-          user_id: userId,
+          user_id: userId || null,
+          // Guest checkout (Phase 5). Needs migration 20261105020000_phase5_guest_bookings.sql.
+          ...(userId ? {} : { guest_email: guestEmailMeta, guest_name: guestNameMeta }),
           vendor_profile_id: vendorId || null,
           stripe_session_id: session.id,
           stripe_payment_intent_id: session.payment_intent as string,
@@ -152,7 +156,9 @@ serve(async (req) => {
       logStep("Booking created (ESCROW - confirmed, funds held)", { bookingId: booking.id });
 
       // Send notifications (same as before)
-      const { data: userDataAuth } = await supabaseAdmin.auth.admin.getUserById(userId);
+      const { data: userDataAuth } = userId
+        ? await supabaseAdmin.auth.admin.getUserById(userId)
+        : { data: { user: null } };
       const guestEmail = userDataAuth?.user?.email || metadata.guest_email;
 
       // Admin notification

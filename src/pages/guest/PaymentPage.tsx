@@ -9,13 +9,15 @@ import { useBooking } from "@/contexts/BookingContext";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { Label } from "@/components/ui/label";
+import { getRememberedHost, validateGuestDetails } from "@/lib/guestBooking";
 
 const PaymentPage = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { bookingData, updateBookingData } = useBooking();
+  const { bookingData, updateBookingData, guestData, updateGuestData } = useBooking();
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading, user } = useAuthContext();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,9 +26,12 @@ const PaymentPage = () => {
   const [promoApplied, setPromoApplied] = useState(!!bookingData.promoCode);
   const [promoError, setPromoError] = useState('');
   const [checkoutUnavailable, setCheckoutUnavailable] = useState(false);
+  const [guestMode, setGuestMode] = useState(Boolean(guestData.email));
+  const [guestErrors, setGuestErrors] = useState<{ fullName?: string; email?: string }>({});
+  const [guestCheckoutOff, setGuestCheckoutOff] = useState(false);
 
   // Get hostId from URL or booking context
-  const hostId = searchParams.get('host') || bookingData.hostId;
+  const hostId = searchParams.get('host') || bookingData.hostId || getRememberedHost();
 
   // Calculate the final price to display
   const displayPrice = bookingData.finalPrice ?? bookingData.totalPrice;
@@ -92,13 +97,13 @@ const PaymentPage = () => {
 
   const handleStripeCheckout = async () => {
     if (!isAuthenticated) {
-      toast({
-        title: "Login required",
-        description: "Please log in to complete your booking",
-        variant: "destructive",
-      });
-      navigate(signInPath(`${location.pathname}${location.search}`));
-      return;
+      if (!guestMode) {
+        navigate(signInPath(`${location.pathname}${location.search}`));
+        return;
+      }
+      const errors = validateGuestDetails(guestData);
+      setGuestErrors(errors);
+      if (Object.keys(errors).length > 0) return;
     }
 
     if (!bookingData.experienceName || bookingData.totalPrice <= 0) {
@@ -125,6 +130,9 @@ const PaymentPage = () => {
           originalPrice: bookingData.totalPrice,
           vendorId: id,
           hostId: hostId || null,
+          tierIndex: bookingData.tierIndex ?? null,
+          guestName: isAuthenticated ? null : guestData.fullName.trim(),
+          guestEmail: isAuthenticated ? null : guestData.email.trim(),
           promoCode: bookingData.promoCode || null,
           discountAmount: bookingData.discountAmount || 0,
         },
@@ -139,10 +147,16 @@ const PaymentPage = () => {
       }
     } catch (error) {
       console.error('Checkout error:', error);
+      setIsProcessing(false);
+      if (!isAuthenticated) {
+        // The live checkout function still needs an account. Say so plainly.
+        setGuestCheckoutOff(true);
+        return;
+      }
       setCheckoutUnavailable(true);
       toast({
         title: "Checkout unavailable",
-        description: "Stripe checkout needs test keys in this environment. You can still preview the confirmation screen.",
+        description: "Payments aren't switched on here yet. Nothing was charged.",
         variant: "destructive",
       });
       setIsProcessing(false);
@@ -329,6 +343,44 @@ const PaymentPage = () => {
             </Card>
           )}
 
+          {/* Who's booking */}
+          {!isAuthenticated && (
+            <Card className="p-4 space-y-4">
+              <h3 className="font-semibold">Who's booking?</h3>
+              <Button asChild variant="outline" className="w-full">
+                <Link to={signInPath(`${location.pathname}${location.search}`)}>Sign in or create an account</Link>
+              </Button>
+              {!guestMode ? (
+                <Button variant="ghost" className="w-full" onClick={() => setGuestMode(true)}>
+                  Continue as guest
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">Or book as a guest. We'll send your confirmation here.</p>
+                  <div className="space-y-1">
+                    <Label htmlFor="guest-name">Full name</Label>
+                    <Input id="guest-name" autoComplete="name" value={guestData.fullName}
+                      onChange={(e) => updateGuestData({ fullName: e.target.value })}
+                      aria-invalid={Boolean(guestErrors.fullName)} />
+                    {guestErrors.fullName && <p className="text-sm text-destructive">{guestErrors.fullName}</p>}
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="guest-email">Email</Label>
+                    <Input id="guest-email" type="email" autoComplete="email" inputMode="email" value={guestData.email}
+                      onChange={(e) => updateGuestData({ email: e.target.value })}
+                      aria-invalid={Boolean(guestErrors.email)} />
+                    {guestErrors.email && <p className="text-sm text-destructive">{guestErrors.email}</p>}
+                  </div>
+                </div>
+              )}
+              {guestCheckoutOff && (
+                <p className="text-sm rounded-lg border border-brand/30 bg-brand/5 p-3" role="status">
+                  Guest checkout is coming soon. For now, sign in or create an account to pay. Nothing was charged.
+                </p>
+              )}
+            </Card>
+          )}
+
           {/* Stripe Checkout Button */}
           <div className="space-y-4">
             <Button 
@@ -344,18 +396,18 @@ const PaymentPage = () => {
                   Redirecting to checkout...
                 </>
               ) : (
-                <>Proceed to Payment - ${displayPrice.toFixed(2)}</>
+                <>{!isAuthenticated && !guestMode ? 'Sign in to pay' : `Pay $${displayPrice.toFixed(2)}`}</>
               )}
             </Button>
 
-            {(checkoutUnavailable || !isAuthenticated) && (
+            {checkoutUnavailable && (
               <Button
                 variant="outline"
                 className="w-full"
                 size="lg"
                 onClick={openConfirmationPreview}
               >
-                View confirmation preview
+                Preview the confirmation (no payment)
               </Button>
             )}
 
@@ -365,18 +417,6 @@ const PaymentPage = () => {
             </div>
           </div>
 
-          {/* Not logged in prompt */}
-          {!isAuthenticated && (
-            <Card className="p-4 border-brand/30 bg-brand/5">
-              <p className="text-sm text-center">
-                Please{" "}
-                <Link to={signInPath(`${location.pathname}${location.search}`)} className="text-primary underline font-medium">
-                  log in
-                </Link>{" "}
-                to complete your booking
-              </p>
-            </Card>
-          )}
         </div>
       </div>
     </div>
