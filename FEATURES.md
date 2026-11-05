@@ -33,3 +33,9 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ **No schema change**: guide data reuses `profiles.recommendations` (JSON array; property stored as a `type:"property"` item; entries gain optional `note`, `category`, `position`). Public read goes through the existing `host-guide` edge function. Older readers ignore the extra fields.
 - ✅ **Fixes**: guest "add to guide" (ProfileContext) no longer wipes property/notes/order; host onboarding card no longer overwrites the guide array, no longer puts the property name into `full_name`, and only stores name + city publicly (address/Airbnb URL were being exposed through the public guide JSON).
 - ⏳ Text sharing with guest names (Phase 4); guide hearts synced to an account (needs a wishlist decision); restaurants in the guide builder (guest-side add still works).
+
+### Host commission visibility + Top 8 profile (Phase 3 update)
+- /host/marketplace cards show "N% commission" and "You earn $X per $100" (from src/lib/commissions.ts); sort by commission (highest/lowest). Missing value shows "Commission not set".
+- /host/guide rows show the same badge. First 8 picks are labelled "Top 8"; the rest are "More picks". Reorder with the arrows.
+- /guide/:hostId is a picture-first host profile: property photo, name, area, "Picked by", then a Top 8 photo grid. Each tile goes straight to /vendor/:id/book?host=<hostId>. Picks past 8 show in a smaller "More picks" list.
+- Commission is never shown on the public guide (guarded by a test).

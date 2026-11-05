@@ -225,3 +225,16 @@ export function toggleGuideSave(
   }
   return saves;
 }
+
+export const TOP_PICKS = 8;
+
+/** Host profile layout: the first 8 picks are the "Top 8", the rest are "More picks". */
+export function splitTopPicks<T>(items: T[], size = TOP_PICKS): { top: T[]; more: T[] } {
+  return { top: items.slice(0, size), more: items.slice(size) };
+}
+
+/** Where a guide tile leads: straight to booking for vendors, always with the host ref. */
+export function bookingHrefFor(entry: { id: string; type: GuideEntryType }, hostId: string): string {
+  const base = entry.type === 'restaurant' ? `/restaurant/${entry.id}` : `/vendor/${entry.id}/book`;
+  return withHostRef(base, hostId);
+}

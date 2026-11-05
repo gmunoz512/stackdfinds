@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowDown, ArrowLeft, ArrowUp, Camera, ExternalLink, Loader2, Store, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import HostBottomNav from '@/components/HostBottomNav';
+import { HostCommissionBadge } from '@/components/host/HostCommissionBadge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,6 +22,7 @@ import {
   moveEntry,
   parseGuide,
   serializeGuide,
+  TOP_PICKS,
   type GuideCategory,
   type GuideEntry,
   type GuideProperty,
@@ -31,6 +33,7 @@ export interface BuilderVendor {
   name: string;
   category: string | null;
   photo: string | null;
+  commission: number | null;
 }
 
 export interface BuilderRow {
@@ -88,7 +91,7 @@ export function GuideEditor({
           </div>
           {guideUrl && (
             <Link to={guideUrl} className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
-              View public guide
+              View your profile
               <ExternalLink className="h-3.5 w-3.5" />
             </Link>
           )}
@@ -168,7 +171,20 @@ export function GuideEditor({
           </Card>
         ) : (
           rows.map((row, i) => (
-            <Card key={row.vendor.id} className="space-y-3 p-3">
+            <div key={row.vendor.id} className="space-y-3">
+            {i === 0 && (
+              <div>
+                <p className="text-sm font-semibold text-foreground">Top {TOP_PICKS}</p>
+                <p className="text-xs text-muted-foreground">Your first {TOP_PICKS} picks show as big photo tiles on your profile. Use the arrows to reorder.</p>
+              </div>
+            )}
+            {i === TOP_PICKS && (
+              <div className="pt-2">
+                <p className="text-sm font-semibold text-foreground">More picks</p>
+                <p className="text-xs text-muted-foreground">These show in a smaller list below your Top {TOP_PICKS}.</p>
+              </div>
+            )}
+            <Card className={i < TOP_PICKS ? 'space-y-3 border-primary/40 p-3' : 'space-y-3 p-3'}>
               <div className="flex items-center gap-3">
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted">
                   {row.vendor.photo ? (
@@ -179,10 +195,11 @@ export function GuideEditor({
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold text-foreground">
-                    <span className="mr-1.5 text-muted-foreground">{i + 1}.</span>
+                    <span className="mr-1.5 text-muted-foreground">{i < TOP_PICKS ? `#${i + 1}` : `${i + 1}.`}</span>
                     {row.vendor.name}
                   </p>
                   <p className="truncate text-xs text-muted-foreground">{row.vendor.category || 'Local business'}</p>
+                  <HostCommissionBadge commission={row.vendor.commission} showEarnings className="mt-1 items-start" />
                 </div>
                 <div className="flex shrink-0 gap-1">
                   <Button size="icon" variant="ghost" className="h-8 w-8" disabled={i === 0} onClick={() => onRowsChange(moveEntry(rows, i, i - 1))} aria-label={`Move ${row.vendor.name} up`}>
@@ -215,6 +232,7 @@ export function GuideEditor({
                 />
               </div>
             </Card>
+            </div>
           ))
         )}
         {hiddenCount > 0 && (
@@ -267,10 +285,10 @@ const HostGuideBuilder = () => {
       if (ids.length) {
         const { data: vrows } = await supabase
           .from('vendor_profiles')
-          .select('id,name,category,photos')
+          .select('id,name,category,photos,commission_percentage')
           .in('id', ids)
           .eq('is_published', true);
-        vendors = (vrows || []).map((v) => ({ id: v.id, name: v.name, category: v.category, photo: v.photos?.[0] ?? null }));
+        vendors = (vrows || []).map((v) => ({ id: v.id, name: v.name, category: v.category, photo: v.photos?.[0] ?? null, commission: v.commission_percentage ?? null }));
       }
       return { raw, guide, linkedIds, vendors, hiddenCount: ids.length - vendors.length };
     },

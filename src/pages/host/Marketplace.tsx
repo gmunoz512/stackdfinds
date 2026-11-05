@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Check, Heart, Loader2, Percent, Search, Store } from 'lucide-react';
+import { ArrowLeft, Check, Heart, Loader2, Search, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import HostBottomNav from '@/components/HostBottomNav';
 import { GoogleRating } from '@/components/GoogleRating';
-import { Badge } from '@/components/ui/badge';
+import { HostCommissionBadge } from '@/components/host/HostCommissionBadge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,8 @@ import { useSmartBack } from '@/hooks/use-smart-back';
 import {
   MARKETPLACE_CATEGORY_FILTERS,
   marketplaceBucketFor,
+  sortByCommission,
+  type CommissionSort,
   type MarketplaceCategoryFilter,
 } from '@/lib/commissions';
 import { resolveGoogleRating } from '@/lib/googleRating';
@@ -50,6 +52,7 @@ const HostMarketplace = () => {
   const { user } = useAuthContext();
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState<MarketplaceCategoryFilter>('All');
+  const [sort, setSort] = useState<CommissionSort>('highest');
 
   const { data: linkedIds = new Set<string>(), isLoading: isLoadingLinks } = useQuery({
     queryKey: ['hostLinkedVendorIds', user?.id],
@@ -103,11 +106,12 @@ const HostMarketplace = () => {
   });
 
   const filteredVendors = useMemo(() => {
-    return vendors.filter((vendor) => {
+    const inCategory = vendors.filter((vendor) => {
       if (category === 'All') return true;
       return marketplaceBucketFor(vendor.category) === category;
     });
-  }, [vendors, category]);
+    return sortByCommission(inCategory, sort);
+  }, [vendors, category, sort]);
 
   const addVendor = useMutation({
     mutationFn: async (vendorProfileId: string) => {
@@ -181,6 +185,21 @@ const HostMarketplace = () => {
             className="pl-10"
             aria-label="Search vendors"
           />
+        </div>
+
+        <div className="flex items-center justify-between gap-3">
+          <label htmlFor="commission-sort" className="text-sm text-muted-foreground">
+            Sort by commission
+          </label>
+          <select
+            id="commission-sort"
+            value={sort}
+            onChange={(event) => setSort(event.target.value as CommissionSort)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="highest">Highest first</option>
+            <option value="lowest">Lowest first</option>
+          </select>
         </div>
 
         <div className="-mx-4 overflow-x-auto px-4">
@@ -273,11 +292,13 @@ const HostMarketplace = () => {
                               (vendor.listing_type === 'restaurant' ? 'Restaurant' : 'Experience')}
                           </p>
                         </div>
-                        <Badge variant="secondary" className="shrink-0 gap-1">
-                          <Percent className="h-3 w-3" />
-                          {vendor.commission_percentage}%
-                        </Badge>
                       </div>
+
+                      <HostCommissionBadge
+                        commission={vendor.commission_percentage}
+                        showEarnings
+                        className="flex-row flex-wrap items-center gap-2"
+                      />
 
                       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <GoogleRating

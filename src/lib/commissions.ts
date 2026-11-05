@@ -136,3 +136,34 @@ export function marketplaceBucketFor(category: string | null | undefined): Marke
   }
   return 'Experiences';
 }
+
+/** Host-facing label for a vendor's affiliate commission. Never render on guest pages. */
+export function hostCommissionLabel(value: unknown): string {
+  const n = typeof value === 'string' ? Number(value) : typeof value === 'number' ? value : NaN;
+  if (!Number.isFinite(n) || n <= 0) return 'Commission not set';
+  return `${n}% commission`;
+}
+
+/** What the host earns on a sample booking, or null when the vendor has no valid tier. */
+export function hostEarningsOn(value: unknown, bookingTotal = 100): number | null {
+  const pct = normalizeHostCommission(value);
+  if (pct == null) return null;
+  return previewBookingSplit(bookingTotal, pct).hostEarns;
+}
+
+export type CommissionSort = 'highest' | 'lowest';
+
+/** Sort vendors by commission; vendors without one always go last. */
+export function sortByCommission<T extends { commission_percentage: number | null }>(
+  list: T[],
+  order: CommissionSort,
+): T[] {
+  return [...list].sort((a, b) => {
+    const av = a.commission_percentage;
+    const bv = b.commission_percentage;
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    return order === 'highest' ? bv - av : av - bv;
+  });
+}

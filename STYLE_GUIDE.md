@@ -13,3 +13,7 @@
 
 - Public guide: serif title, small uppercase "Local guide" eyebrow, 18px-radius cards with photo 4:3, heart in a cream circle top-right, host tip in a muted rounded box, one solid pine "See details" pill per card. No gradient footers or sparkle CTAs.
 - Builder: one card per pick; order with arrow buttons (not drag) so it works in the phone frame; native select for sections.
+
+### Host commission badge / Top 8 tiles
+- Use `HostCommissionBadge` (src/components/host) on host-only screens. Never on guest screens.
+- Top 8 tiles: 3:4 photo, 18px radius, dark bottom gradient with white name, category and rating. 2 columns on phones, 4 on wide screens.

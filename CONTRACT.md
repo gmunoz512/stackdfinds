@@ -8,3 +8,6 @@
 6. No hardcoded sample hosts/vendors in production paths; `src/data/mockData.ts` is for demos only.
 7. Host guide JSON (`profiles.recommendations`) is public via `host-guide`: only write name/area/photo + vendor ids/notes/sections/positions there, through `serializeGuide` (src/lib/hostGuide.ts). Never write addresses, phone numbers or URLs other than https photo links.
 8. Links leaving a guide must go through `withHostRef` so the `host` param is kept for commission.
+
+- Host-facing commission reads `vendor_profiles.commission_percentage`; guest pages must not render it.
+- Guide entry order (`position`) defines the Top 8: positions 0-7 are the Top 8. Tiles link to `/vendor/:id/book?host=<hostUserId>`.

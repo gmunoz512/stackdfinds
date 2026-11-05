@@ -8,7 +8,8 @@ import { mockRestaurants } from '@/data/mockRestaurants';
 import { resolveGoogleRating } from '@/lib/googleRating';
 import {
   defaultGuideCategory,
-  groupByCategory,
+  bookingHrefFor,
+  splitTopPicks,
   parseGuide,
   readGuideSaves,
   toggleGuideSave,
@@ -79,7 +80,7 @@ const GuestGuide = () => {
   }, [hostId]);
 
   const sections = useMemo(() => {
-    if (!guide) return [];
+    if (!guide) return { top: [] as GuideCardRow[], more: [] as GuideCardRow[] };
     const cards: GuideCardRow[] = guide.entries.flatMap((entry): GuideCardRow[] => {
       if (entry.type === 'restaurant') {
         const r = mockRestaurants.find((x) => x.id === entry.id);
@@ -92,7 +93,7 @@ const GuestGuide = () => {
           rating: resolveGoogleRating({ place: r }),
           avgCost: null,
           note: entry.note,
-          href: `/restaurant/${r.id}`,
+          href: bookingHrefFor(entry, hostId ?? ''),
           category: entry.category,
           fallback: 'Food & drink',
         }];
@@ -107,13 +108,13 @@ const GuestGuide = () => {
         rating: resolveGoogleRating({ googleRating: v.google_rating }),
         avgCost: v.price_per_person,
         note: entry.note,
-        href: `/vendor/${v.id}`,
+        href: bookingHrefFor(entry, hostId ?? ''),
         category: entry.category,
         fallback: defaultGuideCategory(v.category),
       }];
     });
-    return groupByCategory(cards, (c) => c.fallback);
-  }, [guide, vendors]);
+    return splitTopPicks(cards);
+  }, [guide, vendors, hostId]);
 
   if (isLoading) {
     return (
@@ -139,7 +140,8 @@ const GuestGuide = () => {
       hostId={hostId}
       hostFirstName={hostName?.trim().split(/\s+/)[0] || null}
       property={guide?.property ?? null}
-      sections={sections}
+      top={sections.top}
+      more={sections.more}
       saves={saves}
       onToggleSave={(id) => setSaves(new Set(toggleGuideSave(deviceStorage(), id)))}
     />

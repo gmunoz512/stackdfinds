@@ -104,3 +104,15 @@ describe('hostGuide', () => {
     expect(readGuideSaves(null).size).toBe(0);
   });
 });
+
+import { bookingHrefFor, splitTopPicks } from '@/lib/hostGuide';
+describe('top 8 profile', () => {
+  it('splits first 8 from the rest', () => {
+    const { top, more } = splitTopPicks(Array.from({ length: 11 }, (_, i) => i));
+    expect(top).toHaveLength(8);
+    expect(more).toEqual([8, 9, 10]);
+  });
+  it('tiles go straight to booking with the host ref', () => {
+    expect(bookingHrefFor({ id: 'v1', type: 'vendor' }, 'h1')).toBe('/vendor/v1/book?host=h1');
+  });
+});
