@@ -36,11 +36,10 @@ export default function ForVendors() {
   ];
 
   const steps = [
-    { num: "01", title: "Create your profile", desc: "Showcase your business with photos, pricing, and the details travelers need." },
-    { num: "02", title: "Choose your commission", desc: "Set a rate that works for your business while giving hosts a reason to recommend you." },
-    { num: "03", title: "Get added to guidebooks", desc: "Hosts can discover your profile and add your business to their personal guest recommendations." },
-    { num: "04", title: "Receive bookings", desc: "Travelers purchase through the marketplace and you keep more of each booking."
-    }
+    { num: "01", title: "Create your business profile", desc: "Show travelers who you are with photos, pricing, and the details they need." },
+    { num: "02", title: "List your experiences and services", desc: "Add what guests can book, and pause or edit listings any time." },
+    { num: "03", title: "Choose the commission you offer hosts", desc: "Set the affiliate rate hosts earn when their guests book you." },
+    { num: "04", title: "Receive bookings through stackd", desc: "Guests pay on stackd, you fulfill the booking, and the host earns their share." }
   ];
 
   const businessTypes = [
@@ -52,8 +51,8 @@ export default function ForVendors() {
   return (
     <PartnerPage
       audience="For vendors"
-      title="Reach more travelers without giving away your margin."
-      description="stackd was built with short-term rental hosts in mind. That means we understand the value of every booking and are designing a lower-commission marketplace for local vendors."
+      title="Your business. More guests. More bookings."
+      description="List your services, connect with local hosts, and turn their recommendations into paying customers."
       signup="/signup/vendor"
       featuresTitle="A better marketplace for local businesses"
       ctaTitle="Ready to grow your business?"

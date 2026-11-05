@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getOAuthPrefill } from "@/lib/oauth";
 import { ArrowLeft, User, LogOut } from "lucide-react";
 import { profileSchema, type ProfileFormData } from "@/lib/validations";
 import { PageTransition } from "@/components/PageTransition";
@@ -65,16 +66,18 @@ const Profile = () => {
 
       if (error && error.code !== "PGRST116") throw error;
       
+      const prefill = getOAuthPrefill(user);
       if (data) {
         form.reset({
-          full_name: data.full_name || "",
+          full_name: data.full_name || prefill.fullName,
           email: data.email || user.email || "",
           phone: data.phone || "",
           city: data.city || "",
           zip_code: data.zip_code || "",
         });
       } else {
-        form.setValue("email", user.email || "");
+        form.setValue("email", prefill.email);
+        if (prefill.fullName) form.setValue("full_name", prefill.fullName);
       }
     } catch (error) {
       toast({

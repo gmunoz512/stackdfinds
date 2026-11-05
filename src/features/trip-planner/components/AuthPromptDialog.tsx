@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { startOAuth } from "@/lib/oauth";
 import { Loader2, MapPin, Sparkles, Save, Apple } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
@@ -109,16 +110,7 @@ export function AuthPromptDialog({ open, onOpenChange, onSkip }: AuthPromptDialo
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      localStorage.setItem("pending_role", "user");
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin + "/auth",
-          queryParams: { prompt: "select_account" },
-        },
-      });
-      if (error) throw error;
+      await startOAuth("google", "user");
     } catch (error) {
       toast({
         title: "Error",
@@ -132,13 +124,7 @@ export function AuthPromptDialog({ open, onOpenChange, onSkip }: AuthPromptDialo
   const handleAppleSignIn = async () => {
     setLoading(true);
     try {
-      localStorage.setItem("pending_role", "user");
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "apple",
-        options: { redirectTo: window.location.origin + "/auth" },
-      });
-      if (error) throw error;
+      await startOAuth("apple", "user");
     } catch (error) {
       toast({
         title: "Error",

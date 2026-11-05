@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { startOAuth } from "@/lib/oauth";
 import { Apple } from "lucide-react";
 import { authSchema, type AuthFormData } from "@/lib/validations";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -49,7 +50,7 @@ const Auth = () => {
         }
         
         if (userRole === "host") {
-          navigate("/host/vendors", { replace: true });
+          navigate("/host/dashboard", { replace: true });
         } else if (userRole === "vendor") {
           // Check if vendor already has a profile
           const { data: { user } } = await supabase.auth.getUser();
@@ -65,7 +66,7 @@ const Auth = () => {
               navigate("/vendor/dashboard", { replace: true });
             } else {
               // New vendor without profile - go to create profile
-              navigate("/vendor/upload-photos", { replace: true });
+              navigate("/vendor/create-profile", { replace: true });
             }
           }
         } else if (userRole === "user") {
@@ -128,8 +129,8 @@ const Auth = () => {
   const getRedirectPath = (selectedRole: string | null, hasVendorProfile: boolean = false) => {
     // Check for returnTo parameter first
     if (effectiveReturnTo) return effectiveReturnTo;
-    if (selectedRole === "host") return "/host/vendors";
-    if (selectedRole === "vendor") return hasVendorProfile ? "/vendor/dashboard" : "/vendor/upload-photos";
+    if (selectedRole === "host") return "/host/dashboard";
+    if (selectedRole === "vendor") return hasVendorProfile ? "/vendor/dashboard" : "/vendor/create-profile";
     return "/appview";
   };
 
@@ -304,19 +305,7 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      // Store the selected role in localStorage so we can save it after OAuth redirect
-      if (role) {
-        localStorage.setItem('pending_role', role);
-      }
-      
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin + "/auth",
-          queryParams: { prompt: "select_account" },
-        },
-      });
-      if (error) throw error;
+      await startOAuth("google", role);
     } catch (error) {
       toast({
         title: "Error",
@@ -330,16 +319,7 @@ const Auth = () => {
   const handleAppleSignIn = async () => {
     setLoading(true);
     try {
-      // Store the selected role in localStorage so we can save it after OAuth redirect
-      if (role) {
-        localStorage.setItem('pending_role', role);
-      }
-      
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "apple",
-        options: { redirectTo: window.location.origin + "/auth" },
-      });
-      if (error) throw error;
+      await startOAuth("apple", role);
     } catch (error) {
       toast({
         title: "Error",

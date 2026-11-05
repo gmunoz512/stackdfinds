@@ -9,6 +9,7 @@ import {
   Waves,
   ArrowLeft,
   Menu,
+  ChevronDown,
   X,
   ChevronRight,
   Moon,
@@ -124,6 +125,12 @@ function BackgroundArt() {
     </>
   );
 }
+const JOIN_LINKS = [
+  { to: "/for-vendors", label: "For Vendors", hint: "List your business" },
+  { to: "/for-hosts", label: "For Hosts", hint: "Create your local guide" },
+  { to: "/appview", label: "For Guests", hint: "Explore experiences" },
+];
+
 export function DestinationShell({
   children,
   className = "",
@@ -140,6 +147,7 @@ export function DestinationShell({
   const { pathname } = useLocation();
   const { isAuthenticated, role } = useAuthContext();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [joinOpen, setJoinOpen] = useState(false);
   const home =
     pathname === "/" || pathname === "/appview" || pathname === "/explore";
   const join = pathname.startsWith("/auth") || pathname === "/signin";
@@ -152,13 +160,17 @@ export function DestinationShell({
         : "/profile";
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen && !joinOpen) return;
 
-    const closeOnScroll = () => setMenuOpen(false);
+    const closeOnScroll = () => {
+      setMenuOpen(false);
+      setJoinOpen(false);
+    };
     const closeOnOutsideTap = (event: PointerEvent) => {
       const target = event.target;
-      if (target instanceof Element && !target.closest(".reference-menu, .menu-toggle")) {
+      if (target instanceof Element && !target.closest(".reference-menu, .menu-toggle, .join-menu, .join-toggle")) {
         setMenuOpen(false);
+        setJoinOpen(false);
       }
     };
 
@@ -171,7 +183,7 @@ export function DestinationShell({
       document.removeEventListener("pointerdown", closeOnOutsideTap);
       document.removeEventListener("touchmove", closeOnScroll);
     };
-  }, [menuOpen]);
+  }, [menuOpen, joinOpen]);
 
   if (insideShell) return <>{children}</>;
   return (
@@ -221,11 +233,39 @@ export function DestinationShell({
                 </button>
             {!join && (
               <>
+                <div className="join-dropdown">
+                  <button
+                    type="button"
+                    className="join-toggle"
+                    aria-haspopup="menu"
+                    aria-expanded={joinOpen}
+                    onClick={() => {
+                      setJoinOpen((v) => !v);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    Join<span className="join-toggle-long"> stackd</span>
+                    <ChevronDown size={16} aria-hidden="true" />
+                  </button>
+                  {joinOpen && (
+                    <nav className="join-menu" aria-label="Join stackd">
+                      {JOIN_LINKS.map((item) => (
+                        <Link key={item.to} to={item.to} onClick={() => setJoinOpen(false)}>
+                          <strong>{item.label}</strong>
+                          <span>{item.hint}</span>
+                        </Link>
+                      ))}
+                    </nav>
+                  )}
+                </div>
                 <button
                   className="menu-toggle"
                   aria-label={menuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen((v) => !v)}
+                  onClick={() => {
+                    setMenuOpen((v) => !v);
+                    setJoinOpen(false);
+                  }}
                 >
                   {menuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -233,10 +273,18 @@ export function DestinationShell({
             )}
             {menuOpen && (
               <nav className="reference-menu" aria-label="App menu">
+                <p className="reference-menu-label">Join stackd</p>
+                {JOIN_LINKS.map((item) => (
+                  <Link key={item.to} to={item.to} onClick={() => setMenuOpen(false)} className="reference-menu-join">
+                    <span>
+                      {item.label}
+                      <small>{item.hint}</small>
+                    </span>
+                    <ChevronRight size={16} />
+                  </Link>
+                ))}
+                <hr className="reference-menu-rule" />
                 {[
-                  { to: "/for-travelers", label: "For travelers" },
-                  { to: "/for-hosts", label: "For hosts" },
-                  { to: "/for-vendors", label: "For vendors" },
                   { to: "/about", label: "About" },
                   { to: "/faq", label: "FAQ" },
                 ].map((item) => (

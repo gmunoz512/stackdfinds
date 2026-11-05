@@ -45,8 +45,8 @@ export default function ForHosts() {
   return (
     <PartnerPage
       audience="For hosts"
-      title="Your local recommendations can work harder for you."
-      description="We saw the gap: nearly every host recommends local vendors, but there has never been a simple, formal affiliation program built around that relationship."
+      title="Your local favorites. Your guests. Your earnings."
+      description="Build a personalized digital guide, recommend local businesses you trust, and earn when your guests book."
       signup="/signup/host"
       featuresTitle="Turn your trusted recommendations into a guidebook"
       ctaTitle="Ready to get started?"

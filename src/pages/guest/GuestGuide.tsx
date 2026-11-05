@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Heart, Loader2, Sparkles } from "lucide-react";
 import { GoogleRating } from "@/components/GoogleRating";
 import { supabase } from "@/integrations/supabase/client";
-import { experiences } from "@/data/mockData";
 import { mockRestaurants } from "@/data/mockRestaurants";
 import RestaurantCard from "@/components/RestaurantCard";
 import type { RecommendationItem } from "@/types";
@@ -14,53 +13,24 @@ import type { Json } from "@/integrations/supabase/types";
 import stackdLogo from "@/assets/stackd-logo-new.png";
 
 // Experience images
-import kayakingImg from "@/assets/experiences/kayaking.jpg";
-import bikesImg from "@/assets/experiences/bikes.jpg";
-import snorkelingImg from "@/assets/experiences/snorkeling.jpg";
-import photographyImg from "@/assets/experiences/photography.jpg";
-import spaImg from "@/assets/experiences/spa.jpg";
-import diningImg from "@/assets/experiences/dining.jpg";
-import atvImg from "@/assets/experiences/atv.jpg";
-import boatImg from "@/assets/experiences/boat.jpg";
-import ziplineImg from "@/assets/experiences/zipline.jpg";
-import horsebackImg from "@/assets/experiences/horseback.jpg";
-import scubaImg from "@/assets/experiences/scuba.jpg";
-import hikingImg from "@/assets/experiences/hiking.jpg";
-import parasailingImg from "@/assets/experiences/parasailing.jpg";
-import yogaImg from "@/assets/experiences/yoga.jpg";
-import fishingImg from "@/assets/experiences/fishing.jpg";
-import cookingImg from "@/assets/experiences/cooking.jpg";
-import balloonImg from "@/assets/experiences/balloon.jpg";
-import wineImg from "@/assets/experiences/wine.jpg";
+
+interface GuideListing {
+  id: string;
+  name: string;
+  category: string;
+  price: number | null;
+  image: string | null;
+  description: string | null;
+  duration: string | null;
+  maxGuests: number | null;
+  included: string[];
+  rating: number | null;
+}
 
 interface HostProfile {
   full_name: string | null;
   recommendations: RecommendationItem[];
 }
-
-const getExperienceImage = (experienceId: number): string => {
-  const imageMap: Record<number, string> = {
-    1: kayakingImg,
-    2: bikesImg,
-    3: snorkelingImg,
-    4: photographyImg,
-    5: spaImg,
-    6: diningImg,
-    7: atvImg,
-    8: boatImg,
-    9: ziplineImg,
-    10: horsebackImg,
-    11: scubaImg,
-    12: hikingImg,
-    13: parasailingImg,
-    14: yogaImg,
-    15: fishingImg,
-    16: cookingImg,
-    17: balloonImg,
-    18: wineImg,
-  };
-  return imageMap[experienceId] || kayakingImg;
-};
 
 // Helper to safely parse recommendations from JSON
 const parseRecommendations = (data: Json | null): RecommendationItem[] => {
@@ -131,12 +101,50 @@ const GuestGuide = () => {
     fetchHostProfile();
   }, [hostId]);
 
-  // Filter experiences and restaurants based on recommendations
-  // Note: "vendor" type uses experience IDs, so treat them as experiences
-  const recommendedExperiences = hostProfile?.recommendations
-    .filter((r) => r.type === "experience" || r.type === "vendor")
-    .map((r) => experiences.find((e) => String(e.id) === r.id))
-    .filter(Boolean) || [];
+  // Experience/vendor recommendations load real, published vendor listings.
+  const [recommendedExperiences, setRecommendedExperiences] = useState<GuideListing[]>([]);
+  useEffect(() => {
+    const ids = (hostProfile?.recommendations ?? [])
+      .filter((r) => r.type === "experience" || r.type === "vendor")
+      .map((r) => r.id);
+    if (ids.length === 0) {
+      setRecommendedExperiences([]);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .from("vendor_profiles")
+      .select("id,name,category,price_per_person,photos,description,duration,max_guests,included_items,google_rating")
+      .in("id", ids)
+      .eq("is_published", true)
+      .then(({ data }) => {
+        if (cancelled || !data) return;
+        const byId = new Map(data.map((v) => [v.id, v]));
+        setRecommendedExperiences(
+          ids.flatMap((id) => {
+            const v = byId.get(id);
+            return v
+              ? [{
+                  id: v.id,
+                  name: v.name,
+                  category: v.category,
+                  price: v.price_per_person,
+                  image: v.photos?.[0] ?? null,
+                  description: v.description,
+                  duration: v.duration,
+                  maxGuests: v.max_guests,
+                  included: v.included_items ?? [],
+                  rating: v.google_rating,
+                }]
+              : [];
+          }),
+        );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [hostProfile]);
+
 
   const recommendedRestaurants = hostProfile?.recommendations
     .filter((r) => r.type === "restaurant")
@@ -217,20 +225,20 @@ const GuestGuide = () => {
                 <div className="grid grid-cols-2 gap-3">
                   {recommendedExperiences.map((experience) => (
                     <Link
-                      key={experience!.id}
-                      to={`/experience/${experience!.id}?host=${hostId}`}
+                      key={experience.id}
+                      to={`/vendor/${experience.id}?host=${hostId}`}
                       className="group"
                     >
                       <div className="space-y-2">
                         <div className="aspect-square rounded-xl overflow-hidden relative bg-muted">
-                          <img
-                            src={getExperienceImage(experience!.id)}
-                            alt={experience!.name}
+                          {experience.image && <img
+                            src={experience.image}
+                            alt={experience.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
+                          />}
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-ink/70 to-transparent p-2">
                             <p className="text-paper text-xs font-medium line-clamp-1">
-                              {experience!.name}
+                              {experience.name}
                             </p>
                           </div>
                         </div>
@@ -241,7 +249,7 @@ const GuestGuide = () => {
                             starClassName="h-3 w-3"
                           />
                           <p className="text-xs text-muted-foreground">
-                            From ${experience!.price}
+                            {experience.price != null ? `From $${experience.price}` : "See prices"}
                           </p>
                         </div>
                       </div>
@@ -279,16 +287,16 @@ const GuestGuide = () => {
           to="/trip-planner"
           state={{ 
             hostVendors: recommendedExperiences.map(exp => ({
-              id: exp!.id,
-              name: exp!.name,
-              category: exp!.category,
-              vendor: exp!.vendor,
-              price: exp!.price,
-              rating: null,
-              description: exp!.description,
-              duration: exp!.duration,
-              maxGuests: exp!.maxGuests,
-              included: exp!.included,
+              id: exp.id,
+              name: exp.name,
+              category: exp.category,
+              vendor: exp.name,
+              price: exp.price,
+              rating: exp.rating,
+              description: exp.description,
+              duration: exp.duration,
+              maxGuests: exp.maxGuests,
+              included: exp.included,
             }))
           }}
           className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-gradient-to-r from-brand to-iris-strong text-paper font-medium shadow-lg hover:scale-[1.02] transition-transform"

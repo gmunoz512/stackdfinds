@@ -1,3 +1,4 @@
+import { getOAuthPrefill } from '@/lib/oauth';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -42,15 +43,16 @@ const EditHostProfile = () => {
         propertyName: propertyData.propertyName || '',
       });
     } else {
+      const prefill = getOAuthPrefill(user);
       setFormData({
-        firstName: hostSignupData.firstName || '',
-        lastName: hostSignupData.lastName || '',
-        email: profile?.email || hostSignupData.email || '',
+        firstName: hostSignupData.firstName || prefill.firstName,
+        lastName: hostSignupData.lastName || prefill.lastName,
+        email: profile?.email || hostSignupData.email || prefill.email,
         phone: profile?.phone || hostSignupData.phone || '',
         propertyName: propertyData.propertyName || '',
       });
     }
-  }, [profile, hostSignupData, propertyData]);
+  }, [profile, hostSignupData, propertyData, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

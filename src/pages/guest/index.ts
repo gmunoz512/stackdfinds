@@ -15,7 +15,6 @@ export { default as PaymentSuccess } from './PaymentSuccess';
 export { default as Profile } from './Profile';
 export { default as RestaurantDetail } from './RestaurantDetail';
 export { default as SharedItinerary } from './SharedItinerary';
-export { default as Storefront } from './Storefront';
 export { default as TripItinerary } from './TripItinerary';
 export { default as TripPlannerChat } from './TripPlannerChat';
 export { default as Wishlists } from './Wishlists';
