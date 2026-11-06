@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { appFrameSrc } from "./lib/oauth";
 import "./index.css";
+import "./styles/polish.css";
 import "./app-preview.css";
 const inPhoneFrame =
   new URLSearchParams(window.location.search).has("appframe") ||

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useBooking } from "@/contexts/BookingContext";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
-import confetti from "canvas-confetti";
+import { calmCelebrate } from "@/lib/calmCelebrate";
 import { supabase } from "@/integrations/supabase/client";
 import {
   AlertDialog,
@@ -88,30 +88,7 @@ const PaymentSuccess = () => {
         setTimeout(() => {
           setShowContent(true);
           
-          const duration = 3000;
-          const end = Date.now() + duration;
-          const colors = ['#f97316', '#ec4899', '#22c55e', '#3b82f6'];
-
-          (function frame() {
-            confetti({
-              particleCount: 4,
-              angle: 60,
-              spread: 55,
-              origin: { x: 0 },
-              colors: colors
-            });
-            confetti({
-              particleCount: 4,
-              angle: 120,
-              spread: 55,
-              origin: { x: 1 },
-              colors: colors
-            });
-
-            if (Date.now() < end) {
-              requestAnimationFrame(frame);
-            }
-          }());
+          calmCelebrate();
         }, 100);
       }, 500);
     };
@@ -339,22 +316,22 @@ END:VCALENDAR`;
       <div className="shot-frame sm:border-x sm:border-border sm:shadow-2xl">
         {/* Progress Indicator */}
         <div className="bg-card/80 border-b border-border p-4">
-          <div className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-2">Confirmed</div>
+          <div className="mb-2 text-center font-serif text-sm font-normal text-[#153d30] dark:text-[#e7eadf]">Confirmed</div>
           <div className="flex gap-1">
-            <div className="h-1 flex-1 bg-gradient-to-r from-brand to-hot rounded-full" />
-            <div className="h-1 flex-1 bg-gradient-to-r from-brand to-hot rounded-full" />
-            <div className="h-1 flex-1 bg-gradient-to-r from-brand to-hot rounded-full" />
+            <div className="h-1 flex-1 rounded-full bg-[#153d30]" />
+            <div className="h-1 flex-1 rounded-full bg-[#153d30]" />
+            <div className="h-1 flex-1 rounded-full bg-[#153d30]" />
           </div>
         </div>
 
         <div className={`px-4 py-8 space-y-6 transition-all duration-500 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           {/* Success Icon */}
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-success-light to-success-strong animate-scale-in">
-              <CheckCircle className="h-12 w-12 text-paper" />
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#e7f0e4] text-[#153d30]">
+              <CheckCircle className="h-8 w-8" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl">
+              <h1 className="font-serif text-2xl font-normal text-[#153d30] dark:text-[#e7eadf]">
                 {sessionId ? 'Payment successful' : 'Booking confirmed'}
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -412,7 +389,7 @@ END:VCALENDAR`;
                 <div className="pt-4 mt-4 border-t">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold">{sessionId ? 'Total paid' : 'Total'}</span>
-                    <span className="text-2xl font-bold bg-gradient-to-r from-brand to-hot bg-clip-text text-transparent">
+                    <span className="font-serif text-2xl font-normal text-[#153d30] dark:text-[#e7eadf]">
                       ${bookingData.totalPrice}
                     </span>
                   </div>
@@ -478,11 +455,9 @@ END:VCALENDAR`;
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-[calc(100vw-2rem)] max-w-[343px]">
                   <DropdownMenuItem onClick={openGoogleCalendar} className="cursor-pointer">
-                    <span className="mr-2">📅</span>
                     Google Calendar
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={downloadICS} className="cursor-pointer">
-                    <span className="mr-2">🍎</span>
                     Apple Calendar
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -529,21 +504,20 @@ END:VCALENDAR`;
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Cancel This Booking?</AlertDialogTitle>
+                    <AlertDialogTitle>Cancel this booking?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to cancel your booking for <strong>{bookingData.experienceName}</strong> on {bookingData.date} at {bookingData.time}?
-                      <br /><br />
-                      If you paid for this booking, a refund will be processed to your original payment method within 5-10 business days.
+                      This cancels <strong>{bookingData.experienceName}</strong> on {bookingData.date} at {bookingData.time}.
+                      If you paid, the refund goes back to the original payment method within 5–10 business days.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Keep Booking</AlertDialogCancel>
+                    <AlertDialogCancel className="border-0 bg-[#153d30] text-[#f8f3e7] hover:bg-[#1d4d3c] hover:text-[#f8f3e7]">Keep this booking</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleCancelBooking}
                       disabled={isCancelling}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      className="border border-[#e4c4ba] bg-transparent text-[#8f4a42] shadow-none hover:bg-[#f8ebe6]"
                     >
-                      {isCancelling ? "Cancelling..." : "Yes, Cancel Booking"}
+                      {isCancelling ? "Cancelling..." : "Cancel booking"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

@@ -8,6 +8,7 @@ import {
   Utensils,
   Waves,
 } from "lucide-react";
+import { FadePhoto } from "@/components/media/FadePhoto";
 import { TabsContent } from "@/components/ui/tabs";
 import { DestinationHero } from "@/components/destination/DestinationShell";
 import { GoogleRating } from "@/components/GoogleRating";
@@ -67,12 +68,7 @@ function ListingPhoto({
   return (
     <div className="destination-photo">
       {src && !failed ? (
-        <img
-          src={src}
-          alt={name}
-          loading="lazy"
-          onError={() => setFailed(true)}
-        />
+        <FadePhoto src={src} alt={name} frameClassName="h-full w-full" onError={() => setFailed(true)} />
       ) : (
         <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground text-xs">
           <ImageOff size={24} />

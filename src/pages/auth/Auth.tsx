@@ -29,6 +29,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [showOTPDialog, setShowOTPDialog] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [notice, setNotice] = useState<{ kind: "error" | "success"; message: string } | null>(null);
   const { isAuthenticated, isLoading, role: userRole, setUserRole } = useAuthContext();
 
   // All hooks must be called before any conditional returns
@@ -144,6 +145,7 @@ const Auth = () => {
   }
 
   const handleAuth = async (data: AuthFormData) => {
+    setNotice(null);
     setLoading(true);
     
     try {
@@ -258,6 +260,7 @@ const Auth = () => {
             }
             
             const redirectPath = getRedirectPath(roleData.role, hasVendorProfile);
+            setNotice({ kind: "success", message: "Signed in. Opening your page." });
             toast({
               title: "Welcome back!",
               description: "Successfully signed in.",
@@ -295,11 +298,7 @@ const Auth = () => {
         ? "Wrong email/username or password. If you recently enabled leaked-password protection, you may need to reset your password."
         : rawMessage;
 
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      setNotice({ kind: "error", message: errorMessage });
     }
   };
 
@@ -334,10 +333,12 @@ const Auth = () => {
   const handleForgotPassword = () => {
     const email = form.getValues("email").trim();
     if (!email || !email.includes("@")) {
-      toast({
-        title: "Enter your email",
-        description: "Type your email above, then click Forgot password. Vendors without an email on file: ask stackd for a new temporary password.",
-        variant: "destructive",
+      form.setError("email", {
+        message: "Type the email you can read, then try again. Vendors without an email on file should ask stackd for a new temporary password.",
+      });
+      setNotice({
+        kind: "error",
+        message: "Password reset needs an email. A username alone can't receive the link.",
       });
       return;
     }
@@ -358,7 +359,7 @@ const Auth = () => {
           <div className="p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm">
             <div className="space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-2xl font-semibold text-foreground">
+                <h1 className="font-serif text-2xl font-normal text-[#153d30] dark:text-[#e7eadf]">
                   {isSignUp ? "Create your account" : "Welcome back"}
                 </h1>
                 <p className="text-sm text-muted-foreground">
@@ -367,7 +368,7 @@ const Auth = () => {
               </div>
 
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleAuth)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(handleAuth)} className="stackd-auth-form space-y-4" data-status={notice?.kind || undefined} noValidate>
                   <FormField
                     control={form.control}
                     name="email"
@@ -385,7 +386,7 @@ const Auth = () => {
                             {...field} 
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="stackd-notice stackd-notice-error" />
                       </FormItem>
                     )}
                   />
@@ -405,10 +406,16 @@ const Auth = () => {
                             {...field} 
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="stackd-notice stackd-notice-error" />
                       </FormItem>
                     )}
                   />
+
+                  {notice && (
+                    <p className={notice.kind === "error" ? "stackd-notice stackd-notice-error" : "stackd-notice stackd-notice-success"} role={notice.kind === "error" ? "alert" : "status"}>
+                      {notice.message}
+                    </p>
+                  )}
 
                   <Button type="submit" variant="gradient" className="w-full" disabled={loading}>
                     {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}

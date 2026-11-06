@@ -186,10 +186,9 @@ const AllBookings = () => {
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel Booking</AlertDialogTitle>
+            <AlertDialogTitle>Cancel this booking?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this booking for "{selectedBooking?.service}"? 
-              This action cannot be undone and notifications will be sent to the guest.
+              This cancels "{selectedBooking?.service}". The guest is notified, and the booking cannot be restored from this screen.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-2">
@@ -201,13 +200,13 @@ const AllBookings = () => {
             />
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setCancelReason("")}>Keep Booking</AlertDialogCancel>
+            <AlertDialogCancel className="border-0 bg-[#153d30] text-[#f8f3e7] hover:bg-[#1d4d3c] hover:text-[#f8f3e7]" onClick={() => setCancelReason("")}>Keep this booking</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmCancel}
-              className="bg-danger-strong hover:bg-danger-deep"
+              className="border border-[#e4c4ba] bg-transparent text-[#8f4a42] shadow-none hover:bg-[#f8ebe6]"
               disabled={cancelMutation.isPending}
             >
-              {cancelMutation.isPending ? "Cancelling..." : "Cancel Booking"}
+              {cancelMutation.isPending ? "Cancelling..." : "Cancel booking"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

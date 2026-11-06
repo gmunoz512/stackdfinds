@@ -1,3 +1,4 @@
+import { FadePhoto } from "@/components/media/FadePhoto";
 import { previewExperiences } from "@/data/previewExperiences";
 import source from "@/assets/tulum-reference.jpeg";
 const crops = {
@@ -28,7 +29,14 @@ export function ReferencePhoto({
     ? src
     : previewExperiences.find(item => item.referencePhoto === crop)?.photos[0];
   if (original || !crop)
-    return <img src={original || src} alt={alt} className={`reference-photo ${className}`} loading="lazy" decoding="async" style={{objectFit:"cover"}} />;
+    return (
+      <FadePhoto
+        src={original || src || ""}
+        alt={alt}
+        frameClassName={`reference-photo ${className}`}
+        loading="lazy"
+      />
+    );
   const [x, y, w, h] = crops[crop];
   return (
     <div

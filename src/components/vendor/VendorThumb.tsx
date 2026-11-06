@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FadePhoto } from "@/components/media/FadePhoto";
 import { cn } from "@/lib/utils";
 
 interface VendorThumbProps {
@@ -21,12 +22,11 @@ const VendorThumb = ({ name, photo, className }: VendorThumbProps) => {
   const base = cn("h-16 w-16 shrink-0 overflow-hidden rounded-xl", className);
   if (photo && !failed) {
     return (
-      <img
+      <FadePhoto
         src={photo}
         alt={name}
-        loading="lazy"
+        frameClassName={base}
         onError={() => setFailed(true)}
-        className={cn(base, "object-cover")}
       />
     );
   }

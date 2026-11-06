@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FadePhoto } from '@/components/media/FadePhoto';
 import { Heart, MapPin, Store } from 'lucide-react';
 import { GoogleRating } from '@/components/GoogleRating';
 import type { ResolvedGoogleRating } from '@/lib/googleRating';
@@ -54,7 +55,7 @@ export function PublicGuideView({ hostId, hostFirstName, guestName, property, to
         <header className="flex items-center gap-4 px-4 pt-6 sm:gap-6">
           <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-card bg-muted shadow-[0_10px_24px_rgba(39,66,52,.12)] sm:h-32 sm:w-32">
             {property?.photoUrl ? (
-              <img src={property.photoUrl} alt={property.name} className="h-full w-full object-cover" />
+              <FadePhoto src={property.photoUrl} alt={property.name} frameClassName="h-full w-full" />
             ) : (
               <div className="flex h-full w-full items-center justify-center font-serif text-3xl text-muted-foreground">
                 {title.charAt(0)}
@@ -84,16 +85,16 @@ export function PublicGuideView({ hostId, hostFirstName, guestName, property, to
           </p>
         ) : (
           <section className="mt-8 px-4" aria-labelledby="top8-heading">
-            <h2 id="top8-heading" className="mb-3 text-lg font-semibold text-foreground">
+            <h2 id="top8-heading" className="mb-3 font-serif text-lg font-normal text-[#153d30] dark:text-[#e7eadf]">
               {ownerLabel} Top {top.length}
             </h2>
             <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {top.map((item, i) => (
-                <li key={item.id} className="relative overflow-hidden rounded-[18px] bg-muted shadow-[0_12px_30px_rgba(39,66,52,.10)]">
+                <li key={item.id} className="guide-photo-tile relative overflow-hidden rounded-[18px] bg-muted shadow-[0_12px_30px_rgba(39,66,52,.10)]">
                   <SaveButton item={item} saved={saves.has(item.id)} onToggle={() => onToggleSave(item.id)} />
-                  <Link to={withHostRef(item.href, hostId)} className="group block aspect-[3/4]">
+                  <Link to={withHostRef(item.href, hostId)} className="guide-photo-link group block aspect-[3/4]">
                     {item.photo ? (
-                      <img src={item.photo} alt={item.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" loading={i < 4 ? 'eager' : 'lazy'} />
+                      <FadePhoto src={item.photo} alt="" frameClassName="h-full w-full" loading={i < 4 ? 'eager' : 'lazy'} />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
                         <Store className="h-8 w-8 text-muted-foreground" />
@@ -101,7 +102,7 @@ export function PublicGuideView({ hostId, hostFirstName, guestName, property, to
                     )}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent p-3 pt-10 text-white">
                       <span className="text-[11px] font-medium opacity-80">#{i + 1}</span>
-                      <p className="font-semibold leading-snug text-white">{item.name}</p>
+                      <p className="guide-tile-title text-white">{item.name}</p>
                       {item.subtitle && <p className="truncate text-xs opacity-85">{item.subtitle}</p>}
                       <GoogleRating value={item.rating} showCount={false} className="mt-1 text-xs text-white" starClassName="h-3 w-3" />
                     </div>
@@ -124,13 +125,13 @@ export function PublicGuideView({ hostId, hostFirstName, guestName, property, to
 
         {more.length > 0 && (
           <section className="mt-10 px-4" aria-labelledby="more-heading">
-            <h2 id="more-heading" className="mb-3 text-base font-semibold text-foreground">More picks</h2>
+            <h2 id="more-heading" className="mb-3 font-serif text-base font-normal text-[#153d30] dark:text-[#e7eadf]">More picks</h2>
             <ul className="grid gap-2 sm:grid-cols-2">
               {more.map((item) => (
                 <li key={item.id}>
                   <Link to={withHostRef(item.href, hostId)} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-2 transition-colors hover:bg-muted/50">
                     <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted">
-                      {item.photo ? <img src={item.photo} alt="" className="h-full w-full object-cover" loading="lazy" /> : <Store className="m-4 h-6 w-6 text-muted-foreground" />}
+                      {item.photo ? <FadePhoto src={item.photo} alt="" frameClassName="h-full w-full" /> : <Store className="m-4 h-6 w-6 text-muted-foreground" />}
                     </div>
                     <div className="min-w-0">
                       <p className="truncate font-medium text-foreground">{item.name}</p>

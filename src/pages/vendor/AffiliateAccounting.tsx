@@ -1,5 +1,6 @@
 import '@/styles/ledger.css';
 import { useMemo, useState } from 'react';
+import { LedgerSummary } from '@/components/ledger/LedgerSummary';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
@@ -83,28 +84,13 @@ const VendorAffiliateAccounting = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="p-4 border-border/60 ledger-card">
-            <p className="text-xs text-muted-foreground">Upcoming</p>
-            {isLoading ? (
-              <Skeleton className="h-8 w-20 mt-2" />
-            ) : (
-              <p className="text-2xl font-normal mt-1">
-                {formatLedgerMoney(summary.totalUpcoming)}
-              </p>
-            )}
-          </Card>
-          <Card className="p-4 border-border/60 ledger-card">
-            <p className="text-xs text-muted-foreground">Released</p>
-            {isLoading ? (
-              <Skeleton className="h-8 w-20 mt-2" />
-            ) : (
-              <p className="text-2xl font-normal mt-1">
-                {formatLedgerMoney(summary.totalReleased)}
-              </p>
-            )}
-          </Card>
-        </div>
+        <LedgerSummary
+          loading={isLoading}
+          released={formatLedgerMoney(summary.totalReleased)}
+          upcoming={formatLedgerMoney(summary.totalUpcoming)}
+          releasedNote="After the 24-hour hold, net of host commission and the stackd fee."
+          upcomingNote="Still held"
+        />
 
         <div className="flex gap-2 overflow-x-auto pb-1">
           {(['all', ...PRIMARY_LEDGER_STATUSES] as Filter[]).map((key) => (

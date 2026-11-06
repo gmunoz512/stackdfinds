@@ -77,3 +77,11 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Preferred email: /vendor/account-email (linked from vendor Settings) and the step above. Uses `supabase.auth.updateUser({ email })`, so Supabase sends a confirmation link to the new address. Until it's confirmed, the hidden address stays the login. Once confirmed, the vendor can sign in with the email or the username.
 - Edge functions `create-vendor-account` and `vendor-username-sign-in` are NOT deployed and Supabase Auth "Secure email change" is still on: both need a Supabase access token for project ilityngsjxknvxtqrgav. Until then the admin page says "Couldn't create the account. Is the function deployed?".
 - Email forwarding (docs/email-routing-plan.md) is no longer needed.
+
+### UI polish (branch `ui-polish`)
+- ✅ Vendor and experience photos, plus host-guide Top 8 tiles, keep a cream placeholder and fade in. Broken vendor photos still fall back to initials, never emoji.
+- ✅ Keyboard focus uses one pine ring. Listing cards, guide tiles, and marketplace cards press in slightly. Motion turns off when the device asks for less motion.
+- ✅ Sign-in ("Email or username"), set-password, and add-email show an inline error or success message with the field, not only a toast.
+- ✅ Vendor first login shows a two-step progress track: password, then optional email.
+- ✅ Booking cancel dialogs use a cream panel, a light Georgia title, and a quiet confirm. The confirmation page no longer rains confetti.
+- ✅ Vendor payouts (`/vendor/affiliate`) and host earnings (`/host/earnings`) lead with Released, and keep Upcoming as the smaller held amount.
