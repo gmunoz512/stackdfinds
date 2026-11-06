@@ -1,10 +1,13 @@
-// Admin-only: creates a vendor login (<slug>@stackdfinds.com) + vendor profile.
+// Admin-only: creates a vendor login by USERNAME + vendor profile. Supabase Auth
+// needs an email, so the login uses a hidden <username>@vendors.stackdfinds.com
+// address (email_confirm true, no mailbox, never shown to vendors).
 // The generated password is returned ONCE in the response and never stored
 // in plain text (Supabase Auth only keeps the hash). The account is flagged
 // user_metadata.must_change_password so the app forces a new password on first login.
 // NOT DEPLOYED — needs owner approval before `supabase functions deploy`.
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { findUserByUsername, isValidUsername, normalizeUsername, usernameLoginEmail } from "../_shared/vendorUsernames.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -13,12 +16,7 @@ const cors = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
-const DOMAIN = "stackdfinds.com";
 const CATEGORIES = ["experience", "restaurant", "tour", "wellness", "transport", "other"];
-
-function slug(name: string) {
-  return name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 40);
-}
 
 // 20 chars from an unambiguous alphabet via crypto RNG (~115 bits). Meets passwordSchema (6–72).
 function generatePassword(len = 20) {
@@ -51,35 +49,36 @@ serve(async (req) => {
   const { data: isAdmin } = await admin.rpc("has_role", { _user_id: user.id, _role: "admin" });
   if (!isAdmin) return json({ error: "Admins only" }, 403);
 
-  let body: { name?: string; category?: string };
+  let body: { name?: string; category?: string; username?: string };
   try { body = await req.json(); } catch { return json({ error: "Bad JSON" }, 400); }
   const name = (body.name ?? "").trim().slice(0, 120);
-  const base = slug(name);
-  if (!base) return json({ error: "Enter a vendor name with at least one letter or number" }, 400);
+  if (!name) return json({ error: "Enter the business name" }, 400);
+  const username = normalizeUsername(body.username);
+  if (!isValidUsername(username)) {
+    return json({ error: "Username must be 3–30 lowercase letters, numbers or single dashes" }, 400);
+  }
   const category = CATEGORIES.includes(body.category ?? "") ? body.category! : "experience";
 
+  if (await findUserByUsername(admin, username)) return json({ error: "That username is taken. Try another." }, 409);
+
   const password = generatePassword();
-  let createdId: string | null = null;
-  let email = "";
-  // Try slug@, slug2@, ... ; Supabase rejects duplicates, which is our "taken" check.
-  for (let n = 1; n <= 50 && !createdId; n++) {
-    email = `${base}${n === 1 ? "" : n}@${DOMAIN}`;
-    const { data, error } = await admin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: { must_change_password: true, full_name: name, created_by_admin: user.id },
-    });
-    if (data?.user) createdId = data.user.id;
-    else if (error && !/already|registered|exists/i.test(error.message)) {
-      console.error("createUser failed:", error.message);
-      return json({ error: "Could not create the login" }, 500);
-    }
+  const email = usernameLoginEmail(username);
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    app_metadata: { vendor_username: username },
+    user_metadata: { username, must_change_password: true, full_name: name, created_by_admin: user.id },
+  });
+  if (error || !data?.user) {
+    if (error && /already|registered|exists/i.test(error.message)) return json({ error: "That username is taken. Try another." }, 409);
+    console.error("createUser failed:", error?.message);
+    return json({ error: "Could not create the login" }, 500);
   }
-  if (!createdId) return json({ error: "No free email address for that name" }, 409);
+  const createdId = data.user.id;
 
   const rollback = async (msg: string) => {
-    await admin.auth.admin.deleteUser(createdId!); // only removes the user this call just made
+    await admin.auth.admin.deleteUser(createdId); // only removes the user this call just made
     return json({ error: msg }, 500);
   };
 
@@ -93,7 +92,7 @@ serve(async (req) => {
     .single();
   if (profErr || !profile) return rollback("Could not create vendor profile");
 
-  console.log(`Vendor account created: ${email} by admin ${user.id}`);
+  console.log(`Vendor account created: ${username} by admin ${user.id}`);
   // Password is in this response only. Never log it.
-  return json({ email, password, vendorProfileId: profile.id });
+  return json({ username, password, vendorProfileId: profile.id });
 });

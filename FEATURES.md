@@ -24,7 +24,7 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ **Vendor management** restyled cream/pine (no gradient header); links to marketplace; graceful empty states if link tables are missing.
 - ✅ **og meta** in `index.html` points at `https://stackdfinds.com` (was chatgpt.site).
 - 🟡 Migration `supabase/migrations/20261105010000_phase2_commission_tiers.sql` — CHECK constraint + comment; **German must review/apply** (Lovable-controlled Supabase). UI works without it.
-- ⏳ Host guide builder (Phase 3) + text share (Phase 4); guest booking polish (Phase 5); affiliate ledger (Phase 6).
+- ✅ Host guide builder, text share, guest booking, and affiliate ledger land in later phase sections below.
 
 ## Phase 3 — host guides (branch `phase3-host-guides`)
 - ✅ **Guide builder** `/host/guide` (new "Guide" tab in host bottom nav): property profile (name e.g. Casa Sol, area, photo uploaded to `vendor-photos/<user id>/property-*`), list of vendors the host added in `/host/marketplace`, move up/down to order, section per vendor (Tours & adventures, Water & beach, Food & drink, Wellness, Culture, Nightlife, Getting around, Other), optional tip per vendor (280 chars). Save writes `profiles.recommendations`.
@@ -53,10 +53,23 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Guest checkout needs migration 20261105020000_phase5_guest_bookings.sql plus redeploying create-booking-checkout and stripe-webhook. Neither is done yet.
 - Sample listings are gone: old /experience/:id and /book/:id sample links show "This listing isn't available". Wishlists and guides no longer show mock experiences or restaurants.
 
-### Vendor accounts (branch vendor-accounts, not merged)
-- /admin/vendors/new (admins only): enter a vendor name and category. It creates a login `<name>@stackdfinds.com` (lowercase letters and numbers only; `tacosnumerouno2@` etc. if taken), the vendor role, and a draft (unpublished) vendor profile in Tulum.
-- A 20-character random password is generated on the server, shown once with Copy buttons, and never stored in plain text (Supabase Auth keeps only the hash; it's never logged).
-- New accounts carry `user_metadata.must_change_password = true` (no schema change).
-- First login: while that flag is set, every page redirects to /set-password (New password + Confirm password, same rules as sign-up: 6–72 characters, breach check from Supabase). No skip. On save, the password is updated and the flag cleared in one call, then the vendor lands on /vendor/edit-profile. Sign out still works.
-- Creation runs in the `create-vendor-account` edge function (needs the service role key). Not deployed yet; until it is, the admin page shows "Couldn't create the account. Is the function deployed?".
-- Vendor mail: see docs/email-routing-plan.md (Cloudflare catch-all forwarding, not applied).
+## Phase 6 — affiliate accounting (live on stackdfinds.com)
+- ✅ **Commission math** stays in `src/lib/commissions.ts` (host 10/11/12% → stackd 3%; 15% → 2.5%; 17% → 2%). Vendor pays stackd's cut; host keeps the full commission.
+- ✅ **Ledger helpers** in `src/lib/affiliateAccounting.ts`: map booking payment/payout/status → pending / confirmed / paid (plus refunded / failed); summarize host, vendor, and stackd totals from existing `bookings` rows. Read-only — no payouts or money movement.
+- ✅ **Host earnings** `/host/earnings`: attributed bookings (`host_user_id`), commission earned, status chips, totals by pending/confirmed/paid. Empty state when none. Linked from host dashboard + profile.
+- ✅ **Vendor affiliate fees** `/vendor/affiliate`: per booking owed to host, owed to stackd, vendor keeps; totals. Linked from vendor dashboard revenue tile + profile. `/vendor/revenue` still shows by-service revenue.
+- ✅ **Admin affiliate summary** `/admin/affiliate` (admin role via `has_role`): booking volume, stackd fees, host commissions, vendor payouts, attributed count. Linked from admin settings.
+- ✅ **Payout history** host + vendor: dollar amounts (fixed incorrect /100), status via the same ledger classifier. No fake sample rows shipped.
+- ✅ Booking dates render as local calendar days (no UTC off-by-one).
+- ✅ Tests: `tests/affiliate/affiliateAccounting.test.ts` + existing `tests/commissions/*`.
+- ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run; real payout release remains behind Stripe connect + release-payouts (unchanged).
+
+### Vendor accounts (branch vendor-usernames, not merged)
+- /admin/vendors/new (admins only): enter the business name and category. A username is suggested (`tacos-numero-uno`: lowercase letters, numbers and single dashes, 3–30 chars) and the admin can edit it. On create, the server checks it's free, generates a 20-character random password, adds the vendor role and a draft (unpublished) Tulum vendor profile.
+- Username and password are shown once with Copy buttons. The password is never stored in plain text or logged.
+- No mailbox is created. Supabase Auth needs an email, so the login uses a hidden address `<username>@vendors.stackdfinds.com` (email_confirm true, never shown to vendors, nothing receives mail there). The username is kept in `app_metadata.vendor_username` (only the server can set it) and copied to `user_metadata.username` for display. No schema change.
+- Sign in (/auth, sign-in mode): the field is "Email or username". No `@` means a username: we try the hidden address first, then the `vendor-username-sign-in` function (for vendors who later switched to their own email). Errors say "Wrong username/email or password".
+- First login: `user_metadata.must_change_password = true` sends every page to /set-password (New + Confirm password, 6–72 chars, breach check). No skip. After saving, an optional "Add your email" step (Skip for now) then /vendor/edit-profile.
+- Preferred email: /vendor/account-email (linked from vendor Settings) and the step above. Uses `supabase.auth.updateUser({ email })`, so Supabase sends a confirmation link to the new address. Until it's confirmed, the hidden address stays the login. Once confirmed, the vendor can sign in with the email or the username.
+- Not deployed: `create-vendor-account` and `vendor-username-sign-in` edge functions. Until then the admin page says "Couldn't create the account. Is the function deployed?".
+- Email forwarding (docs/email-routing-plan.md) is no longer needed.

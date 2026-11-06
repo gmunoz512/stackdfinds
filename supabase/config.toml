@@ -65,3 +65,6 @@ verify_jwt = true
 
 [functions.create-vendor-account]
 verify_jwt = true
+
+[functions.vendor-username-sign-in]
+verify_jwt = false

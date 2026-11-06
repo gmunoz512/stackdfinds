@@ -67,7 +67,7 @@ export function TripPlannerChatProvider({ children, initialVendors = [] }: TripP
             category: v.category,
             vendor: v.name,
             price: v.price_per_person || 0,
-            rating: v.google_rating && v.google_rating > 0 ? v.google_rating : null,
+            rating: null, // vendor-typed rating isn't a verified Google rating
             description: v.description || '',
             duration: v.duration || undefined,
             maxGuests: v.max_guests || undefined,

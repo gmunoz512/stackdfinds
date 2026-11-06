@@ -1,3 +1,4 @@
+import '@/styles/ledger.css';
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, Users } from "lucide-react";
@@ -56,7 +57,7 @@ const ActiveHosts = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="stackd-ledger min-h-screen pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
         <button 
           onClick={goBack}
@@ -67,7 +68,7 @@ const ActiveHosts = () => {
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Active Hosts</h1>
+          <h1 className="text-2xl font-normal">Active Hosts</h1>
           <p className="text-sm text-muted-foreground">Your partner hosts</p>
         </div>
 

@@ -1,3 +1,4 @@
+import '@/styles/ledger.css';
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, DollarSign } from "lucide-react";
 import VendorBottomNav from "@/components/VendorBottomNav";
@@ -70,7 +71,7 @@ const RevenueBreakdown = () => {
   const totalRevenue = revenueData.reduce((sum, item) => sum + item.amount, 0);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="stackd-ledger min-h-screen pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
         <button 
           onClick={goBack}
@@ -81,7 +82,7 @@ const RevenueBreakdown = () => {
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Revenue Breakdown</h1>
+          <h1 className="text-2xl font-normal">Revenue Breakdown</h1>
           <p className="text-sm text-muted-foreground">Detailed revenue by service</p>
         </div>
 
@@ -92,7 +93,7 @@ const RevenueBreakdown = () => {
               {isLoading ? (
                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
-                <p className="text-2xl font-bold mt-1">${totalRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-normal mt-1">${totalRevenue.toLocaleString()}</p>
               )}
             </div>
             <div className="p-3 rounded-lg bg-gradient-to-br from-brand/20 to-hot/20">
@@ -136,7 +137,7 @@ const RevenueBreakdown = () => {
                       <h3 className="font-semibold text-sm leading-tight">{item.service}</h3>
                       <p className="text-xs text-muted-foreground mt-1">{item.bookings} booking{item.bookings !== 1 ? 's' : ''}</p>
                     </div>
-                    <p className="text-base font-bold whitespace-nowrap">${item.amount.toLocaleString()}</p>
+                    <p className="text-base font-normal whitespace-nowrap">${item.amount.toLocaleString()}</p>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
                     <div 

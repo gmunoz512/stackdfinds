@@ -48,6 +48,12 @@ export const authSchema = z.object({
 
 export type AuthFormData = z.infer<typeof authSchema>;
 
+// Sign-in accepts an email or a vendor username (see src/lib/vendorAccounts.ts)
+export const signInSchema = z.object({
+  email: z.string().trim().min(1, "Enter your email or username").max(255),
+  password: z.string().min(1, "Enter your password").max(72),
+});
+
 // Profile form schema
 export const profileSchema = z.object({
   full_name: nameSchema,

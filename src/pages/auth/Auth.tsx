@@ -1,5 +1,5 @@
 import { JoinRoleSelection } from '@/components/destination/JoinRoleSelection';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { startOAuth } from "@/lib/oauth";
 import { Apple } from "lucide-react";
-import { authSchema, type AuthFormData } from "@/lib/validations";
+import { authSchema, signInSchema, type AuthFormData } from "@/lib/validations";
+import { signInWithIdentifier } from "@/lib/vendorSignIn";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { PasswordResetOTPDialog } from "@/components/PasswordResetOTPDialog";
@@ -31,8 +32,11 @@ const Auth = () => {
   const { isAuthenticated, isLoading, role: userRole, setUserRole } = useAuthContext();
 
   // All hooks must be called before any conditional returns
+  // Sign-up needs a real email; sign-in also takes a vendor username.
+  const isSignUpRef = useRef(isSignUp);
+  isSignUpRef.current = isSignUp;
   const form = useForm<AuthFormData>({
-    resolver: zodResolver(authSchema),
+    resolver: (values, ctx, opts) => zodResolver(isSignUpRef.current ? authSchema : signInSchema)(values, ctx, opts),
     defaultValues: {
       email: "",
       password: "",
@@ -226,10 +230,7 @@ const Auth = () => {
         setLoading(false);
         navigate(redirectPath);
       } else {
-        const { data: signInData, error } = await supabase.auth.signInWithPassword({
-          email: data.email.trim(),
-          password: data.password,
-        });
+        const { data: signInData, error } = await signInWithIdentifier(data.email, data.password);
         
         if (error) {
           setLoading(false);
@@ -291,7 +292,7 @@ const Auth = () => {
       }
       
       const errorMessage = rawMessage.includes("Invalid login credentials")
-        ? "Invalid email or password. If you recently enabled leaked-password protection, you may need to reset your password."
+        ? "Wrong email/username or password. If you recently enabled leaked-password protection, you may need to reset your password."
         : rawMessage;
 
       toast({
@@ -332,10 +333,10 @@ const Auth = () => {
 
   const handleForgotPassword = () => {
     const email = form.getValues("email").trim();
-    if (!email) {
+    if (!email || !email.includes("@")) {
       toast({
         title: "Enter your email",
-        description: "Type your email above, then click Forgot password.",
+        description: "Type your email above, then click Forgot password. Vendors without an email on file: ask stackd for a new temporary password.",
         variant: "destructive",
       });
       return;
@@ -372,12 +373,14 @@ const Auth = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-muted-foreground">Email</FormLabel>
+                        <FormLabel className="text-muted-foreground">{isSignUp ? "Email" : "Email or username"}</FormLabel>
                         <FormControl>
                           <Input 
-                            type="email" 
-                            placeholder="you@example.com"
-                            autoComplete="email"
+                            type={isSignUp ? "email" : "text"}
+                            placeholder={isSignUp ? "you@example.com" : "you@example.com or your-username"}
+                            autoComplete={isSignUp ? "email" : "username"}
+                            autoCapitalize="none"
+                            spellCheck={false}
                             className="rounded-xl border-border/50 bg-background/50"
                             {...field} 
                           />

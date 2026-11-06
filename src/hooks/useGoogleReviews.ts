@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 export interface GoogleReview {
   author_name: string;
@@ -40,17 +39,6 @@ const readCache = (id: string): GoogleReviewsData | null => {
   }
 };
 
-const writeCache = (id: string, data: GoogleReviewsData) => {
-  try {
-    localStorage.setItem(
-      googleReviewsCacheKey(id),
-      JSON.stringify({ ...data, timestamp: Date.now() })
-    );
-  } catch {
-    /* storage full or unavailable — ignore */
-  }
-};
-
 interface UseGoogleReviewsOptions {
   /** Stable id used as the shared cache key (e.g. restaurant id). */
   id?: string | null;
@@ -62,39 +50,29 @@ interface UseGoogleReviewsOptions {
 }
 
 /**
- * Single source of truth for Google Places ratings/photos/reviews.
- * Replaces the per-screen localStorage caching that used to drift apart.
+ * Google Places ratings/photos/reviews.
+ * Paid Places lookups are turned off — catalog data comes from
+ * src/data/googlePlaces.json. This hook only returns a short-lived
+ * localStorage cache from earlier sessions and never calls Google.
  */
 export function useGoogleReviews({
   id,
   placeId,
   searchQuery,
-  lat,
-  lng,
   enabled = true,
 }: UseGoogleReviewsOptions) {
   const cacheId = id ?? placeId ?? searchQuery ?? "";
 
   return useQuery<GoogleReviewsData | null>({
     queryKey: ["google-reviews", cacheId],
-    enabled: Boolean(enabled && cacheId && (placeId || searchQuery)),
+    enabled: Boolean(enabled && cacheId),
     staleTime: CACHE_DURATION_MS,
     gcTime: CACHE_DURATION_MS,
     retry: false,
     initialData: () => (cacheId ? readCache(cacheId) ?? undefined : undefined),
     queryFn: async () => {
-      const cached = readCache(cacheId);
-      if (cached) return cached;
-
-      const { data, error } = await supabase.functions.invoke("google-reviews", {
-        body: placeId ? { placeId } : { searchQuery, lat, lng },
-      });
-
-      if (error) throw error;
-      if (!data || data.error) return null;
-
-      writeCache(cacheId, data as GoogleReviewsData);
-      return data as GoogleReviewsData;
+      // Never invoke the google-reviews edge function (billed Places API).
+      return readCache(cacheId);
     },
   });
 }

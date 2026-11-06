@@ -1,5 +1,5 @@
-// Google Maps / Places API Service — proxied through edge function
-import { supabase } from "@/integrations/supabase/client";
+// Geocoding / Places helpers. Paid Google Places calls are disabled —
+// these stubs keep old imports compiling without hitting Google.
 
 export interface GeoapifyPlace {
   id: string;
@@ -43,38 +43,22 @@ export const formatDistance = (meters: number): string => {
   return `${miles.toFixed(1)} mi`;
 };
 
-// Helper to call the google-places edge function
-const callGooglePlaces = async (action: string, params: Record<string, unknown>) => {
-  const { data, error } = await supabase.functions.invoke('google-places', {
-    body: { action, params },
-  });
-
-  if (error) {
-    console.error(`google-places/${action} error:`, error);
-    return null;
-  }
-
-  return data;
+// Reverse geocode — Google billed path disabled
+export const reverseGeocode = async (_lat: number, _lng: number): Promise<{ city: string; zipCode: string } | null> => {
+  return null;
 };
 
-// Reverse geocode coordinates to get city/location name
-export const reverseGeocode = async (lat: number, lng: number): Promise<{ city: string; zipCode: string } | null> => {
-  return callGooglePlaces('reverseGeocode', { lat, lng });
+// Geocode — Google billed path disabled
+export const geocodeLocation = async (_query: string): Promise<{ lat: number; lng: number; city: string; zipCode: string } | null> => {
+  return null;
 };
 
-// Geocode a city/address to get coordinates
-export const geocodeLocation = async (query: string): Promise<{ lat: number; lng: number; city: string; zipCode: string } | null> => {
-  return callGooglePlaces('geocode', { query });
-};
-
-// Autocomplete search for restaurants and locations
+// Autocomplete — Google billed path disabled
 export const autocompleteSearch = async (
   query: string,
-  lat?: number,
-  lng?: number
+  _lat?: number,
+  _lng?: number
 ): Promise<AutocompleteSuggestion[]> => {
   if (!query || query.length < 2) return [];
-
-  const result = await callGooglePlaces('autocomplete', { query, lat, lng });
-  return result || [];
+  return [];
 };

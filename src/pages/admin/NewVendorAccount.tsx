@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { pickVendorEmail } from "@/lib/vendorAccounts";
+import { normalizeUsername, suggestUsername, usernameError } from "@/lib/vendorAccounts";
 import "../auth/vendor-accounts.css";
 
 const CATEGORIES = ["experience", "restaurant", "tour", "wellness", "transport", "other"];
-type Created = { email: string; password: string };
+type Created = { username: string; password: string };
 
 // Admin-only (wrapped in ProtectedAdminRoute). Calls the create-vendor-account
 // edge function; the password lives only in this component's state.
@@ -15,16 +15,20 @@ const NewVendorAccount = () => {
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<Created | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const preview = pickVendorEmail(name, new Set());
+  // Suggested from the name until the admin edits it by hand.
+  const [usernameInput, setUsernameInput] = useState("");
+  const [edited, setEdited] = useState(false);
+  const username = normalizeUsername(edited ? usernameInput : suggestUsername(name));
+  const usernameProblem = username ? usernameError(username) : null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSaving(true);
-    const { data, error: err } = await supabase.functions.invoke("create-vendor-account", { body: { name, category } });
+    const { data, error: err } = await supabase.functions.invoke("create-vendor-account", { body: { name, category, username } });
     setSaving(false);
-    if (err || !data?.email) return setError(data?.error ?? "Couldn't create the account. Is the function deployed?");
-    setCreated({ email: data.email, password: data.password });
+    if (err || !data?.username) return setError(data?.error ?? "Couldn't create the account. Is the function deployed?");
+    setCreated({ username: data.username, password: data.password });
   };
 
   const copy = async (label: string, value: string) => {
@@ -33,7 +37,7 @@ const NewVendorAccount = () => {
     setTimeout(() => setCopied(null), 1500);
   };
 
-  const reset = () => { setCreated(null); setName(""); setCopied(null); };
+  const reset = () => { setCreated(null); setName(""); setUsernameInput(""); setEdited(false); setCopied(null); };
 
   return (
     <main className="va-page">
@@ -42,26 +46,31 @@ const NewVendorAccount = () => {
         {created ? (
           <>
             <h1 className="va-title">Vendor account ready</h1>
-            <p className="va-sub">Send these to the vendor. They'll be asked to pick their own password the first time they sign in.</p>
+            <p className="va-sub">Give these to the vendor. They sign in at stackdfinds.com/auth with the username, then pick their own password.</p>
             <dl className="va-result">
-              {([["Email", created.email], ["Temporary password", created.password]] as const).map(([label, value]) => (
+              {([["Username", created.username], ["Temporary password", created.password]] as const).map(([label, value]) => (
                 <div className="va-row" key={label}>
                   <div><dt>{label}</dt><dd>{value}</dd></div>
                   <button type="button" className="va-copy" onClick={() => copy(label, value)}>{copied === label ? "Copied" : "Copy"}</button>
                 </div>
               ))}
             </dl>
-            <p className="va-note">This password is shown once and isn't saved anywhere. If it's lost, create a new account or send a password reset.</p>
+            <p className="va-note">This password is shown once and isn't saved anywhere. If it's lost, make a new account for them.</p>
             <button className="va-btn va-btn-ghost" type="button" onClick={reset}>Add another vendor</button>
           </>
         ) : (
           <form onSubmit={submit} noValidate>
             <h1 className="va-title">Add a vendor</h1>
-            <p className="va-sub">Creates their login and a draft vendor page they can fill in.</p>
+            <p className="va-sub">Creates a username login and a draft vendor page they can fill in. No email needed.</p>
             <label className="va-field">
               Vendor name
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tacos Numero Uno" maxLength={120} />
-              <span className="va-hint">{preview ? `Login: ${preview} (a number is added if it's taken)` : "Letters or numbers needed"}</span>
+            </label>
+            <label className="va-field">
+              Username
+              <input value={edited ? usernameInput : username} onChange={(e) => { setEdited(true); setUsernameInput(e.target.value); }}
+                placeholder="tacos-numero-uno" maxLength={30} autoCapitalize="none" autoComplete="off" spellCheck={false} />
+              <span className="va-hint">{usernameProblem ?? "Lowercase letters, numbers and dashes. You can change it."}</span>
             </label>
             <label className="va-field">
               Category
@@ -70,7 +79,7 @@ const NewVendorAccount = () => {
               </select>
             </label>
             {error && <p className="va-error" role="alert">{error}</p>}
-            <button className="va-btn" type="submit" disabled={saving || !preview}>{saving ? "Creating…" : "Create account"}</button>
+            <button className="va-btn" type="submit" disabled={saving || !name.trim() || !username || !!usernameProblem}>{saving ? "Creating…" : "Create account"}</button>
           </form>
         )}
       </div>

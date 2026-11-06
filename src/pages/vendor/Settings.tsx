@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Clock, Save } from "lucide-react";
+import { ArrowLeft, Clock, Mail, Save } from "lucide-react";
+import { preferredEmail } from "@/lib/vendorAccounts";
 import { useNavigate } from "react-router-dom";
 import VendorBottomNav from "@/components/VendorBottomNav";
 import { supabase } from "@/integrations/supabase/client";
@@ -117,6 +118,19 @@ const VendorSettings = () => {
             <p className="text-sm text-muted-foreground">Configure your business policies</p>
           </div>
         </div>
+
+        {/* Account email (vendors who sign in with a username can add one) */}
+        <button
+          type="button"
+          onClick={() => navigate("/vendor/account-email")}
+          className="w-full flex items-center gap-3 rounded-xl border border-border/60 bg-card px-4 py-3 text-left hover:bg-muted transition-colors"
+        >
+          <Mail className="h-5 w-5 text-primary" />
+          <span className="flex-1">
+            <span className="block text-sm font-medium">Your email</span>
+            <span className="block text-xs text-muted-foreground">{preferredEmail(user) ?? "Add an email for booking updates"}</span>
+          </span>
+        </button>
 
         {/* Cancellation Policy Card */}
         <Card>

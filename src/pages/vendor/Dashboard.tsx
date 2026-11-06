@@ -344,13 +344,22 @@ const VendorDashboard = () => {
             </Card>
           )}
           {vendorAffiliate?.commission_percentage != null && (
-            <button
-              type="button"
-              onClick={() => navigate('/vendor/create-profile')}
-              className="mt-2 text-xs font-medium text-primary hover:underline"
-            >
-              Change commission tier
-            </button>
+            <div className="mt-2 flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => navigate('/vendor/create-profile')}
+                className="text-xs font-medium text-primary hover:underline text-left"
+              >
+                Change commission tier
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/vendor/affiliate')}
+                className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground text-left"
+              >
+                View affiliate fees
+              </button>
+            </div>
           )}
         </div>
 
@@ -377,7 +386,7 @@ const VendorDashboard = () => {
               const getNavigationRoute = () => {
                 switch(stat.label) {
                   case "Total Revenue":
-                    return "/vendor/revenue";
+                    return "/vendor/affiliate";
                   case "Bookings":
                     return "/vendor/bookings";
                   case "Active Hosts":

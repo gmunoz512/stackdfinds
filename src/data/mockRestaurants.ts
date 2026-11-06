@@ -5,10 +5,9 @@ import burritoAmorTulum from '@/assets/restaurants/burrito-amor-tulum.jpg';
 import taqueriaHonorioTulum from '@/assets/restaurants/taqueria-honorio-tulum.jpg';
 import posadaMargheritaTulum from '@/assets/restaurants/posada-margherita-tulum.jpg';
 import chamicosTulum from '@/assets/restaurants/chamicos-tulum.jpg';
-import kitchenTableTulum from '@/assets/restaurants/kitchen-table-tulum.jpg';
-import rawLoveTulum from '@/assets/restaurants/raw-love-tulum.jpg';
 
 import { expandedTulumRestaurants } from './tulumRestaurantsExpanded';
+import googlePlaces from './googlePlaces.json';
 
 // Mock restaurant data with realistic information
 export interface Restaurant {
@@ -36,6 +35,8 @@ export interface Restaurant {
   coordinates?: { lat: number; lng: number };
   distance?: number; // Distance in meters from user location
   isFromApi?: boolean; // Flag to identify API-fetched restaurants
+  googleFetchedAt?: string; // Date the Google rating/photo snapshot was taken
+  googleMapsUrl?: string;
 }
 
 // Unique restaurant photos for each Tulum restaurant
@@ -46,11 +47,9 @@ const uniqueRestaurantPhotos: Record<string, string[]> = {
   r4: [taqueriaHonorioTulum], // Taquería Honorio
   r5: [posadaMargheritaTulum], // Posada Margherita
   r6: [chamicosTulum], // Chamicos Tulum
-  r7: [kitchenTableTulum], // Kitchen Table
-  r8: [rawLoveTulum], // Raw Love
 };
 
-export const mockRestaurants: Restaurant[] = [
+const catalog: Restaurant[] = [
   // ==================== TULUM RESTAURANTS ====================
   {
     id: 'r1',
@@ -220,64 +219,26 @@ export const mockRestaurants: Restaurant[] = [
     reservationPlatform: null,
     coordinates: { lat: 20.1923, lng: -87.4267 },
   },
-  {
-    id: 'r7',
-    name: "Kitchen Table",
-    cuisine: "Mediterranean",
-    rating: 4.7,
-    reviewCount: 1567,
-    priceRange: '$$$',
-    address: "Calle Centauro Sur",
-    neighborhood: "Tulum Centro",
-    city: "Tulum",
-    zipCode: "77760",
-    phone: "+52 984 871 2067",
-    hours: {
-      monday: { open: "Closed", close: "Closed" },
-      tuesday: { open: "6:00 PM", close: "10:30 PM" },
-      wednesday: { open: "6:00 PM", close: "10:30 PM" },
-      thursday: { open: "6:00 PM", close: "10:30 PM" },
-      friday: { open: "6:00 PM", close: "10:30 PM" },
-      saturday: { open: "6:00 PM", close: "10:30 PM" },
-      sunday: { open: "6:00 PM", close: "10:30 PM" },
-    },
-    description: "Intimate farm-to-table Mediterranean dining in a beautiful garden setting. Seasonal tasting menus with wine pairings. One of Tulum's best-kept secrets for a special evening out.",
-    photos: uniqueRestaurantPhotos.r7,
-    features: ["Garden Setting", "Tasting Menu", "Wine Pairing", "Reservations Recommended"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.2098, lng: -87.4623 },
-  },
-  {
-    id: 'r8',
-    name: "Raw Love",
-    cuisine: "Vegan",
-    rating: 4.6,
-    reviewCount: 2134,
-    priceRange: '$$',
-    address: "Carr. Tulum-Boca Paila km 7",
-    neighborhood: "Tulum Beach",
-    city: "Tulum",
-    zipCode: "77780",
-    phone: "+52 984 130 5782",
-    hours: {
-      monday: { open: "8:00 AM", close: "6:00 PM" },
-      tuesday: { open: "8:00 AM", close: "6:00 PM" },
-      wednesday: { open: "8:00 AM", close: "6:00 PM" },
-      thursday: { open: "8:00 AM", close: "6:00 PM" },
-      friday: { open: "8:00 AM", close: "6:00 PM" },
-      saturday: { open: "8:00 AM", close: "6:00 PM" },
-      sunday: { open: "8:00 AM", close: "6:00 PM" },
-    },
-    description: "Stunning beachfront vegan café with raw food, smoothie bowls, and fresh juices. Yoga vibes and ocean views make this the perfect healthy breakfast or lunch spot in Tulum.",
-    photos: uniqueRestaurantPhotos.r8,
-    features: ["Beachfront", "Vegan", "Raw Food", "Smoothie Bowls"],
-    hasOutdoorSeating: true,
-    reservationPlatform: null,
-    coordinates: { lat: 20.2034, lng: -87.4298 },
-  },
   ...expandedTulumRestaurants,
 ];
+
+// The ratings typed into the catalog above are sample numbers, not Google's.
+// Only the snapshot in googlePlaces.json (pulled from public Google Maps pages)
+// counts as a Google rating; everything else shows no rating.
+type GooglePlace = { rating: number; photo: string; mapsUrl: string };
+const places = googlePlaces.places as Record<string, GooglePlace>;
+
+export const mockRestaurants: Restaurant[] = catalog.map((r) => {
+  const g = places[r.name];
+  return {
+    ...r,
+    rating: g?.rating,
+    reviewCount: undefined,
+    photos: g ? [g.photo, ...r.photos] : r.photos,
+    googleFetchedAt: g ? googlePlaces.fetchedAt : undefined,
+    googleMapsUrl: g?.mapsUrl,
+  };
+});
 // Location suggestions for autocomplete
 export const locationSuggestions = [
   { type: 'city', value: 'Tulum', state: 'QR', zipCode: '77780' },

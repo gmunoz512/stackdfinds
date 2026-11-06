@@ -26,3 +26,13 @@
 - Price summary card: plain rows (Guests, Subtotal, Service fees, Total); the total is bold. Fees always show, even at $0.
 - "Who's booking?" card: an outline button for sign-in, then guest fields. Notices use the soft peach notice box, in plain language, and say whether anything was charged.
 - Empty or retired states: one sentence plus one link back to /experiences. No placeholder data.
+
+### Affiliate accounting screens
+- Cream background, pine text, max-width 375px phone canvas for host/vendor ledgers (admin summary may use max-w-3xl).
+- Status chips use `Badge variant="outline"` with `ledgerStatusTone` — no gradient money amounts.
+- Summary cards are flat `border-border/60` Cards; avoid brand/hot gradient fills on new earnings tiles.
+- Empty states: icon + short plain sentence, no fake sample bookings.
+
+### Vendor account screens (/admin/vendors/new, /set-password, /vendor/account-email)
+- `src/pages/auth/vendor-accounts.css`: cream #f8f3e7 page, frosted card, Georgia regular-weight titles in pine #153d30, pill pine buttons, ghost button for Skip / secondary.
+- Credentials show in monospace with a Copy button. Steps show a small "Step 1 of 2" label; optional steps say "optional" and have "Skip for now".

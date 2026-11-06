@@ -39,10 +39,11 @@ export default function AllRestaurants() {
       category: v.cuisine,
       photos: v.photos,
       area: v.neighborhood || v.city,
+      rating: v.rating,
       url: `/restaurant/${v.id}`,
     }));
   const items = [
-    ...vendors.map((v) => ({ ...v, area: "Tulum", url: `/vendor/${v.id}` })),
+    ...vendors.map((v) => ({ ...v, area: "Tulum", rating: undefined as number | undefined, url: `/vendor/${v.id}` })),
     ...curated,
   ].filter(
     (v) =>
@@ -53,13 +54,9 @@ export default function AllRestaurants() {
   );
 
   return (
-    <div className="reference-catalog">
+    <div className="reference-catalog eats-light">
       <div className="reference-page-heading">
-        <h1>
-          Local Favorite
-          <br />
-          Eats
-        </h1>
+        <h1>Local Favorite Eats</h1>
         <p>Find your table in Tulum.</p>
       </div>
       <div className="reference-search">
@@ -95,7 +92,10 @@ export default function AllRestaurants() {
               <div className="listing-copy">
                 <h2>{item.name}</h2>
                 <p className="listing-category">{item.category}</p>
-                <p className="eat-area">{item.area}</p>
+                <p className="eat-area">
+                  {item.area}
+                  {item.rating ? <span title="Google Maps rating, checked Nov 5, 2026"> · ★ {item.rating.toFixed(1)}</span> : null}
+                </p>
               </div>
             </Link>
 <WishlistHeart item={{id:item.id,kind:"restaurant",name:item.name,category:item.category,photo:item.photos?.[0],url:item.url}}/>

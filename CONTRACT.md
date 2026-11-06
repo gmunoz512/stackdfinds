@@ -19,3 +19,19 @@
 - Pricing is computed server-side in create-booking-checkout (the tier is priced there). The client summary is only for display. Guests pay $0 in fees. The vendor pays stackd's cut, and the host keeps the full commission.
 - Stripe stays in test mode. No live charges until the owner configures them.
 - Schema changes ship as migration files only. Never apply them to the shared Supabase project from an agent.
+
+## Affiliate accounting (Phase 6)
+- Ledger status comes from `classifyAffiliateStatus` in `src/lib/affiliateAccounting.ts` (pending / confirmed / paid / refunded / failed). Do not invent a second status map in pages.
+- Host, vendor, and admin earnings views are read-only over `bookings`. They never create transfers, call release-payouts, or write payout_status.
+- Amounts on `bookings` are dollars (webhook stores cents/100). Never divide by 100 again in UI formatters.
+- Money rules stay in `src/lib/commissions.ts`. Vendor pays stackd's cut; host keeps the full commission; guests pay listed price.
+- Admin affiliate summary requires the existing admin role check (`has_role` / ProtectedAdminRoute).
+
+## Vendor accounts (usernames)
+- Vendor usernames: 3–30 chars, lowercase letters/numbers/single dashes. Rules live in `src/lib/vendorAccounts.ts` and `supabase/functions/_shared/vendorUsernames.ts`; keep them identical.
+- A username's login email is `<username>@vendors.stackdfinds.com`. Never show it to vendors (use `preferredEmail`). Never send mail to it.
+- The source of truth for who owns a username is `app_metadata.vendor_username` (server-only). `user_metadata.username` is display only.
+- Sign-in goes through `signInWithIdentifier` (src/lib/vendorSignIn.ts). `vendor-username-sign-in` must never return an email, and returns the same error for unknown username and wrong password.
+- Generated passwords are returned once by create-vendor-account and never logged or stored in plain text.
+- Email changes use `supabase.auth.updateUser({ email })`. Needs Supabase Auth "Secure email change" OFF, because the hidden address can't receive the second confirmation.
+- No schema changes for this feature.

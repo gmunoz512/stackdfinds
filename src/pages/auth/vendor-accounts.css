@@ -29,3 +29,8 @@
 .dark .va-btn-ghost, .dark .va-copy { background: transparent; color: #e7eadf; border-color: rgba(80,98,86,.8); }
 .dark .va-btn-ghost:hover, .dark .va-copy:hover { background: #22312a; }
 .dark .va-error { color: #f0a3a3; }
+.va-back { display: inline-block; font-size: 13px; color: #6b7a6e; text-decoration: none; margin-bottom: 14px; }
+.va-back:hover { color: #153d30; }
+.va-steps { font-size: 12px; color: #6b7a6e; margin: 0 0 6px; letter-spacing: .02em; }
+.va-title { font-weight: 400; }
+.dark .va-back { color: #9fada2; }
