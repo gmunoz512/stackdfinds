@@ -357,7 +357,7 @@ const VendorDashboard = () => {
                 onClick={() => navigate('/vendor/affiliate')}
                 className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground text-left"
               >
-                View affiliate fees
+                View your payouts
               </button>
             </div>
           )}

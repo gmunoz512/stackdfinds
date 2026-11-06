@@ -1,3 +1,4 @@
+import '@/styles/ledger.css';
 import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Receipt } from 'lucide-react';
@@ -46,7 +47,7 @@ const PayoutHistory = () => {
   const summary = useMemo(() => summarizeHostEarnings(rows), [rows]);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="stackd-ledger min-h-screen pb-24">
       <div className="max-w-[375px] mx-auto px-4 py-6 space-y-6">
         <button
           onClick={goBack}
@@ -57,20 +58,21 @@ const PayoutHistory = () => {
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Payout history</h1>
+          <h1 className="text-2xl font-normal">Payout history</h1>
           <p className="text-sm text-muted-foreground">
             Same bookings as{' '}
             <Link to="/host/earnings" className="underline underline-offset-2">
               Your earnings
             </Link>
-            , focused on payout status. Read-only — nothing is paid out from here.
+            . Commission is held until 24 hours after the reservation, then released. Read-only —
+            nothing is paid out from here.
           </p>
         </div>
 
         {!isLoading && summary.lines.length > 0 && (
-          <Card className="p-4 border-border/60">
+          <Card className="p-4 border-border/60 ledger-card">
             <p className="text-sm text-muted-foreground">Total earned</p>
-            <p className="text-2xl font-bold">{formatLedgerMoney(summary.totalEarned)}</p>
+            <p className="text-2xl font-normal">{formatLedgerMoney(summary.totalEarned)}</p>
           </Card>
         )}
 
@@ -109,10 +111,15 @@ const PayoutHistory = () => {
                       year: 'numeric',
                     })}
                   </span>
-                  <span className="font-semibold">
+                  <span className="font-medium">
                     {formatLedgerMoney(line.commissionEarned, line.currency)}
                   </span>
                 </div>
+                {(line.status === 'upcoming' || line.status === 'released') && (
+                  <p className="text-[11px] text-muted-foreground">
+                    {line.status === 'upcoming' ? `Releases ${line.releaseDate}` : `Released ${line.releaseDate}`}
+                  </p>
+                )}
               </Card>
             ))}
           </div>

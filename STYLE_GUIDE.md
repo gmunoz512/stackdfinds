@@ -27,8 +27,10 @@
 - "Who's booking?" card: an outline button for sign-in, then guest fields. Notices use the soft peach notice box, in plain language, and say whether anything was charged.
 - Empty or retired states: one sentence plus one link back to /experiences. No placeholder data.
 
-### Affiliate accounting screens
-- Cream background, pine text, max-width 375px phone canvas for host/vendor ledgers (admin summary may use max-w-3xl).
-- Status chips use `Badge variant="outline"` with `ledgerStatusTone` — no gradient money amounts.
-- Summary cards are flat `border-border/60` Cards; avoid brand/hot gradient fills on new earnings tiles.
+### Affiliate / payout screens
+- Wrap pages in `stackd-ledger` and import `src/styles/ledger.css` (cream `#f8f3e7`, pine `#153d30`, Georgia serif headings at light weight).
+- Max-width 375px phone canvas for host/vendor ledgers (admin summary may use max-w-3xl).
+- Status chips use `Badge variant="outline"` with `ledgerStatusTone` — Upcoming / Released (not "fees owed"). No gradient money amounts.
+- Summary cards are flat `border-border/60` Cards (`.ledger-card`); avoid brand/hot gradient fills on new earnings tiles.
 - Empty states: icon + short plain sentence, no fake sample bookings.
+- Show the release date (reservation + 24h) on upcoming lines.
