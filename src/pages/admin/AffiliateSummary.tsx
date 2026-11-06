@@ -50,8 +50,8 @@ const AffiliateSummary = () => {
         <div className="space-y-1">
           <h1 className="text-2xl font-normal">Affiliate summary</h1>
           <p className="text-sm text-muted-foreground">
-            Read-only view of host commissions and stackd fees from existing bookings. No payouts
-            are sent from this screen.
+            Read-only view of host commissions, stackd fees, and vendor payouts. Money is held until
+            24 hours after each reservation date. No payouts are sent from this screen.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ const AffiliateSummary = () => {
             { label: 'Host commissions', value: formatLedgerMoney(summary.totalHostCommissions) },
             { label: 'Vendor payouts', value: formatLedgerMoney(summary.totalVendorPayouts) },
           ].map((card) => (
-            <Card key={card.label} className="p-4 border-border/60">
+            <Card key={card.label} className="p-4 border-border/60 ledger-card">
               <p className="text-xs text-muted-foreground">{card.label}</p>
               {isLoading ? (
                 <Skeleton className="h-7 w-20 mt-2" />
@@ -74,7 +74,30 @@ const AffiliateSummary = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Card className="p-4 border-border/60">
+          <Card className="p-4 border-border/60 ledger-card">
+            <p className="text-xs text-muted-foreground">Upcoming vendor payouts</p>
+            {isLoading ? (
+              <Skeleton className="h-7 w-16 mt-2" />
+            ) : (
+              <p className="text-xl font-normal mt-1">
+                {formatLedgerMoney(summary.totalUpcomingVendor)}
+              </p>
+            )}
+          </Card>
+          <Card className="p-4 border-border/60 ledger-card">
+            <p className="text-xs text-muted-foreground">Released vendor payouts</p>
+            {isLoading ? (
+              <Skeleton className="h-7 w-16 mt-2" />
+            ) : (
+              <p className="text-xl font-normal mt-1">
+                {formatLedgerMoney(summary.totalReleasedVendor)}
+              </p>
+            )}
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Card className="p-4 border-border/60 ledger-card">
             <p className="text-xs text-muted-foreground">Bookings counted</p>
             {isLoading ? (
               <Skeleton className="h-7 w-12 mt-2" />
@@ -82,7 +105,7 @@ const AffiliateSummary = () => {
               <p className="text-xl font-normal mt-1">{summary.bookingCount}</p>
             )}
           </Card>
-          <Card className="p-4 border-border/60">
+          <Card className="p-4 border-border/60 ledger-card">
             <p className="text-xs text-muted-foreground">With host attribution</p>
             {isLoading ? (
               <Skeleton className="h-7 w-12 mt-2" />
@@ -92,10 +115,10 @@ const AffiliateSummary = () => {
           </Card>
         </div>
 
-        <Card className="p-4 border-border/60 space-y-3">
+        <Card className="p-4 border-border/60 space-y-3 ledger-card">
           <div className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
-            <h2 className="font-semibold">stackd fees by status</h2>
+            <h2 className="font-normal">stackd fees by payout status</h2>
           </div>
           {isLoading ? (
             <Skeleton className="h-16 w-full" />
@@ -104,7 +127,7 @@ const AffiliateSummary = () => {
               No bookings yet. Fees appear here after guests pay.
             </p>
           ) : (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {PRIMARY_LEDGER_STATUSES.map((status) => (
                 <div key={status} className="rounded-lg bg-muted/40 p-3">
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">

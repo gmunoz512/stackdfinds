@@ -111,7 +111,7 @@ const VendorProfile = () => {
       gradient: false
     },
     { 
-      label: "Affiliate fees", 
+      label: "Your payouts",
       icon: Receipt, 
       action: "/vendor/affiliate",
       gradient: false

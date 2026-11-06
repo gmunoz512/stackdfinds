@@ -53,14 +53,15 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Guest checkout needs migration 20261105020000_phase5_guest_bookings.sql plus redeploying create-booking-checkout and stripe-webhook. Neither is done yet.
 - Sample listings are gone: old /experience/:id and /book/:id sample links show "This listing isn't available". Wishlists and guides no longer show mock experiences or restaurants.
 
-## Phase 6 — affiliate accounting (live on stackdfinds.com)
-- ✅ **Commission math** stays in `src/lib/commissions.ts` (host 10/11/12% → stackd 3%; 15% → 2.5%; 17% → 2%). Vendor pays stackd's cut; host keeps the full commission.
-- ✅ **Ledger helpers** in `src/lib/affiliateAccounting.ts`: map booking payment/payout/status → pending / confirmed / paid (plus refunded / failed); summarize host, vendor, and stackd totals from existing `bookings` rows. Read-only — no payouts or money movement.
-- ✅ **Host earnings** `/host/earnings`: attributed bookings (`host_user_id`), commission earned, status chips, totals by pending/confirmed/paid. Empty state when none. Linked from host dashboard + profile.
-- ✅ **Vendor affiliate fees** `/vendor/affiliate`: per booking owed to host, owed to stackd, vendor keeps; totals. Linked from vendor dashboard revenue tile + profile. `/vendor/revenue` still shows by-service revenue.
-- ✅ **Admin affiliate summary** `/admin/affiliate` (admin role via `has_role`): booking volume, stackd fees, host commissions, vendor payouts, attributed count. Linked from admin settings.
-- ✅ **Payout history** host + vendor: dollar amounts (fixed incorrect /100), status via the same ledger classifier. No fake sample rows shipped.
-- ✅ Booking dates render as local calendar days (no UTC off-by-one).
+## Phase 6 — affiliate accounting / Airbnb-style payouts (branch `payout-model`)
+- ✅ **Commission math** stays in `src/lib/commissions.ts` (host 10/11/12% → stackd 3%; 15% → 2.5%; 17% → 2%). Vendor pays stackd's cut; host keeps the full commission. Guests pay listed price.
+- ✅ **Airbnb-style hold**: after a guest pays, vendor payout and host commission are held until **24 hours after the reservation date** (`booking_date` via `parseBookingDate` + 24h). Then both show as Released. Status comes from `classifyAffiliateStatus` (pending / upcoming / released / refunded / failed).
+- ✅ **Ledger helpers** in `src/lib/affiliateAccounting.ts`: `releaseAtFromBookingDate`, `summarizeVendorPayouts`, `summarizeHostEarnings`, `summarizeStackd`. Read-only — no money movement from these screens.
+- ✅ **Vendor payouts** `/vendor/affiliate` ("Your payouts"): Upcoming vs Released totals; per booking shows net you receive, host commission, stackd fee, and release date. Linked from vendor dashboard + profile. `/vendor/revenue` still shows by-service revenue.
+- ✅ **Host earnings** `/host/earnings`: Upcoming vs Released commission on the same 24h timeline. Linked from host dashboard + profile.
+- ✅ **Admin affiliate summary** `/admin/affiliate`: booking volume, stackd fees, host commissions, vendor payouts split upcoming/released. Admin role via `has_role`.
+- ✅ **Payout history** host + vendor: same classifier; dollar amounts (no /100). No fake sample rows.
+- ✅ Cream ledger styling (`src/styles/ledger.css`): Georgia serif light headings, pine `#153d30` on cream.
 - ✅ Tests: `tests/affiliate/affiliateAccounting.test.ts` + existing `tests/commissions/*`.
 - ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run; real payout release remains behind Stripe connect + release-payouts (unchanged).
 
@@ -73,3 +74,5 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Preferred email: /vendor/account-email (linked from vendor Settings) and the step above. Uses `supabase.auth.updateUser({ email })`, so Supabase sends a confirmation link to the new address. Until it's confirmed, the hidden address stays the login. Once confirmed, the vendor can sign in with the email or the username.
 - Not deployed: `create-vendor-account` and `vendor-username-sign-in` edge functions. Until then the admin page says "Couldn't create the account. Is the function deployed?".
 - Email forwarding (docs/email-routing-plan.md) is no longer needed.
+- ⏳ Real payout transfer still needs Stripe Connect (or similar) + the scheduler `release-payouts` worker. UI only classifies held vs released; it does not move money.
+- ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run.

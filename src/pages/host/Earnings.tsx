@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, DollarSign, Receipt } from 'lucide-react';
+import { ArrowLeft, Receipt } from 'lucide-react';
 import HostBottomNav from '@/components/HostBottomNav';
 import { useSmartBack } from '@/hooks/use-smart-back';
 import { useQuery } from '@tanstack/react-query';
@@ -70,45 +70,33 @@ const HostEarnings = () => {
         <div className="space-y-1">
           <h1 className="text-2xl font-normal">Your earnings</h1>
           <p className="text-sm text-muted-foreground">
-            Commission from guests who booked through your guide. You keep the full host commission —
-            stackd&apos;s fee comes from the vendor.
+            Commission from guests who booked through your guide. You keep the full host commission.
+            It is held until 24 hours after the reservation date, then released — same timeline as
+            the vendor payout.
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Card className="p-4 border-border/60">
-            <p className="text-xs text-muted-foreground">Total earned</p>
+          <Card className="p-4 border-border/60 ledger-card">
+            <p className="text-xs text-muted-foreground">Upcoming</p>
             {isLoading ? (
               <Skeleton className="h-8 w-20 mt-2" />
             ) : (
-              <p className="text-2xl font-normal mt-1">{formatLedgerMoney(summary.totalEarned)}</p>
-            )}
-          </Card>
-          <Card className="p-4 border-border/60">
-            <p className="text-xs text-muted-foreground">Attributed bookings</p>
-            {isLoading ? (
-              <Skeleton className="h-8 w-12 mt-2" />
-            ) : (
-              <p className="text-2xl font-normal mt-1">{summary.bookingCount}</p>
-            )}
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
-          {PRIMARY_LEDGER_STATUSES.map((status) => (
-            <Card key={status} className="p-3 border-border/60">
-              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                {ledgerStatusLabel(status)}
+              <p className="text-2xl font-normal mt-1">
+                {formatLedgerMoney(summary.totalUpcoming)}
               </p>
-              {isLoading ? (
-                <Skeleton className="h-5 w-12 mt-1" />
-              ) : (
-                <p className="text-sm font-medium mt-1">
-                  {formatLedgerMoney(summary.byStatus[status])}
-                </p>
-              )}
-            </Card>
-          ))}
+            )}
+          </Card>
+          <Card className="p-4 border-border/60 ledger-card">
+            <p className="text-xs text-muted-foreground">Released</p>
+            {isLoading ? (
+              <Skeleton className="h-8 w-20 mt-2" />
+            ) : (
+              <p className="text-2xl font-normal mt-1">
+                {formatLedgerMoney(summary.totalReleased)}
+              </p>
+            )}
+          </Card>
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-1">
@@ -130,7 +118,7 @@ const HostEarnings = () => {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Bookings</h2>
+          <h2 className="text-lg font-normal">Bookings</h2>
 
           {isLoading ? (
             <div className="space-y-3">
@@ -139,21 +127,21 @@ const HostEarnings = () => {
               ))}
             </div>
           ) : visible.length === 0 ? (
-            <Card className="p-8 text-center space-y-3">
+            <Card className="p-8 text-center space-y-3 ledger-card">
               <Receipt className="h-10 w-10 mx-auto text-muted-foreground" />
               <p className="font-medium text-foreground">No earnings yet</p>
               <p className="text-sm text-muted-foreground">
                 When a guest books a vendor from your guide, their commission shows up here —
-                pending until paid, confirmed while held, paid after payout.
+                upcoming until 24 hours after the reservation, then released.
               </p>
             </Card>
           ) : (
             <div className="space-y-3">
               {visible.map((line) => (
-                <Card key={line.id} className="p-4 border-border/60">
+                <Card key={line.id} className="p-4 border-border/60 ledger-card">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-sm leading-tight truncate">
+                      <h3 className="font-medium text-sm leading-tight truncate">
                         {line.experienceName}
                       </h3>
                       <p className="text-xs text-muted-foreground mt-1">{line.vendorName}</p>
@@ -164,6 +152,7 @@ const HostEarnings = () => {
                   </div>
                   <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                     <span>
+                      Reservation{' '}
                       {parseBookingDate(line.bookingDate).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -176,11 +165,20 @@ const HostEarnings = () => {
                   </div>
                   <div className="mt-2 pt-2 border-t border-border/50 flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">Your commission</span>
-                    <span className="inline-flex items-center gap-1 font-medium text-foreground">
-                      <DollarSign className="h-3.5 w-3.5" />
+                    <span className="font-medium text-foreground">
                       {formatLedgerMoney(line.commissionEarned, line.currency)}
                     </span>
                   </div>
+                  {line.status === 'upcoming' && (
+                    <p className="text-[11px] text-muted-foreground mt-2">
+                      Releases {line.releaseDate} (24 hours after the reservation).
+                    </p>
+                  )}
+                  {line.status === 'released' && (
+                    <p className="text-[11px] text-muted-foreground mt-2">
+                      Released on {line.releaseDate}.
+                    </p>
+                  )}
                 </Card>
               ))}
             </div>

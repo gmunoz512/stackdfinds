@@ -20,11 +20,12 @@
 - Stripe stays in test mode. No live charges until the owner configures them.
 - Schema changes ship as migration files only. Never apply them to the shared Supabase project from an agent.
 
-## Affiliate accounting (Phase 6)
-- Ledger status comes from `classifyAffiliateStatus` in `src/lib/affiliateAccounting.ts` (pending / confirmed / paid / refunded / failed). Do not invent a second status map in pages.
+## Affiliate accounting / payouts (Phase 6)
+- Ledger status comes from `classifyAffiliateStatus` in `src/lib/affiliateAccounting.ts` (pending / upcoming / released / refunded / failed). Release time is `parseBookingDate(booking_date) + 24h` via `releaseAtFromBookingDate`. Do not invent a second status map in pages.
 - Host, vendor, and admin earnings views are read-only over `bookings`. They never create transfers, call release-payouts, or write payout_status.
 - Amounts on `bookings` are dollars (webhook stores cents/100). Never divide by 100 again in UI formatters.
 - Money rules stay in `src/lib/commissions.ts`. Vendor pays stackd's cut; host keeps the full commission; guests pay listed price.
+- Vendor-facing copy is "Upcoming / Released payouts" (net of commission), not "fees owed".
 - Admin affiliate summary requires the existing admin role check (`has_role` / ProtectedAdminRoute).
 
 ## Vendor accounts (usernames)
