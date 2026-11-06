@@ -33,8 +33,8 @@
 - Status chips use `Badge variant="outline"` with `ledgerStatusTone` — Upcoming / Released (not "fees owed"). No gradient money amounts.
 - Summary cards are flat `border-border/60` Cards (`.ledger-card`); avoid brand/hot gradient fills on new earnings tiles.
 - Empty states: icon + short plain sentence, no fake sample bookings.
+- Show the release date (reservation + 24h) on upcoming lines.
 
 ### Vendor account screens (/admin/vendors/new, /set-password, /vendor/account-email)
 - `src/pages/auth/vendor-accounts.css`: cream #f8f3e7 page, frosted card, Georgia regular-weight titles in pine #153d30, pill pine buttons, ghost button for Skip / secondary.
 - Credentials show in monospace with a Copy button. Steps show a small "Step 1 of 2" label; optional steps say "optional" and have "Skip for now".
-- Show the release date (reservation + 24h) on upcoming lines.

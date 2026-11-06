@@ -65,14 +65,15 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ Tests: `tests/affiliate/affiliateAccounting.test.ts` + existing `tests/commissions/*`.
 - ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run; real payout release remains behind Stripe connect + release-payouts (unchanged).
 
-### Vendor accounts (branch vendor-usernames, not merged)
+- ⏳ Real payout transfer still needs Stripe Connect (or similar) + the scheduler `release-payouts` worker. UI only classifies held vs released; it does not move money.
+- ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run.
+
+### Vendor accounts (site live; functions not deployed yet)
 - /admin/vendors/new (admins only): enter the business name and category. A username is suggested (`tacos-numero-uno`: lowercase letters, numbers and single dashes, 3–30 chars) and the admin can edit it. On create, the server checks it's free, generates a 20-character random password, adds the vendor role and a draft (unpublished) Tulum vendor profile.
 - Username and password are shown once with Copy buttons. The password is never stored in plain text or logged.
 - No mailbox is created. Supabase Auth needs an email, so the login uses a hidden address `<username>@vendors.stackdfinds.com` (email_confirm true, never shown to vendors, nothing receives mail there). The username is kept in `app_metadata.vendor_username` (only the server can set it) and copied to `user_metadata.username` for display. No schema change.
 - Sign in (/auth, sign-in mode): the field is "Email or username". No `@` means a username: we try the hidden address first, then the `vendor-username-sign-in` function (for vendors who later switched to their own email). Errors say "Wrong username/email or password".
 - First login: `user_metadata.must_change_password = true` sends every page to /set-password (New + Confirm password, 6–72 chars, breach check). No skip. After saving, an optional "Add your email" step (Skip for now) then /vendor/edit-profile.
 - Preferred email: /vendor/account-email (linked from vendor Settings) and the step above. Uses `supabase.auth.updateUser({ email })`, so Supabase sends a confirmation link to the new address. Until it's confirmed, the hidden address stays the login. Once confirmed, the vendor can sign in with the email or the username.
-- Not deployed: `create-vendor-account` and `vendor-username-sign-in` edge functions. Until then the admin page says "Couldn't create the account. Is the function deployed?".
+- Edge functions `create-vendor-account` and `vendor-username-sign-in` are NOT deployed and Supabase Auth "Secure email change" is still on: both need a Supabase access token for project ilityngsjxknvxtqrgav. Until then the admin page says "Couldn't create the account. Is the function deployed?".
 - Email forwarding (docs/email-routing-plan.md) is no longer needed.
-- ⏳ Real payout transfer still needs Stripe Connect (or similar) + the scheduler `release-payouts` worker. UI only classifies held vs released; it does not move money.
-- ⏳ Phase 7 QA / end-to-end Alex–Casa Sol–Sarah run.
