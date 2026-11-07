@@ -1,0 +1,167 @@
+/* Shared polish: pine focus, calm press, photo fade, form status.
+   Motion stays short and turns off for prefers-reduced-motion. */
+
+html body :focus-visible {
+  outline: 2px solid #153d30 !important;
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline-color: #d7e6d4 !important;
+}
+
+.fade-photo {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #efe6d4;
+}
+
+.fade-photo-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 253, 245, 0.55), rgba(21, 61, 48, 0.08));
+}
+
+.fade-photo-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 480ms ease-out;
+}
+
+.fade-photo.is-loaded .fade-photo-img {
+  opacity: 1;
+}
+
+.fade-photo.is-loaded .fade-photo-wash {
+  opacity: 0;
+  transition: opacity 480ms ease-out;
+}
+
+.detail-gallery-tile > .fade-photo,
+.guide-photo-link > .fade-photo {
+  width: 100%;
+  height: 100%;
+}
+
+.stackd-notice {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.stackd-notice-error {
+  color: #6f2e2a;
+  background: #f8ebe6;
+  border: 1px solid #e4c4ba;
+}
+
+.stackd-notice-success {
+  color: #153d30;
+  background: #e7f0e4;
+  border: 1px solid #c5d7c0;
+}
+
+.stackd-auth-form [aria-invalid="true"],
+.stackd-auth-form[data-status="error"] input {
+  border-color: #9a5348;
+  background: #fff8f5;
+  box-shadow: 0 0 0 3px rgba(154, 83, 72, 0.16);
+}
+
+.guide-tile-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guide-photo-tile,
+.stackd-card,
+.reference-listing {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .guide-photo-tile:hover,
+  .stackd-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(39, 66, 52, 0.12);
+  }
+
+  .reference-listing:hover {
+    box-shadow: 0 10px 24px rgba(39, 66, 52, 0.1);
+  }
+
+  .guide-photo-tile:active,
+  .stackd-card:active,
+  .reference-listing:active {
+    transform: scale(0.985);
+  }
+}
+
+.dark .fade-photo {
+  background: #1c2a22;
+}
+
+.dark .fade-photo-wash {
+  background: linear-gradient(180deg, rgba(28, 42, 34, 0.2), rgba(21, 61, 48, 0.45));
+}
+
+.dark .stackd-auth-form[data-status="error"] input,
+.dark .stackd-auth-form [aria-invalid="true"] {
+  background: #3a2422;
+  border-color: #a56b64;
+}
+
+.dark .stackd-notice-error {
+  color: #f0c2bc;
+  background: #3a2422;
+  border-color: #6d403a;
+}
+
+.dark .stackd-notice-success {
+  color: #d7e6d4;
+  background: #1c3328;
+  border-color: #3d5c49;
+}
+
+.dark .guide-tile-title {
+  color: #fffdf5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-photo-img,
+  .fade-photo-wash,
+  .guide-photo-tile,
+  .stackd-card,
+  .reference-listing {
+    transition: none;
+  }
+
+  .fade-photo-img {
+    opacity: 1;
+  }
+
+  .fade-photo-wash {
+    display: none;
+  }
+
+  .guide-photo-tile:hover,
+  .guide-photo-tile:active,
+  .stackd-card:hover,
+  .stackd-card:active,
+  .reference-listing:hover,
+  .reference-listing:active {
+    transform: none;
+  }
+}

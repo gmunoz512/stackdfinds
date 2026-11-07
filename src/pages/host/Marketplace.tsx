@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Check, Heart, Loader2, Search, Store } from 'lucide-react';
 import { toast } from 'sonner';
+import { FadePhoto } from '@/components/media/FadePhoto';
 import HostBottomNav from '@/components/HostBottomNav';
 import { GoogleRating } from '@/components/GoogleRating';
 import { HostCommissionBadge } from '@/components/host/HostCommissionBadge';
@@ -259,17 +260,17 @@ const HostMarketplace = () => {
                 (removeVendor.isPending && removeVendor.variables === vendor.id);
 
               return (
-                <Card key={vendor.id} className="overflow-hidden p-0">
+                <Card key={vendor.id} className="stackd-card overflow-hidden p-0">
                   <div className="flex gap-3 p-3">
                     <Link
                       to={`/vendor/${vendor.id}`}
                       className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-muted"
                     >
                       {vendor.photos?.[0] ? (
-                        <img
+                        <FadePhoto
                           src={vendor.photos[0]}
                           alt={vendor.name}
-                          className="h-full w-full object-cover"
+                          frameClassName="h-full w-full"
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">

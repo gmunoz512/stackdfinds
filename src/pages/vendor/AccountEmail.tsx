@@ -19,7 +19,7 @@ const AccountEmail = () => {
         <Link to="/vendor/settings" className="va-back">← Settings</Link>
         <h1 className="va-title">Your email</h1>
         {params.get("confirmed") && current
-          ? <p className="va-sub">Confirmed. You can now sign in with {current}{username ? ` or ${username}` : ""}.</p>
+          ? <p className="va-status va-status-success" role="status">Confirmed. You can now sign in with {current}{username ? ` or ${username}` : ""}.</p>
           : <p className="va-sub">{username ? <>You sign in as <strong>{username}</strong>. </> : null}Add an email so booking updates and password resets reach you.</p>}
         <AddEmailForm current={current} pending={pending} username={username} />
       </div>

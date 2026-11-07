@@ -33,3 +33,23 @@
   background: rgba(255, 253, 245, 0.86);
   border-color: rgba(216, 208, 190, 0.72);
 }
+.ledger-figure {
+  margin: 4px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #153d30;
+  font-variant-numeric: tabular-nums;
+}
+.ledger-figure-quiet {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #274234;
+  white-space: nowrap;
+}
+.dark .ledger-figure { color: #e7eadf; }
+.dark .ledger-figure-quiet { color: #d5e0d4; }

@@ -39,7 +39,8 @@ const AddEmailForm = ({ current, pending, username, onSkip, onDone }: Props) => 
   if (sentTo) {
     return (
       <div>
-        <p className="va-sub">We sent a link to <strong>{sentTo}</strong>. Open it to finish. Until then, keep signing in with {username ? <>your username <strong>{username}</strong></> : "your current login"}.</p>
+        <p className="va-status va-status-success" role="status">Confirmation link sent to <strong>{sentTo}</strong>.</p>
+        <p className="va-sub">Open it to finish. Until then, keep signing in with {username ? <>your username <strong>{username}</strong></> : "your current login"}.</p>
         {onDone && <button className="va-btn" type="button" onClick={onDone}>Continue</button>}
       </div>
     );
@@ -55,10 +56,10 @@ const AddEmailForm = ({ current, pending, username, onSkip, onDone }: Props) => 
       )}
       <label className="va-field">
         {current ? "New email" : "Your email"}
-        <input type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" maxLength={255} />
+        <input type="email" autoComplete="email" inputMode="email" value={email} aria-invalid={error ? true : undefined} onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }} placeholder="you@example.com" maxLength={255} />
         <span className="va-hint">For booking updates and password resets. You can still sign in with your username.</span>
       </label>
-      {error && <p className="va-error" role="alert">{error}</p>}
+      {error && <p className="va-status va-status-error" role="alert">{error}</p>}
       <button className="va-btn" type="submit" disabled={saving || !email.trim()}>{saving ? "Sending…" : "Send confirmation link"}</button>
       {onSkip && <button className="va-btn va-btn-ghost" type="button" onClick={onSkip}>Skip for now</button>}
     </form>

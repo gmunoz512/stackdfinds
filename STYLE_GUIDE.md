@@ -38,3 +38,16 @@
 ### Vendor account screens (/admin/vendors/new, /set-password, /vendor/account-email)
 - `src/pages/auth/vendor-accounts.css`: cream #f8f3e7 page, frosted card, Georgia regular-weight titles in pine #153d30, pill pine buttons, ghost button for Skip / secondary.
 - Credentials show in monospace with a Copy button. Steps show a small "Step 1 of 2" label; optional steps say "optional" and have "Skip for now".
+- First login also shows `VendorSetupSteps`: Password, then Email (optional). The current step is a filled pine circle.
+
+### Focus, press, and photos
+- Keyboard focus is a 2px pine `#153d30` ring (`src/styles/polish.css`), with a light ring in night mode. Do not invent a second focus color.
+- Cards that can be pressed (`.reference-listing`, `.guide-photo-tile`, `.stackd-card`) ease down to 0.985 scale. No bounce. `@media (prefers-reduced-motion: reduce)` removes the move.
+- Network photos use `FadePhoto`: a cream wash, then a 480ms opacity fade. Vendor photos never use emoji; a missing photo stays initials or a simple icon.
+
+### Forms and dialogs
+- Sign-in, set-password, and add-email errors use a clay box (`role="alert"`) and a warm field border. Success uses a pale green box (`role="status"`).
+- Booking cancel dialogs are cream panels with a Georgia regular title. "Keep this booking" is the pine button. "Cancel booking" is the quiet clay button. No zoom, no confetti rain.
+
+### Payout totals
+- Released is the large Georgia figure. Upcoming is the smaller number under it, with a one-line note. Same on `/vendor/affiliate` and `/host/earnings`. Amounts stay in `formatLedgerMoney`.

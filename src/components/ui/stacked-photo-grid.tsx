@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Grid3X3, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { FadePhoto } from "@/components/media/FadePhoto";
 import { ReferencePhoto, type ReferenceCrop } from "@/components/destination/ReferencePhoto";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +20,9 @@ const StackedPhotoGrid = ({ photos, alt = "Photo", className, fallbackCrop }: St
   const openViewer = (index: number) => { setActiveIndex(index); setViewerOpen(true); };
   const move = (step: number) => setActiveIndex(index => (index + step + count) % count);
   const photo = (index: number, full = false) => sources[index]
-    ? <img src={sources[index]} alt={`${alt} ${index + 1}`} className={full ? "detail-viewer-photo" : "detail-gallery-photo"} loading={index ? "lazy" : "eager"} />
+    ? full
+      ? <img src={sources[index]} alt={`${alt} ${index + 1}`} className="detail-viewer-photo" />
+      : <FadePhoto src={sources[index]} alt={`${alt} ${index + 1}`} frameClassName="detail-gallery-photo" loading={index ? "lazy" : "eager"} />
     : <ReferencePhoto crop={fallbackCrop} alt={alt} className={full ? "detail-viewer-crop" : "detail-gallery-photo"} />;
   return <>
     <div className={cn("detail-gallery", className)}>
