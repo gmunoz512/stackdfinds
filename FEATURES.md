@@ -78,6 +78,13 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Edge functions `create-vendor-account` and `vendor-username-sign-in` are NOT deployed and Supabase Auth "Secure email change" is still on: both need a Supabase access token for project ilityngsjxknvxtqrgav. Until then the admin page says "Couldn't create the account. Is the function deployed?".
 - Email forwarding (docs/email-routing-plan.md) is no longer needed.
 
+### Airbnb experiences (branch `airbnb-experiences`)
+- ✅ Static catalog from `data/airbnb-experiences.csv` (208 experiences, 107 businesses). `scripts/build-airbnb-experiences.mjs` writes `src/data/airbnbExperiences.generated.ts` and downloads listing photos into `public/experience-photos/<username>/<id>-N.jpg` (max 1200px, JPEG). No hotlinking. Listing URLs stay in the CSV and are not shown to guests.
+- ✅ `/experiences` lists those experiences plus the 4 existing preview listings. One card per experience: title, business name (the name in parentheses, e.g. La Xolita), category, and rating/reviews only when the CSV has them. No invented prices or descriptions. “Show more” loads 24 at a time. A Businesses view groups the 107 vendors.
+- ✅ `/experiences/:username` is the business page. `username` is the slug. The hero photo is the top experience’s main photo, the same file used on that business’s tile. Each experience on the page lists its own photos. A missing photo is a cream initials tile, never an emoji.
+- ✅ Categories are inferred from the title (Water Sports, Food & Drink, Tours & Culture, Wellness, Adventure, Workshops) and otherwise “Tour Guide”.
+- ✅ The home explore list and saved-item lookup use the same catalog. The homepage rail still shows the 4 preview experiences.
+
 ### UI polish (branch `ui-polish`)
 - ✅ Vendor and experience photos, plus host-guide Top 8 tiles, keep a cream placeholder and fade in. Broken vendor photos still fall back to initials, never emoji.
 - ✅ Keyboard focus uses one pine ring. Listing cards, guide tiles, and marketplace cards press in slightly. Motion turns off when the device asks for less motion.

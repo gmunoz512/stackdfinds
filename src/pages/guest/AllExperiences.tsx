@@ -1,77 +1,86 @@
 import { WishlistHeart } from "@/components/destination/WishlistHeart";
-import { useEffect, useState } from "react";
+import { VendorPhoto } from "@/components/destination/VendorPhoto";
+import { RatingLine } from "@/components/destination/RatingLine";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Heart, Search, ChevronRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
-import {
-  ReferencePhoto,
-  type ReferenceCrop,
-} from "@/components/destination/ReferencePhoto";
-import { TulumSketch } from "@/components/destination/DestinationShell";
-import { previewExperiences } from "@/data/previewExperiences";
-interface ExperienceListing {
-  id: string;
-  name: string;
-  category: string;
-  description: string | null;
-  photos: string[] | null;
-  price_per_person: number | null;
-  google_rating: number | null;
-  referencePhoto?: ReferenceCrop;
-}
+import { airbnbVendors } from "@/data/airbnbCatalog";
+import { experienceCatalog, type CatalogCard } from "@/data/experienceCatalog";
+import { CATALOG_FILTERS, matchesCategory } from "@/lib/experienceCategory";
+
+const PAGE = 24;
+
 export default function AllExperiences() {
   const [params] = useSearchParams();
   const [filter, setFilter] = useState(params.get("category") || "All");
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState<ExperienceListing[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [view, setView] = useState<"experiences" | "businesses">("experiences");
+  const [limit, setLimit] = useState(PAGE);
+  const [extra, setExtra] = useState<CatalogCard[]>([]);
 
-  const load = async () => {
-    setLoading(true);
-    setError(false);
-    if (!isSupabaseConfigured) {
-      setItems(previewExperiences);
-      setLoading(false);
-      return;
-    }
-    try {
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let cancel = false;
+    void (async () => {
       const { data, error } = await supabase
         .from("vendor_profiles_public")
-        .select(
-          "id,name,category,description,photos,price_per_person,google_rating",
-        )
+        .select("id,name,category,photos,price_per_person,google_rating")
         .eq("is_published", true)
         .eq("listing_type", "experience");
-      if (error) throw error;
-      setItems(data || []);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    void load();
+      if (cancel || error || !data) return;
+      const known = new Set(experienceCatalog.map((item) => item.id));
+      setExtra(
+        data
+          .filter((row) => !known.has(row.id))
+          .map((row) => ({
+            id: row.id,
+            name: row.name,
+            businessName: null,
+            category: row.category,
+            photos: row.photos,
+            price: row.price_per_person,
+            rating: row.google_rating,
+            reviewCount: null,
+            username: null,
+            href: `/vendor/${row.id}`,
+          })),
+      );
+    })();
+    return () => {
+      cancel = true;
+    };
   }, []);
 
-  const visible = items.filter(
-    (item) =>
-      `${item.name} ${item.category}`
-        .toLowerCase()
-        .includes(query.toLowerCase()) &&
-      (filter === "All" ||
-        filter === "all" ||
-        (filter === "Water" || filter === "Water Sports"
-          ? item.category === "Water Sports"
-          : filter === "Tours"
-            ? ["Tour Guide", "Tours & Activities", "Transportation"].includes(
-                item.category,
-              )
-            : item.category === filter)),
-  );
+  useEffect(() => {
+    setLimit(PAGE);
+  }, [query, filter, view]);
+
+  const items = useMemo(() => [...experienceCatalog, ...extra], [extra]);
+  const chips = (CATALOG_FILTERS as readonly string[]).includes(filter)
+    ? CATALOG_FILTERS
+    : [filter, ...CATALOG_FILTERS];
+  const needle = query.trim().toLowerCase();
+  const experiences = items.filter((item) => {
+    const haystack = `${item.name} ${item.businessName ?? ""} ${item.category}`.toLowerCase();
+    return haystack.includes(needle) && matchesCategory(filter, item.category);
+  });
+  const businesses = airbnbVendors.filter((vendor) => {
+    const titles = vendor.experiences.map((item) => `${item.title} ${item.category}`).join(" ");
+    const haystack = `${vendor.businessName} ${vendor.personName ?? ""} ${titles}`.toLowerCase();
+    const categoryOk =
+      filter === "All" ||
+      filter === "all" ||
+      vendor.experiences.some((item) => matchesCategory(filter, item.category));
+    return haystack.includes(needle) && categoryOk;
+  });
+  const shownExperiences = experiences.slice(0, limit);
+  const shownBusinesses = businesses.slice(0, limit);
+  const remaining =
+    view === "experiences" ? experiences.length - shownExperiences.length : businesses.length - shownBusinesses.length;
+
   return (
-    <div className="reference-catalog">
+    <div className="reference-catalog experiences-light">
       <div className="reference-page-heading">
         <h1>
           Local Favorite
@@ -86,12 +95,31 @@ export default function AllExperiences() {
           aria-label="Search experiences"
           placeholder="Search experiences"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(event) => setQuery(event.target.value)}
         />
       </div>
-      <div className="reference-filters" aria-label="Experience categories">
-        {["All", "Water", "Tours", "Wellness"].map((label) => (
+      <div className="reference-filters" aria-label="Catalog view">
+        <button
+          type="button"
+          aria-pressed={view === "experiences"}
+          className={view === "experiences" ? "selected" : ""}
+          onClick={() => setView("experiences")}
+        >
+          Experiences
+        </button>
+        <button
+          type="button"
+          aria-pressed={view === "businesses"}
+          className={view === "businesses" ? "selected" : ""}
+          onClick={() => setView("businesses")}
+        >
+          Businesses
+        </button>
+      </div>
+      <div className="reference-filters catalog-filters" aria-label="Experience categories">
+        {chips.map((label) => (
           <button
+            type="button"
             aria-pressed={filter === label}
             className={filter === label ? "selected" : ""}
             key={label}
@@ -101,53 +129,98 @@ export default function AllExperiences() {
           </button>
         ))}
       </div>
-      <div className="reference-listing-grid">
-        {loading
-          ? [1, 2, 3, 4].map((i) => (
-              <div className="reference-listing skeleton" key={i} />
-            ))
-          : visible.map((item) => (
-              <article className="reference-listing" key={item.id}>
-                <Link
-                  to={
-                    item.id.startsWith("preview-")
-                      ? `/preview-experience/${item.id}`
-                      : `/vendor/${item.id}`
-                  }
-                >
-                  <ReferencePhoto
-                    crop={item.referencePhoto}
-                    src={item.photos?.[0] || "/placeholder.svg"}
-                    alt={item.name}
-                  />
-                  <div className="listing-copy">
-                    <h2>{item.name}</h2>
-                    <p className="listing-category">{item.category}</p>
-                    {item.price_per_person != null && (
-                      <p className="listing-price">
-                        ${item.price_per_person}
-                        <span>/person</span>
-                      </p>
-                    )}
-                  </div>
-                </Link>
-<WishlistHeart item={{id:item.id,kind:"experience",name:item.name,category:item.category,crop:item.referencePhoto,photo:item.photos?.[0],price:item.price_per_person,url:item.id.startsWith("preview-")?`/preview-experience/${item.id}`:`/vendor/${item.id}`}}/>
-              </article>
-            ))}
-      </div>
-      {!loading && !visible.length && (
+      <p className="catalog-count">
+        {view === "experiences"
+          ? `${experiences.length} ${experiences.length === 1 ? "experience" : "experiences"}`
+          : `${businesses.length} ${businesses.length === 1 ? "business" : "businesses"}`}
+      </p>
+      {view === "experiences" ? (
+        <div className="reference-listing-grid">
+          {shownExperiences.map((item, index) => (
+            <ExperienceCard item={item} key={item.id} eager={index < 4} />
+          ))}
+        </div>
+      ) : (
+        <ol className="business-tile-grid">
+          {shownBusinesses.map((vendor, index) => (
+            <li className="guide-photo-tile relative overflow-hidden rounded-[18px] bg-[#f3ebdd]" key={vendor.username}>
+              <Link to={`/experiences/${vendor.username}`} className="guide-photo-link relative block aspect-[3/4]">
+                <VendorPhoto
+                  src={vendor.photo}
+                  name={vendor.businessName}
+                  frameClassName="h-full w-full"
+                  loading={index < 4 ? "eager" : "lazy"}
+                />
+                <div className="business-tile-copy">
+                  <p className="guide-tile-title">{vendor.businessName}</p>
+                  <p className="business-tile-meta">
+                    {vendor.experiences.length}{" "}
+                    {vendor.experiences.length === 1 ? "experience" : "experiences"}
+                  </p>
+                  <RatingLine rating={vendor.rating} reviewCount={vendor.reviewCount} />
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+      {remaining > 0 && (
+        <button type="button" className="catalog-more" onClick={() => setLimit((count) => count + PAGE)}>
+          Show more ({remaining} left)
+        </button>
+      )}
+      {view === "experiences" && !experiences.length && (
         <div className="reference-empty">
-          {error ? (
-            <>
-              <p>Experiences couldn’t load.</p>
-              <button onClick={() => void load()}>Try again</button>
-            </>
-          ) : (
-            <p>No experiences match yet. Try another category.</p>
-          )}
+          <p>No experiences match yet. Try another category.</p>
         </div>
       )}
-
+      {view === "businesses" && !businesses.length && (
+        <div className="reference-empty">
+          <p>No businesses match yet. Try another name.</p>
+        </div>
+      )}
     </div>
+  );
+}
+
+function ExperienceCard({ item, eager }: { item: CatalogCard; eager: boolean }) {
+  const photoName = item.businessName || item.name;
+  return (
+    <article className="reference-listing">
+      <Link to={item.href}>
+        <VendorPhoto
+          src={item.photos?.[0]}
+          name={photoName}
+          frameClassName="reference-photo"
+          loading={eager ? "eager" : "lazy"}
+        />
+        <div className="listing-copy">
+          <h2>{item.name}</h2>
+          {item.businessName && item.businessName !== item.name ? (
+            <p className="listing-business">{item.businessName}</p>
+          ) : null}
+          <p className="listing-category">{item.category}</p>
+          <RatingLine rating={item.rating} reviewCount={item.reviewCount} />
+          {item.price != null ? (
+            <p className="listing-price">
+              ${item.price}
+              <span>/person</span>
+            </p>
+          ) : null}
+        </div>
+      </Link>
+      <WishlistHeart
+        item={{
+          id: item.id,
+          kind: "experience",
+          name: item.name,
+          category: item.category,
+          photo: item.photos?.[0],
+          crop: item.referencePhoto,
+          url: item.href,
+          price: item.price,
+        }}
+      />
+    </article>
   );
 }

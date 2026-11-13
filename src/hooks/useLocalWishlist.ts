@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { mockRestaurants } from "@/data/mockRestaurants";
-import { previewExperiences } from "@/data/previewExperiences";
+import { experienceCatalog } from "@/data/experienceCatalog";
 import type { ReferenceCrop } from "@/components/destination/ReferencePhoto";
 export type WishlistItem = { id: string; kind: "restaurant" | "experience"; name: string; category: string; photo?: string; crop?: ReferenceCrop; url: string; price?: number | null };
 const keys = { restaurant: "restaurantFavorites", experience: "vendorFavorites" };
@@ -27,7 +27,7 @@ const snapshot = () => JSON.stringify([ids("restaurant"), ids("experience"), rea
 const subscribe = (notify: () => void) => { window.addEventListener("stackd-wishlist", notify); window.addEventListener("storage", notify); return () => { window.removeEventListener("stackd-wishlist", notify); window.removeEventListener("storage", notify); }; };
 const known: WishlistItem[] = [
  ...mockRestaurants.map(r => ({id:r.id, kind:"restaurant" as const, name:r.name, category:r.cuisine, photo:r.photos[0], url:`/restaurant/${r.id}`})),
- ...previewExperiences.map(e => ({id:e.id, kind:"experience" as const, name:e.name, category:e.category, crop:e.referencePhoto, url:`/preview-experience/${e.id}`, price:e.price_per_person})),
+ ...experienceCatalog.map(e => ({id:e.id, kind:"experience" as const, name:e.name, category:e.category, crop:e.referencePhoto, photo:e.photos?.[0], url:e.href, price:e.price})),
 ];
 export function useLocalWishlist() {
  const raw = useSyncExternalStore(subscribe, snapshot, () => '[[],[],{}]');
