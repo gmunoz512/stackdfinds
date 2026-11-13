@@ -7,18 +7,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    logStep("Webhook received");
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
@@ -26,7 +20,6 @@ serve(async (req) => {
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
     
     if (!webhookSecret) {
-      logStep("STRIPE_WEBHOOK_SECRET not configured — rejecting request");
       return new Response(JSON.stringify({ error: "Webhook not configured" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
@@ -41,7 +34,6 @@ serve(async (req) => {
     const signature = req.headers.get("stripe-signature");
 
     if (!signature) {
-      logStep("Missing stripe-signature header — rejecting request");
       return new Response(JSON.stringify({ error: "Missing signature" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
@@ -52,21 +44,16 @@ serve(async (req) => {
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-      logStep("Webhook signature verified");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      logStep("Webhook signature verification failed", { error: errorMessage });
       return new Response(JSON.stringify({ error: "Invalid signature" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
 
-    logStep("Event type", { type: event.type });
-
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
-      logStep("Processing checkout session", { sessionId: session.id });
 
       const supabaseAdmin = createClient(
         Deno.env.get("SUPABASE_URL") ?? "",
@@ -89,15 +76,9 @@ serve(async (req) => {
       const vendorPayoutCents = parseInt(metadata.vendor_payout_cents || "0", 10);
       const hostPayoutCents = parseInt(metadata.host_payout_cents || "0", 10);
 
-      logStep("Session metadata", { 
-        vendorId, experienceName, bookingDate, bookingTime, guests, userId,
-        platformFeeCents, vendorPayoutCents, hostPayoutCents, hostUserId, isEscrow
-      });
-
       const guestEmailMeta = metadata.guest_email || null;
       const guestNameMeta = metadata.guest_name || null;
       if (!userId && !guestEmailMeta) {
-        logStep("No user_id or guest email in metadata, skipping booking creation");
         return new Response(JSON.stringify({ received: true, skipped: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -112,7 +93,6 @@ serve(async (req) => {
         .single();
 
       if (existingBooking) {
-        logStep("Booking already exists", { bookingId: existingBooking.id });
         return new Response(JSON.stringify({ received: true, duplicate: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -149,11 +129,8 @@ serve(async (req) => {
         .single();
 
       if (insertError) {
-        logStep("Failed to insert booking", { error: insertError.message });
         throw insertError;
       }
-
-      logStep("Booking created (ESCROW - confirmed, funds held)", { bookingId: booking.id });
 
       // Send notifications (same as before)
       const { data: userDataAuth } = userId
@@ -187,9 +164,8 @@ serve(async (req) => {
             }),
           }
         );
-        logStep("Admin notification sent");
       } catch (notifError) {
-        logStep("Admin notification error", { error: String(notifError) });
+        console.error("Booking notification failed:", notifError);
       }
 
       // Vendor notification
@@ -228,11 +204,10 @@ serve(async (req) => {
                   }),
                 }
               );
-              logStep("Vendor notification sent", { vendorEmail });
             }
           }
         } catch (vendorNotifError) {
-          logStep("Vendor notification error", { error: String(vendorNotifError) });
+          console.error("Vendor notification failed:", vendorNotifError);
         }
       }
 
@@ -264,9 +239,8 @@ serve(async (req) => {
               }),
             }
           );
-          logStep("Guest confirmation email sent", { guestEmail });
         } catch (guestNotifError) {
-          logStep("Guest confirmation email error", { error: String(guestNotifError) });
+          console.error("Guest notification failed:", guestNotifError);
         }
       }
 
@@ -299,9 +273,8 @@ serve(async (req) => {
                 }),
               }
             );
-            logStep("Host commission notification sent", { hostEmail });
           } catch (hostNotifError) {
-            logStep("Host commission notification error", { error: String(hostNotifError) });
+            console.error("Host notification failed:", hostNotifError);
           }
         }
       }
@@ -313,7 +286,6 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

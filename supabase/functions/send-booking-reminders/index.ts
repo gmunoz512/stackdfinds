@@ -6,18 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[BOOKING-REMINDERS] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    logStep("Starting reminder check");
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -34,8 +28,6 @@ serve(async (req) => {
     const startDate = reminderWindowStart.toISOString().split('T')[0];
     const endDate = reminderWindowEnd.toISOString().split('T')[0];
 
-    logStep("Checking for bookings", { startDate, endDate });
-
     // Query bookings that need reminders
     const { data: bookings, error: queryError } = await supabaseAdmin
       .from("bookings")
@@ -45,11 +37,8 @@ serve(async (req) => {
       .is("reminder_sent_at", null);
 
     if (queryError) {
-      logStep("Query error", { error: queryError.message });
       throw queryError;
     }
-
-    logStep("Found bookings", { count: bookings?.length || 0 });
 
     if (!bookings || bookings.length === 0) {
       return new Response(JSON.stringify({ success: true, remindersCount: 0 }), {
@@ -67,7 +56,6 @@ serve(async (req) => {
         const hoursUntilBooking = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
         if (hoursUntilBooking < 71 || hoursUntilBooking > 73) {
-          logStep("Booking outside window", { bookingId: booking.id, hoursUntilBooking });
           continue;
         }
 
@@ -76,7 +64,6 @@ serve(async (req) => {
         const guestEmail = userData?.user?.email;
 
         if (!guestEmail) {
-          logStep("No email for user", { userId: booking.user_id });
           continue;
         }
 
@@ -111,18 +98,13 @@ serve(async (req) => {
             .eq("id", booking.id);
 
           remindersSent++;
-          logStep("Reminder sent", { bookingId: booking.id, guestEmail });
         } else {
           const errorText = await response.text();
-          logStep("Reminder failed", { bookingId: booking.id, error: errorText });
         }
       } catch (bookingError) {
         const errorMsg = bookingError instanceof Error ? bookingError.message : String(bookingError);
-        logStep("Error processing booking", { bookingId: booking.id, error: errorMsg });
       }
     }
-
-    logStep("Completed", { remindersSent });
 
     return new Response(JSON.stringify({ success: true, remindersCount: remindersSent }), {
       status: 200,
@@ -130,7 +112,6 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

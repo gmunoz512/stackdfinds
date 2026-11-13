@@ -42,7 +42,6 @@ serve(async (req) => {
     // Mapbox Directions API - driving profile
     const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${TULUM_CENTRO.lng},${TULUM_CENTRO.lat};${destinationLng},${destinationLat}?geometries=geojson&overview=full&steps=true&access_token=${mapboxToken}`;
 
-    console.log('Fetching directions from Mapbox...');
     const response = await fetch(directionsUrl);
     const data = await response.json();
 
@@ -66,7 +65,7 @@ serve(async (req) => {
         : `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`,
       distance: route.distance, // meters
       distanceText: parseFloat(distanceKm) >= 1 ? `${distanceKm} km` : `${Math.round(route.distance)} m`,
-      steps: route.legs[0]?.steps?.map((step: any) => ({
+      steps: route.legs[0]?.steps?.map((step: { maneuver?: { instruction?: string }; distance?: number; duration?: number }) => ({
         instruction: step.maneuver?.instruction,
         distance: step.distance,
         duration: step.duration,
@@ -75,8 +74,6 @@ serve(async (req) => {
       destination: { lat: destinationLat, lng: destinationLng },
       // SECURITY: Do NOT return mapboxToken to the client
     };
-
-    console.log('Route calculated:', { duration: result.durationText, distance: result.distanceText });
 
     return new Response(
       JSON.stringify(result),

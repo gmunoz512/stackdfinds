@@ -6,6 +6,7 @@ import HostBottomNav from "@/components/HostBottomNav";
 import { useSmartBack } from "@/hooks/use-smart-back";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { errorMessage } from "@/lib/errorMessage";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -90,11 +91,11 @@ const PaymentSettings = () => {
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error opening Stripe dashboard:', error);
       toast({
         title: "Error",
-        description: error?.message || "Failed to open payment dashboard. Please try again.",
+        description: errorMessage(error, "Failed to open payment dashboard. Please try again."),
         variant: "destructive",
       });
     } finally {

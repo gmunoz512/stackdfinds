@@ -7,6 +7,7 @@ import { useState } from "react";
 import HostBottomNav from "@/components/HostBottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { errorMessage } from "@/lib/errorMessage";
 import { useSmartBack } from "@/hooks/use-smart-back";
 import {
   Dialog,
@@ -53,8 +54,8 @@ const ChangePassword = () => {
       setDirectPassword('');
       setDirectConfirm('');
       setDialogOpen(false);
-    } catch (error: any) {
-      const message = error.message || "Failed to update password";
+    } catch (error: unknown) {
+      const message = errorMessage(error, "Failed to update password");
       // Handle leaked password detection
       if (message.includes("data breach") || message.includes("leaked password") || message.includes("Password has been found")) {
         toast.error("This password has been found in a data breach. Please choose a different, more secure password.");
@@ -114,8 +115,8 @@ const ChangePassword = () => {
         newPassword: '',
         confirmPassword: '',
       });
-    } catch (error: any) {
-      const message = error.message || "Failed to update password";
+    } catch (error: unknown) {
+      const message = errorMessage(error, "Failed to update password");
       // Handle leaked password detection
       if (message.includes("data breach") || message.includes("leaked password") || message.includes("Password has been found")) {
         toast.error("This password has been found in a data breach. Please choose a different, more secure password.");

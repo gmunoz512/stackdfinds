@@ -15,7 +15,7 @@ export const passwordSchema = z
 export const phoneSchema = z
   .string()
   .max(20, "Phone must be less than 20 characters")
-  .regex(/^[\d\s\-\+\(\)]*$/, "Please enter a valid phone number")
+  .regex(/^[\d\s+()-]*$/, "Please enter a valid phone number")
   .optional()
   .or(z.literal(""));
 

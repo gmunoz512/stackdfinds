@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useBooking } from "@/contexts/BookingContext";
 import { useEffect, useState } from "react";
 import { calmCelebrate } from "@/lib/calmCelebrate";
+import { errorMessage } from "@/lib/errorMessage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,13 +94,13 @@ const BookingConfirmation = () => {
         description: "Your booking has been cancelled. You will receive a confirmation email shortly.",
       });
       clearBookingData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Cancellation error:", error);
-      const errorMessage = error?.message || "Failed to cancel booking. Please try again.";
-      setCancellationError(errorMessage);
+      const message = errorMessage(error, "Failed to cancel booking. Please try again.");
+      setCancellationError(message);
       toast({
         title: "Error",
-        description: errorMessage,
+        description: message,
         variant: "destructive",
       });
     } finally {

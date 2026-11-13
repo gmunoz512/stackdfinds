@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { errorMessage } from "@/lib/errorMessage";
 import { cn } from "@/lib/utils";
 
 interface ReviewDialogProps {
@@ -80,11 +81,11 @@ export function ReviewDialog({
       setComment("");
       onOpenChange(false);
       onReviewSubmitted?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error submitting review:", error);
       toast({
         title: "Error",
-        description: error?.message || "Failed to submit review. Please try again.",
+        description: errorMessage(error, "Failed to submit review. Please try again."),
         variant: "destructive",
       });
     } finally {

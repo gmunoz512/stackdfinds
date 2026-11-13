@@ -35,7 +35,6 @@ serve(async (req) => {
     );
 
     if (!rateLimitResult.allowed) {
-      console.log(`Rate limit exceeded for OTP verification from IP: ${ip}`);
       return createRateLimitResponse(rateLimitResult.resetAt, corsHeaders);
     }
 
@@ -109,10 +108,10 @@ serve(async (req) => {
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Request failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

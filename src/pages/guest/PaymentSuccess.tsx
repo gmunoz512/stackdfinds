@@ -6,6 +6,7 @@ import { useBooking } from "@/contexts/BookingContext";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { calmCelebrate } from "@/lib/calmCelebrate";
+import { errorMessage } from "@/lib/errorMessage";
 import { supabase } from "@/integrations/supabase/client";
 import {
   AlertDialog,
@@ -153,11 +154,11 @@ const PaymentSuccess = () => {
         description: "Your booking has been cancelled. You will receive a confirmation email shortly.",
       });
       clearBookingData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Cancellation error:", error);
       toast({
         title: "Error",
-        description: error?.message || "Failed to cancel booking. Please try again.",
+        description: errorMessage(error, "Failed to cancel booking. Please try again."),
         variant: "destructive",
       });
     } finally {

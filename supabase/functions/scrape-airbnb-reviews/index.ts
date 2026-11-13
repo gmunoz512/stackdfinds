@@ -47,8 +47,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Scraping Airbnb URL:', formattedUrl);
-
     // Use Firecrawl to scrape the Airbnb page
     const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
@@ -77,8 +75,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Scrape successful, parsing reviews...');
-
     // Extract reviews from the scraped content
     const markdown = data.data?.markdown || data.markdown || '';
     const reviews = parseAirbnbReviews(markdown);
@@ -86,8 +82,6 @@ Deno.serve(async (req) => {
     // Try to extract the overall rating
     const ratingMatch = markdown.match(/(\d+\.?\d*)\s*★|★\s*(\d+\.?\d*)|(\d+\.?\d*)\s*out of 5|rating[:\s]+(\d+\.?\d*)/i);
     const rating = ratingMatch ? parseFloat(ratingMatch[1] || ratingMatch[2] || ratingMatch[3] || ratingMatch[4]) : null;
-
-    console.log(`Found ${reviews.length} reviews, rating: ${rating}`);
 
     return new Response(
       JSON.stringify({

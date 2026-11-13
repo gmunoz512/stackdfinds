@@ -9,9 +9,6 @@ verify_jwt = false
 [functions.tripadvisor-search]
 verify_jwt = false
 
-[functions.google-reviews]
-verify_jwt = false
-
 [functions.scrape-instagram]
 verify_jwt = false
 
@@ -48,13 +45,7 @@ verify_jwt = false
 [functions.price-comparison]
 verify_jwt = false
 
-[functions.vendor-directions]
-verify_jwt = false
-
 [functions.validate-promo-code]
-verify_jwt = false
-
-[functions.google-places]
 verify_jwt = false
 
 [functions.process-refund]

@@ -8,7 +8,7 @@ npm test --prefix tests/security
 ```
 
 Tests use an isolated PGlite PostgreSQL engine and mocked HTTP calls. They never
-connect to Supabase, Stripe, Firecrawl, Google, Mapbox, or Lovable.
+connect to Supabase, Stripe, Firecrawl, Google, or Mapbox.
 
 The database fixture includes the existing ownership and verification policies
 from the repository, then applies the new migrations. It checks host protected
@@ -22,5 +22,6 @@ staging before production. Tests do not establish live deployment state or
 verify every existing trigger, RLS policy, grant, or custom database role.
 
 HTTP tests cover authentication, anonymous-session rejection, guest access,
-quota rejection, outages, request-size bounds, URL validation, and all six actual
-handlers returning before paid API calls when the guard blocks the request.
+quota rejection, outages, request-size bounds, URL validation, and the paid
+handlers returning before provider calls when the guard blocks the request.
+`google-places`, `google-reviews`, and `vendor-directions` are not in this repo.

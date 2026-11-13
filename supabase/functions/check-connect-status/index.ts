@@ -7,18 +7,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CHECK-CONNECT-STATUS] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    logStep("Function started");
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -38,7 +32,6 @@ serve(async (req) => {
     
     const user = userData.user;
     if (!user) throw new Error("User not authenticated");
-    logStep("User authenticated", { userId: user.id });
 
     const { accountType } = await req.json(); // 'vendor' or 'host'
 
@@ -80,12 +73,6 @@ serve(async (req) => {
     const account = await stripe.accounts.retrieve(stripeAccountId);
 
     const isComplete = account.details_submitted && account.payouts_enabled;
-    logStep("Account status", { 
-      accountId: stripeAccountId, 
-      detailsSubmitted: account.details_submitted,
-      payoutsEnabled: account.payouts_enabled,
-      isComplete 
-    });
 
     // Update database if onboarding is complete
     if (isComplete) {
@@ -112,7 +99,6 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

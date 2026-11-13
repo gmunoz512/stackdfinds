@@ -36,8 +36,6 @@ Write 2-3 engaging paragraphs (about 150 words total) that:
 
 Don't include the price or specifics in the description - just paint a picture of the experience.`;
 
-    console.log('Generating description for:', name);
-
     const response = await fetch(gateway.url, {
       method: "POST",
       headers: {
@@ -69,8 +67,6 @@ Don't include the price or specifics in the description - just paint a picture o
     if (!description) {
       throw new Error('No description generated');
     }
-
-    console.log('Description generated successfully');
 
     return new Response(
       JSON.stringify({ success: true, description }),

@@ -23,7 +23,7 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ **Active vendors fix**: reads `commission_percentage` (was wrongly using `host_commission_percentage`).
 - ✅ **Vendor management** restyled cream/pine (no gradient header); links to marketplace; graceful empty states if link tables are missing.
 - ✅ **og meta** in `index.html` points at `https://stackdfinds.com` (was chatgpt.site).
-- 🟡 Migration `supabase/migrations/20261105010000_phase2_commission_tiers.sql` — CHECK constraint + comment; **German must review/apply** (Lovable-controlled Supabase). UI works without it.
+- 🟡 Migration `supabase/migrations/20261105010000_phase2_commission_tiers.sql` — CHECK constraint + comment; **German must review/apply** on shared project `ilityngsjxknvxtqrgav`. UI works without it.
 - ✅ Host guide builder, text share, guest booking, and affiliate ledger land in later phase sections below.
 
 ## Phase 3 — host guides (branch `phase3-host-guides`)

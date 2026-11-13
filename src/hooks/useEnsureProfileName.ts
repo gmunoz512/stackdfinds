@@ -29,7 +29,6 @@ export function useEnsureProfileName({ firstName, lastName }: EnsureProfileNameI
         .eq("user_id", user.id);
 
       if (error) {
-        // eslint-disable-next-line no-console
         console.error("useEnsureProfileName: failed to set full_name", error);
       }
     })();

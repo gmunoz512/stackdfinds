@@ -37,8 +37,6 @@ serve(async (req) => {
     const body = await req.json();
     const { role } = body;
 
-    console.log(`Role assignment request: '${role}' for user ${user.id}`);
-
     const validRoles = ["host", "vendor", "user"];
     if (!role || !validRoles.includes(role)) {
       return new Response(
@@ -105,7 +103,6 @@ serve(async (req) => {
         );
       }
 
-      console.log(`Updated role: ${currentRole} -> ${role} for user ${user.id}`);
     } else {
       // New role assignment
       const { error: insertError } = await serviceSupabase
@@ -120,7 +117,6 @@ serve(async (req) => {
         );
       }
 
-      console.log(`Assigned role '${role}' to user ${user.id}`);
     }
 
     return new Response(

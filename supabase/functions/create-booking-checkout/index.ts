@@ -7,18 +7,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-BOOKING-CHECKOUT] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    logStep("Function started");
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -62,7 +56,6 @@ serve(async (req) => {
       : { data: { user: null } };
     if (userData?.user?.email) {
       user = { id: userData.user.id, email: userData.user.email };
-      logStep("User authenticated", { userId: user.id });
     } else {
       const email = typeof guestEmail === "string" ? guestEmail.trim() : "";
       const name = typeof guestName === "string" ? guestName.trim() : "";
@@ -70,10 +63,7 @@ serve(async (req) => {
         throw new Error("Sign in, or add your name and email to book as a guest");
       }
       user = { id: null, email };
-      logStep("Guest checkout");
     }
-
-    logStep("Booking details received", { experienceName, vendorName, date, time, guests, totalPrice, vendorId, hostId });
 
     if (!experienceName || !guests || guests <= 0) {
       throw new Error("Invalid booking details");
@@ -90,14 +80,12 @@ serve(async (req) => {
       throw new Error("Vendor not found");
     }
 
-    logStep("Vendor profile fetched", { id: vendorId, name: vendorProfile.name, price: vendorProfile.price_per_person });
-
     // SECURITY: Calculate total price server-side
     // Use the selected price tier when one was picked, else the base price.
     const tiers = Array.isArray(vendorProfile.price_tiers) ? vendorProfile.price_tiers : [];
     const tier = Number.isInteger(tierIndex) && tierIndex >= 0 && tierIndex < tiers.length ? tiers[tierIndex] : null;
     const unitPrice = Number(tier?.price ?? vendorProfile.price_per_person ?? 0);
-    let calculatedTotal = unitPrice * guests;
+    const calculatedTotal = unitPrice * guests;
     let finalDiscountAmount = 0;
 
     if (promoCode) {
@@ -108,19 +96,10 @@ serve(async (req) => {
       
       if (!promoError && promoData && promoData.length > 0 && promoData[0].valid) {
         finalDiscountAmount = Number(promoData[0].discount_amount);
-        logStep("Promo code applied", { code: promoCode, discount: finalDiscountAmount });
       }
     }
 
     const finalAmountToCharge = Math.max(0, calculatedTotal - finalDiscountAmount);
-
-    logStep("Price calculation", { 
-      basePrice: vendorProfile.price_per_person, 
-      guests, 
-      subtotal: calculatedTotal, 
-      discount: finalDiscountAmount,
-      finalCharge: finalAmountToCharge 
-    });
 
     // The vendor chooses one of the supported host commission tiers. The
     // corresponding stackd fee is paid by the vendor from the booking payout.
@@ -148,9 +127,6 @@ serve(async (req) => {
 
       if (hostVendorLink) {
         validHostId = hostId;
-        logStep("Host validated", { hostId });
-      } else {
-        logStep("Host not linked to this vendor", { hostId, vendorId });
       }
     }
 
@@ -169,25 +145,12 @@ serve(async (req) => {
     // Calculate payment splits
     const totalAmountCents = Math.round(finalAmountToCharge * 100);
     
-    let platformFeeCents: number;
-    let hostPayoutCents: number;
-    
-    platformFeeCents = Math.round(totalAmountCents * (platformFeePercent / 100));
-    hostPayoutCents = validHostId
+    const platformFeeCents = Math.round(totalAmountCents * (platformFeePercent / 100));
+    const hostPayoutCents = validHostId
       ? Math.round(totalAmountCents * (hostCommissionPercent / 100))
       : 0;
     
     const vendorPayoutCents = totalAmountCents - platformFeeCents - hostPayoutCents;
-
-    logStep("Payment splits calculated (ESCROW)", {
-      totalAmountCents,
-      platformFeeCents,
-      hostPayoutCents,
-      vendorPayoutCents,
-      hasValidHost: !!validHostId,
-      hostCommissionPercent,
-      platformFeePercent,
-    });
 
     const origin = req.headers.get("origin") || "http://localhost:5173";
     
@@ -235,15 +198,12 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
 
-    logStep("Checkout session created (ESCROW mode)", { sessionId: session.id, url: session.url });
-
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSmartBack } from "@/hooks/use-smart-back";
 import { PageTransition } from "@/components/PageTransition";
+import { errorMessage } from "@/lib/errorMessage";
 
 const reasons = [
   { value: "no_show", label: "Vendor didn't show up" },
@@ -73,9 +74,9 @@ const RequestRefund = () => {
 
       toast.success("Refund request submitted. We'll review it shortly.");
       navigate("/bookings");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Refund request error:", error);
-      toast.error(error?.message || "Failed to submit refund request");
+      toast.error(errorMessage(error, "Failed to submit refund request"));
     } finally {
       setIsSubmitting(false);
     }

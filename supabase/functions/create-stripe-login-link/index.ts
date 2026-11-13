@@ -7,11 +7,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-STRIPE-LOGIN-LINK] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
 
   if (req.method === "OPTIONS") {
@@ -19,7 +14,6 @@ serve(async (req) => {
   }
 
   try {
-    logStep("Function started");
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -39,10 +33,8 @@ serve(async (req) => {
     
     const user = userData.user;
     if (!user) throw new Error("User not authenticated");
-    logStep("User authenticated", { userId: user.id });
 
     const { accountType } = await req.json(); // 'vendor' or 'host'
-    logStep("Account type", { accountType });
 
     if (!accountType || !['vendor', 'host'].includes(accountType)) {
       throw new Error("Invalid account type. Must be 'vendor' or 'host'");
@@ -90,12 +82,8 @@ serve(async (req) => {
       throw new Error("No Stripe Connect account found. Please set up your account first.");
     }
 
-    logStep("Found Stripe account", { accountId: stripeAccountId });
-
     // Create a login link to the Stripe Express Dashboard
     const loginLink = await stripe.accounts.createLoginLink(stripeAccountId);
-
-    logStep("Created login link", { url: loginLink.url });
 
     return new Response(JSON.stringify({ url: loginLink.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -103,7 +91,6 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

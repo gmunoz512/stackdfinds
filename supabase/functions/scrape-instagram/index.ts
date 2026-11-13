@@ -35,7 +35,6 @@ serve(async (req) => {
     );
 
     if (!rateLimitResult.allowed) {
-      console.log(`Rate limit exceeded for Instagram scrape from IP: ${ip}`);
       return createRateLimitResponse(rateLimitResult.resetAt, corsHeaders);
     }
 
@@ -65,8 +64,6 @@ serve(async (req) => {
     if (!cleanUrl.startsWith('http')) {
       cleanUrl = `https://www.instagram.com/${cleanUrl.replace('@', '')}`;
     }
-
-    console.log('Scraping Instagram URL:', cleanUrl);
 
     const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
@@ -111,8 +108,6 @@ serve(async (req) => {
       // Prefer larger images
       return url.includes('1080') || url.includes('640') || url.includes('750') || !url.includes('150');
     }).slice(0, 12); // Limit to 12 photos
-
-    console.log(`Found ${allImages.length} total images, ${highQualityImages.length} high-quality`);
 
     return new Response(
       JSON.stringify({

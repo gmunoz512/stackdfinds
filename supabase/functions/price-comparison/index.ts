@@ -27,8 +27,6 @@ serve(async (req) => {
   try {
     const { category, experienceName, currentPrice, duration, location = 'Tulum' }: PriceComparisonRequest = await req.json();
 
-    console.log('Price comparison request:', { category, experienceName, currentPrice, duration, location });
-
     if (!category || !experienceName || currentPrice === undefined) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields: category, experienceName, currentPrice' }),
@@ -121,8 +119,6 @@ Format your response as JSON with this structure:
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    console.log('AI response content:', content);
 
     // Try to parse the JSON from the response
     let priceData;
