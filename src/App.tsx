@@ -45,6 +45,7 @@ const Wishlists = lazy(() => import("./pages/guest/ReferenceSaved"));
 const AllRestaurants = lazy(() => import("./pages/guest/AllRestaurants"));
 const AllExperiences = lazy(() => import("./pages/guest/AllExperiences"));
 const ExperienceBusiness = lazy(() => import("./pages/guest/ExperienceBusiness"));
+const ExperienceListing = lazy(() => import("./pages/guest/ExperienceListing"));
 const GuestGuide = lazy(() => import("./pages/guest/GuestGuide"));
 const MyBookings = lazy(() => import("./pages/guest/MyBookings"));
 const Conversation = lazy(() => import("./pages/guest/Conversation"));
@@ -263,6 +264,7 @@ const AppRoutes = () => (
     <Route path="/restaurant/:id" element={<RestaurantDetail />} />
     <Route path="/restaurants" element={<AllRestaurants />} />
     <Route path="/experiences" element={<AllExperiences />} />
+    <Route path="/experiences/:username/:experienceId" element={<ExperienceListing />} />
     <Route path="/experiences/:username" element={<ExperienceBusiness />} />
     <Route path="/wishlists" element={<Wishlists />} />
     <Route path="/guide/:hostId" element={<GuestGuide />} />

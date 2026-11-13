@@ -47,3 +47,9 @@ export function findAirbnbVendor(username: string | undefined): AirbnbVendor | u
   if (!username) return undefined;
   return airbnbVendors.find((vendor) => vendor.username === username);
 }
+
+export function findAirbnbExperience(username: string | undefined, experienceId: string | undefined) {
+  if (!username || !experienceId) return undefined;
+  const id = experienceId.startsWith("airbnb-") ? experienceId : `airbnb-${experienceId}`;
+  return airbnbExperiences.find((item) => item.username === username && item.id === id);
+}

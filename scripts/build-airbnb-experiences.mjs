@@ -1,6 +1,7 @@
 // Reads data/airbnb-experiences.csv, downloads each listing's own photos
-// (main + up to 4 more), and writes src/data/airbnbExperiences.generated.ts.
-// Photos are stored in the repo. Nothing is hotlinked.
+// (main + up to 4 more), reads public listing facts from the same page,
+// and writes src/data/airbnbExperiences.generated.ts.
+// Photos are stored in the repo. Nothing is hotlinked. Listing URLs stay in the CSV.
 //
 //   node --experimental-strip-types scripts/build-airbnb-experiences.mjs
 
@@ -8,6 +9,7 @@ import { spawn } from "node:child_process";
 import { mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { emptyListingFacts, extractFactsFromHtml } from "../src/lib/airbnbListingFacts.ts";
 import {
   businessDisplayName,
   inferExperienceCategory,
@@ -19,6 +21,7 @@ const csvPath = join(root, "data/airbnb-experiences.csv");
 const photoRoot = join(root, "public/experience-photos");
 const outPath = join(root, "src/data/airbnbExperiences.generated.ts");
 const cachePath = join(root, "data/.airbnb-photo-cache.json");
+const factsCachePath = join(root, "data/.airbnb-listing-facts.json");
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 
@@ -167,9 +170,21 @@ async function pool(items, limit, worker) {
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => run()));
 }
 
-function loadCache() {
+function publicPrice(price) {
+  if (!price || typeof price.amount !== "number" || !Number.isFinite(price.amount) || price.amount <= 0) return null;
+  return {
+    amount: price.amount,
+    currency: price.currency ?? null,
+    display: String(price.display ?? ""),
+    from: Boolean(price.from),
+    minimumAmount: typeof price.minimumAmount === "number" ? price.minimumAmount : null,
+    minimumDisplay: price.minimumDisplay ?? null,
+  };
+}
+
+function loadJson(path) {
   try {
-    return JSON.parse(readFileSync(cachePath, "utf8"));
+    return JSON.parse(readFileSync(path, "utf8"));
   } catch {
     return {};
   }
@@ -197,11 +212,13 @@ const rows = table.slice(1).map((cells) => {
   };
 });
 
-const cache = loadCache();
+const cache = loadJson(cachePath);
+const factsCache = loadJson(factsCachePath);
 let fetchedPages = 0;
 let failedPages = 0;
+let priced = 0;
 
-await pool(rows, 5, async (row) => {
+await pool(rows, 4, async (row) => {
   const cached = cache[row.id];
   const cachedPhotos = Array.isArray(cached?.remote) ? cached.remote : null;
   const localsReady =
@@ -209,21 +226,43 @@ await pool(rows, 5, async (row) => {
     cachedPhotos.every((_, index) =>
       fileOk(join(photoRoot, row.username, `${row.experienceId}-${index + 1}.jpg`)),
     );
-  if (localsReady) {
-    row.remote = cachedPhotos;
+  const cachedFacts = factsCache[row.id];
+  if (localsReady) row.remote = cachedPhotos;
+  if (localsReady && cachedFacts?.price) {
+    row.facts = cachedFacts;
     return;
   }
   try {
-    const html = await fetchText(row.sourceUrl);
-    row.remote = listingPhotos(html, row.experienceId);
-    if (!row.remote.length) failedPages += 1;
+    let extracted = { found: false, facts: emptyListingFacts() };
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      const html = await fetchText(row.sourceUrl);
+      if (!localsReady && attempt === 0) {
+        row.remote = listingPhotos(html, row.experienceId);
+        if (!row.remote.length) failedPages += 1;
+      }
+      extracted = extractFactsFromHtml(html, row.experienceId);
+      if (extracted.found) break;
+      await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+    }
+    if (extracted.found) {
+      row.facts = extracted.facts;
+      factsCache[row.id] = extracted.facts;
+    } else {
+      row.facts = cachedFacts || emptyListingFacts();
+      failedPages += 1;
+      console.error(`page ${row.experienceId}: listing facts not on the page`);
+    }
   } catch (error) {
-    row.remote = [];
+    if (!row.remote) row.remote = [];
+    row.facts = cachedFacts || emptyListingFacts();
     failedPages += 1;
     console.error(`page ${row.experienceId}: ${error.message}`);
   }
   fetchedPages += 1;
-  if (fetchedPages % 20 === 0) console.log(`fetched ${fetchedPages} listing pages`);
+  if (fetchedPages % 20 === 0) {
+    writeFileSync(factsCachePath, JSON.stringify(factsCache));
+    console.log(`fetched ${fetchedPages} listing pages`);
+  }
 });
 
 const downloads = [];
@@ -261,19 +300,32 @@ for (const row of rows) {
   cacheOut[row.id] = { remote: row.remote || [] };
 }
 writeFileSync(cachePath, JSON.stringify(cacheOut));
+writeFileSync(factsCachePath, JSON.stringify(factsCache));
 
-const experiences = rows.map((row) => ({
-  id: row.id,
-  username: row.username,
-  title: row.title,
-  businessName: businessDisplayName(row.vendorName),
-  personName: personName(row.vendorName),
-  category: inferExperienceCategory(row.title),
-  rating: Number.isFinite(row.rating) ? row.rating : null,
-  reviewCount: Number.isFinite(row.reviewCount) ? row.reviewCount : null,
-  isTop: row.isTop,
-  photos: row.photos,
-}));
+const experiences = rows.map((row) => {
+  const facts = row.facts || emptyListingFacts();
+  if (facts.price) priced += 1;
+  return {
+    id: row.id,
+    username: row.username,
+    title: row.title,
+    businessName: businessDisplayName(row.vendorName),
+    personName: personName(row.vendorName),
+    category: inferExperienceCategory(row.title),
+    rating: Number.isFinite(row.rating) ? row.rating : null,
+    reviewCount: Number.isFinite(row.reviewCount) ? row.reviewCount : null,
+    isTop: row.isTop,
+    photos: row.photos,
+    price: publicPrice(facts.price),
+    duration: facts.duration,
+    offered: facts.offered,
+    meetingArea: facts.meetingArea,
+    city: facts.city,
+    languages: facts.languages,
+    groupSize: facts.groupSize,
+    description: facts.description,
+  };
+});
 
 const body = experiences
   .map((item) => `  ${JSON.stringify(item)}`)
@@ -284,6 +336,15 @@ writeFileSync(
   `// Generated by scripts/build-airbnb-experiences.mjs from data/airbnb-experiences.csv.
 // Listing URLs stay in data/airbnb-experiences.csv. Do not copy them here.
 // Photos are local files. Do not hotlink.
+
+export type AirbnbPrice = {
+  amount: number;
+  currency: string | null;
+  display: string;
+  from: boolean;
+  minimumAmount: number | null;
+  minimumDisplay: string | null;
+};
 
 export type AirbnbExperience = {
   id: string;
@@ -296,6 +357,14 @@ export type AirbnbExperience = {
   reviewCount: number | null;
   isTop: boolean;
   photos: string[];
+  price: AirbnbPrice | null;
+  duration: string | null;
+  offered: string[];
+  meetingArea: string | null;
+  city: string | null;
+  languages: string[];
+  groupSize: string | null;
+  description: string | null;
 };
 
 export const airbnbExperiences: AirbnbExperience[] = [
@@ -306,5 +375,5 @@ ${body},
 
 const withPhotos = experiences.filter((item) => item.photos.length).length;
 console.log(
-  `wrote ${experiences.length} experiences, ${withPhotos} with photos, ${saved} files, ${missed} photo misses, ${failedPages} page misses`,
+  `wrote ${experiences.length} experiences, ${priced} with a price, ${experiences.length - priced} price on request, ${withPhotos} with photos, ${saved} files, ${missed} photo misses, ${failedPages} page misses`,
 );

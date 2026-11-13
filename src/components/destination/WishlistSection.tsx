@@ -26,7 +26,12 @@ export function WishlistSection() {
                 <div className="listing-copy">
                   <h3>{item.name}</h3>
                   <p className="listing-category">{item.category}</p>
-                  {item.kind === "experience" && item.price != null && <p className="listing-price">${item.price}<span>/person</span></p>}
+                  {item.kind === "experience" && (item.priceLabel || item.price != null) && (
+                    <p className="listing-price">
+                      {item.priceLabel ?? `$${item.price}`}
+                      {item.priceLabel === "Price on request" ? null : <span>/person</span>}
+                    </p>
+                  )}
                 </div>
               </Link>
               <WishlistHeart item={item} />

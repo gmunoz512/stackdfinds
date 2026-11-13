@@ -1447,18 +1447,42 @@ html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5;
 .eats-light .font-bold { font-weight: 500; }
 .eats-light strong { font-weight: 500; }
 
-/* Keep the "Local Favorite Eats" title on one line from 320px phones up to desktop. */
+/* Keep the "Local Favorite Eats" page title on one line from 320px phones up to desktop. */
 .reference-catalog.eats-light .reference-page-heading h1,
 .destination-shell .reference-catalog.eats-light .reference-page-heading h1 {
   font-size: clamp(26px, 10vw, 56px);
   line-height: 1.1;
   white-space: nowrap;
 }
-.home-category.eats-light header h2,
-.eats-section.eats-light .section-title h2,
-.destination-shell .home-category.eats-light header h2 {
-  font-size: clamp(24px, 8.6vw, 40px);
+/* Home section titles share one light Georgia size. The longer
+   "Local Favorite Experiences" line fits at 360px and up. */
+.tulum-home .home-category > header h2,
+.destination-shell .tulum-home .home-category > header h2,
+.eats-section .section-title h2,
+.experiences-section .section-title h2,
+.destination-shell .eats-section .section-title h2,
+.destination-shell .experiences-section .section-title h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: clamp(20px, 6.15vw, 28px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #153d30;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.destination-shell .tulum-home .home-category > header .home-wishlists-heading h2 {
+  overflow: visible;
+  text-overflow: clip;
+}
+.dark .tulum-home .home-category > header h2,
+.dark .destination-shell .tulum-home .home-category > header h2,
+.dark .eats-section .section-title h2,
+.dark .experiences-section .section-title h2,
+.dark .destination-shell .eats-section .section-title h2,
+.dark .destination-shell .experiences-section .section-title h2 {
+  color: #e7eadf;
 }
 
 /* Experience catalog: light Georgia, cream initials, local photos only. */
@@ -1597,6 +1621,13 @@ html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.experience-heading h2 a {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+  text-decoration: none;
+}
 .experience-photos {
   display: flex;
   gap: 6px;
@@ -1635,3 +1666,53 @@ html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5;
 .dark .catalog-more:hover { background: #24382e; }
 .dark .experience-block { border-top-color: rgba(192, 213, 187, 0.28); }
 .dark .experience-block.is-targeted { background: #24382e; }
+.detail-offered { margin: 0; padding-left: 18px; }
+.detail-offered li { margin: 8px 0; font-size: 15px; line-height: 1.5; color: #274234; }
+.detail-guests { display: inline-flex; align-items: center; gap: 10px; }
+.detail-guests button {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #153d30;
+  background: transparent;
+  color: #153d30;
+  font: 18px/1 Georgia, "Times New Roman", serif;
+}
+.detail-guests button:disabled { opacity: 0.35; }
+.detail-essentials .detail-total dt,
+.detail-essentials .detail-total dd { font-weight: 600; color: #153d30; }
+.detail-host-block { margin: 8px 0 20px; }
+.detail-host-block h2 { font-size: 24px; margin: 0 0 12px; }
+.detail-host {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.detail-host-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+.detail-host h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.detail-host .listing-business { margin: 2px 0 0; }
+.reference-detail .catalog-more { margin-top: 10px; }
+.detail-back { margin: 0 0 8px; font-size: 13px; }
+.detail-back a { color: #153d30; }
+.dark .detail-offered li,
+.dark .detail-essentials .detail-total dt,
+.dark .detail-essentials .detail-total dd,
+.dark .detail-guests button,
+.dark .detail-back a { color: #e7eadf; }
+.dark .detail-guests button { border-color: #c5d4c4; }

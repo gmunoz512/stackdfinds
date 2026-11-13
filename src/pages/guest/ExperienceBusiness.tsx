@@ -2,6 +2,7 @@ import { RatingLine } from "@/components/destination/RatingLine";
 import { VendorPhoto } from "@/components/destination/VendorPhoto";
 import { WishlistHeart } from "@/components/destination/WishlistHeart";
 import { findAirbnbVendor } from "@/data/airbnbCatalog";
+import { PRICE_ON_REQUEST, guestPriceLine } from "@/lib/experiencePrice";
 import { useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
@@ -50,9 +51,21 @@ export default function ExperienceBusiness() {
               <div className="experience-heading">
                 <div>
                   {experience.isTop ? <p className="listing-category">Top experience</p> : null}
-                  <h2>{experience.title}</h2>
+                  <h2>
+                    <Link to={`/experiences/${vendor.username}/${experience.id}`}>{experience.title}</Link>
+                  </h2>
                   <p className="listing-category">{experience.category}</p>
                   <RatingLine rating={experience.rating} reviewCount={experience.reviewCount} />
+                  <p className="listing-price">
+                    {guestPriceLine(experience.price) === PRICE_ON_REQUEST ? (
+                      PRICE_ON_REQUEST
+                    ) : (
+                      <>
+                        {guestPriceLine(experience.price)}
+                        <span>/person</span>
+                      </>
+                    )}
+                  </p>
                 </div>
                 <WishlistHeart
                   item={{
@@ -61,8 +74,9 @@ export default function ExperienceBusiness() {
                     name: experience.title,
                     category: experience.category,
                     photo: experience.photos[0],
-                    url: `/experiences/${vendor.username}#${experience.id}`,
-                    price: null,
+                    url: `/experiences/${vendor.username}/${experience.id}`,
+                    price: experience.price?.currency === "USD" ? experience.price.amount : null,
+                    priceLabel: guestPriceLine(experience.price),
                   }}
                 />
               </div>

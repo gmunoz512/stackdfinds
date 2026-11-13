@@ -111,7 +111,7 @@ export function GuestExploreTab(props: GuestExploreTabProps) {
       <Link
         to={
           vendor.username
-            ? `/experiences/${vendor.username}#${vendor.id}`
+            ? `/experiences/${vendor.username}/${vendor.id}`
             : vendor.id.startsWith("preview-")
               ? `/experiences?category=${encodeURIComponent(vendor.category)}`
               : `/vendor/${vendor.id}`
