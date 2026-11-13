@@ -45,7 +45,6 @@ serve(async (req) => {
     );
 
     if (!rateLimitResult.allowed) {
-      console.log(`Rate limit exceeded for OTP request from IP: ${ip}`);
       return createRateLimitResponse(rateLimitResult.resetAt, corsHeaders);
     }
 
@@ -63,7 +62,6 @@ serve(async (req) => {
     
     if (userError || !userData?.user) {
       // Don't reveal whether user exists
-      console.log("User not found for email (or error):", email);
       return new Response(
         JSON.stringify({ success: true, message: "If an account exists, an OTP has been sent." }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -101,8 +99,6 @@ serve(async (req) => {
       );
     }
 
-    console.log(`OTP generated for ${email}`);
-
     // Send OTP via email using Resend
     const emailResponse = await resend.emails.send({
       from: "Stackd <onboarding@resend.dev>",
@@ -121,8 +117,6 @@ serve(async (req) => {
       `,
     });
 
-    console.log("Email response:", emailResponse);
-
     if (emailResponse.error) {
       console.error("Resend error:", emailResponse.error);
       return new Response(
@@ -140,10 +134,10 @@ serve(async (req) => {
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Request failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

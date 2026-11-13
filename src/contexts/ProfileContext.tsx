@@ -60,11 +60,13 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      let { data, error } = await supabase
+      const profileResult = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
+      let data = profileResult.data;
+      const error = profileResult.error;
 
       // If no profile exists, create one
       if (!data && !error) {

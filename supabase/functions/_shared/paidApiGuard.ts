@@ -1,4 +1,4 @@
-/** Guard only the six paid endpoints in Finding #8; no legacy callers change. */
+/** Stop a paid provider call unless the request is a small POST that passes quota. */
 export async function guardPaidApi(
   req: Request,
   endpoint: string,

@@ -310,7 +310,10 @@ const VendorDashboard = () => {
         <div className="px-4 mt-6">
           {profileStatus && profileStatus.host_verification_status !== 'verified' && (
             <HostVerificationCard
-              verificationStatus={profileStatus.host_verification_status as any}
+              verificationStatus={(() => {
+                const status = String(profileStatus.host_verification_status);
+                return status === "pending_verification" || status === "verified" || status === "rejected" ? status : "unverified";
+              })()}
               verificationNotes={profileStatus.host_verification_notes}
               existingIdUrl={profileStatus.government_id_url}
               existingSelfieUrl={profileStatus.selfie_url}

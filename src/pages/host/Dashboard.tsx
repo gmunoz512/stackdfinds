@@ -298,7 +298,13 @@ const HostDashboard = () => {
         {profileData && (
           <div className={`px-4 ${showOnboarding ? '' : '-mt-12'} relative z-20 mb-3`}>
             <HostVerificationCard
-              verificationStatus={(profileData.host_verification_status as any) || 'unverified'}
+              verificationStatus={
+                profileData.host_verification_status === "pending_verification" ||
+                profileData.host_verification_status === "verified" ||
+                profileData.host_verification_status === "rejected"
+                  ? profileData.host_verification_status
+                  : "unverified"
+              }
               verificationNotes={profileData.host_verification_notes}
               existingIdUrl={profileData.government_id_url}
               existingSelfieUrl={profileData.selfie_url}

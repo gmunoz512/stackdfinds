@@ -14,7 +14,7 @@ interface FraudAlert {
   alert_type: string;
   target_user_id: string;
   target_listing_id: string | null;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   status: string;
   admin_notes: string | null;
   created_at: string;

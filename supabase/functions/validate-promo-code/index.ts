@@ -27,8 +27,6 @@ Deno.serve(async (req) => {
   try {
     const { code, orderAmount } = await req.json() as ValidateRequest;
 
-    console.log(`[validate-promo-code] Validating code: ${code} for amount: ${orderAmount}`);
-
     if (!code || typeof code !== 'string') {
       return new Response(
         JSON.stringify({ 
@@ -95,7 +93,6 @@ Deno.serve(async (req) => {
     }
 
     const result = data[0];
-    console.log(`[validate-promo-code] Result:`, result);
 
     return new Response(
       JSON.stringify({

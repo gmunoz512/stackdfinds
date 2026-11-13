@@ -1,7 +1,3 @@
-# Stackd Tulum design preview
-
-This is an isolated visual review copy of the Stackd redesign. The production GitHub repository is unchanged by this Site. No live service keys are included. Home, planner, and join preserve the implemented UI; accounts, bookings, live inventory, and AI require the original production service configuration.
-
 # stackd
 
 stackd is a guest-first booking app for local experiences and restaurants, starting with Tulum. Guests can browse listings and plan a trip without an account. Signing in is required to book, save, or pay. Hosts share a guide with their guests. Vendors publish experiences and restaurants and get paid through Stripe.
@@ -25,15 +21,14 @@ The dev server runs at http://localhost:8080.
 | Variable | Where | Purpose |
 | --- | --- | --- |
 | `VITE_SUPABASE_URL` | Vite client | Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Vite client | Supabase anon key |
-| ~~`VITE_GOOGLE_MAPS_API_KEY`~~ | — | Removed. Site never calls billed Google Maps/Places APIs from the browser. |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Vite client | Supabase anon (publishable) key. Public in the browser bundle. |
 | `VITE_SITE_URL` | Vite client | Public origin for titles, Open Graph, and absolute links. No trailing slash. |
 
 Edge functions read secrets from the Supabase project, not from the Vite bundle:
 
 - `SITE_URL` — same public origin, used for CORS and password-reset redirects
 - `AI_GATEWAY_URL`, `AI_GATEWAY_API_KEY`, `AI_GATEWAY_MODEL` — OpenAI-compatible chat endpoint for the trip planner, vendor descriptions, and price comparison. The model defaults to `gpt-4o-mini` when unset. Those features fail closed until the URL and key are set.
-- Stripe, Mapbox, Resend, and Google Places keys stay in Supabase secrets (`STRIPE_SECRET_KEY`, `MAPBOX_ACCESS_TOKEN`, and the keys each function already reads).
+- Stripe, Mapbox, and Resend keys stay in Supabase secrets (`STRIPE_SECRET_KEY`, `MAPBOX_PUBLIC_TOKEN`, and the keys each function already reads). The browser does not call Google Maps or Places. Listing maps use Mapbox. A "open in Google Maps" link is a normal maps.google.com URL and does not use an API key.
 
 Do not commit `.env` or service-role keys.
 
@@ -48,16 +43,18 @@ npm run preview
 
 ## Deploy
 
-Vercel or Netlify can host the static build.
+`main` deploys to GitHub Pages at https://stackdfinds.com. The workflow is `.github/workflows/pages.yml`.
 
 - Build command: `npm run build`
 - Output directory: `dist`
-- Set the `VITE_*` variables in the host's environment before building. Vite inlines them at build time.
-- Add the SPA fallback so client routes serve `index.html`.
+- The workflow sets `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from repository variables, and `VITE_SITE_URL` to `https://stackdfinds.com`.
+- It copies `dist/index.html` to `dist/404.html` so client routes load the app.
 
-Deploy Supabase separately: link the project with the Supabase CLI, apply `supabase/migrations`, and deploy `supabase/functions`. The vetted badge reads `verification_status` and `verified_at` from the public vendor view. Apply `supabase/migrations/20261026060000_public_vetting_fields.sql` or the badge stays hidden.
+The top-level page shows the app inside a phone frame. The frame loads the same bundle. Do not embed Resy or other reservation sites in that frame; those links go through `openExternalUrl`.
 
-Google and Apple sign-in are Supabase Auth providers (`signInWithOAuth`). Configure the providers, redirect URLs, and the site URL in the Supabase dashboard. They are not provided by Lovable.
+Supabase project `ilityngsjxknvxtqrgav` is the live database. Agents write migration files only and do not apply them. The vetted badge reads `verification_status` and `verified_at` from the public vendor view. Until `supabase/migrations/20261026060000_public_vetting_fields.sql` is applied, the badge stays hidden.
+
+Google and Apple sign-in are Supabase Auth providers. The app starts them with `startOAuth` in `src/lib/oauth.ts`. Configure the providers, redirect URLs, and the site URL in the Supabase dashboard.
 
 ## iOS
 
@@ -73,8 +70,8 @@ Open the Xcode project on a Mac, set the signing team there, and archive. This r
 
 ## Ratings and trust
 
-A Google rating is shown only when it comes from live Google reviews, a place record marked `isFromApi`, or `vendor_profiles.google_rating`. Otherwise the UI says "No rating yet". The vetted badge appears only when a listing is admin-approved (`verification_status = approved`) and has a `verified_at` timestamp. Reviews are real guest, Google, or Airbnb comments. Empty sections say there are no reviews yet.
+A Google rating is shown only when `resolveGoogleRating` (`src/lib/googleRating.ts`) has a catalog rating or a place record. The browser and the app do not call the Google Places API. Otherwise the UI says "No rating yet". The vetted badge appears only when a listing is admin-approved (`verification_status = approved`) and has a `verified_at` timestamp. Reviews are real guest comments or text already stored with the listing. Empty sections say there are no reviews yet.
 
 ## What you own outside this repo
 
-The Supabase project id is in `supabase/config.toml`. The database, auth providers, storage buckets, edge-function secrets, and Stripe account are not part of this git history. To run stackd without Lovable you need access to that Supabase project (or a dump you restore into your own project) plus the API keys above. Mapbox and Stripe stay in Supabase secrets. The published Lovable URLs are not used anymore; set `VITE_SITE_URL` to the domain you host.
+The Supabase project id is in `supabase/config.toml` (`ilityngsjxknvxtqrgav`). The database, auth providers, storage buckets, edge-function secrets, and Stripe account are not part of this git history. Mapbox and Stripe stay in Supabase secrets. Set `VITE_SITE_URL` to the domain you host.

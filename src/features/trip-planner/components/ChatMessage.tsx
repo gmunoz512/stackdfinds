@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Message, ItineraryItemCategory, HostVendor } from "../types";
-import { applyBionicReading, extractVendorFromMessage, hasQuoteInMessage } from "../utils";
+import { applyBionicReading, extractVendorFromMessage, hasQuoteInMessage, stripDecorative } from "../utils";
 import { AddToItineraryButton, type ParsedActivity } from "./AddToItineraryButton";
 
 const VendorLocationMap = lazy(() => 
@@ -64,7 +64,7 @@ function parseActivitiesFromContent(content: string): ParsedActivity[] {
   
   for (const match of matches) {
     const block = match[0];
-    const title = match[1]?.trim().replace(/[🫧🌊🏖️🍽️🏛️⭐]/g, '').trim();
+    const title = match[1] ? stripDecorative(match[1].trim()) : "";
     
     if (!title || title.length < 3 || title.length > 100) continue;
     
@@ -80,18 +80,18 @@ function parseActivitiesFromContent(content: string): ParsedActivity[] {
     const duration = durationMatch?.[1]?.trim();
     
     // Extract what's included
-    const includesMatch = block.match(/what's included[:\s]+([^\n]+(?:\n[•\-\*][^\n]+)*)/i);
+    const includesMatch = block.match(/what's included[:\s]+([^\n]+(?:\n[•*-][^\n]+)*)/i);
     const includesText = includesMatch?.[1]?.trim() || "";
     const includes = includesText
-      .split(/[•\-\*\n,]/)
+      .split(/[•*\n,-]/)
       .map(s => s.trim())
       .filter(s => s.length > 0 && s.length < 100);
     
     // Extract what to bring
-    const bringMatch = block.match(/what to bring[:\s]+([^\n]+(?:\n[•\-\*][^\n]+)*)/i);
+    const bringMatch = block.match(/what to bring[:\s]+([^\n]+(?:\n[•*-][^\n]+)*)/i);
     const bringText = bringMatch?.[1]?.trim() || "";
     const whatToBring = bringText
-      .split(/[•\-\*\n,]/)
+      .split(/[•*\n,-]/)
       .map(s => s.trim())
       .filter(s => s.length > 0 && s.length < 100);
     

@@ -92,7 +92,6 @@ serve(async (req) => {
     .single();
   if (profErr || !profile) return rollback("Could not create vendor profile");
 
-  console.log(`Vendor account created: ${username} by admin ${user.id}`);
   // Password is in this response only. Never log it.
   return json({ username, password, vendorProfileId: profile.id });
 });

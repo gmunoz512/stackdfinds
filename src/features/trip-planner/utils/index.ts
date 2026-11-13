@@ -2,6 +2,10 @@ import type { Message, ItineraryItemCategory, ItineraryDay, ItineraryItem } from
 
 export const CHAT_HISTORY_KEY = "tripPlannerChatHistory";
 export const MAX_MESSAGE_LENGTH = 2000;
+
+export function stripDecorative(value: string): string {
+  return value.replace(/\p{Extended_Pictographic}/gu, "").replace(/\uFE0F/g, "").trim();
+}
 export const LOCAL_SHARE_PREFIX = "stackd_local_share_";
 
 export function persistLocalSharedItinerary(token: string, payload: unknown) {
@@ -83,7 +87,7 @@ export function detectConfirmedActivities(message: string): ConfirmedActivity[] 
     
     for (const pattern of naturalPatterns) {
       while ((match = pattern.exec(message)) !== null) {
-        const title = match[1].trim().replace(/[🌊🫧🏖️🍽️🏛️✨🐠🐢🌴⭐]/g, '').trim();
+        const title = stripDecorative(match[1].trim());
         
         // Skip if it's too short or looks like a phrase
         if (title.length < 3 || title.length > 80) continue;
@@ -495,7 +499,7 @@ export function extractActivities(text: string): ExtractedActivity[] {
   while ((match = timeActivityPattern.exec(text)) !== null) {
     sections.push({
       time: match[1].trim(),
-      title: match[2].trim().replace(/[🌊🫧🏖️🍽️🏛️✨🐠🐢🌴⭐]/g, '').trim(),
+      title: stripDecorative(match[2].trim()),
       startIndex: match.index,
     });
   }

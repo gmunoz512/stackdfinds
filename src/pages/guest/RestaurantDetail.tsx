@@ -58,8 +58,7 @@ const getCachedReviews = (restaurantId: string): GoogleReviewsData | null => {
       localStorage.removeItem(getDetailCacheKey(restaurantId));
       return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { timestamp, ...reviewData } = parsed;
+    const { timestamp: _timestamp, ...reviewData } = parsed;
     return reviewData;
   } catch {
     return null;

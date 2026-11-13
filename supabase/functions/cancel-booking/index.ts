@@ -7,11 +7,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CANCEL-BOOKING] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -43,10 +38,8 @@ serve(async (req) => {
     }
 
     const userId = claimsData.claims.sub;
-    logStep("User authenticated", { userId });
 
     const { bookingId, reason, guestCancellation } = await req.json();
-    logStep("Cancellation request received", { bookingId, reason, guestCancellation, userId });
 
     if (!bookingId) {
       throw new Error("Booking ID is required");
@@ -100,8 +93,6 @@ serve(async (req) => {
       const now = new Date();
       const hoursUntilBooking = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-      logStep("Checking cancellation window", { hoursUntilBooking, cancellationHours });
-
       if (hoursUntilBooking < cancellationHours) {
         const message = `Cancellation is not allowed within ${cancellationHours} hours of the booking. Your booking is in ${Math.max(0, Math.floor(hoursUntilBooking))} hours.`;
         return new Response(JSON.stringify({ 
@@ -132,11 +123,9 @@ serve(async (req) => {
             reason: "requested_by_customer",
           });
           refundId = refund.id;
-          logStep("Stripe refund issued", { refundId: refund.id, amount: refund.amount });
         }
       } catch (refundError) {
         const errorMsg = refundError instanceof Error ? refundError.message : String(refundError);
-        logStep("Stripe refund failed", { error: errorMsg });
         // Continue with cancellation even if refund fails - admin can handle manually
       }
     }
@@ -154,8 +143,6 @@ serve(async (req) => {
     if (updateError) {
       throw updateError;
     }
-
-    logStep("Booking cancelled", { bookingId, refundId, cancelledBy: userId });
 
     // Send notifications
     const { data: guestUserData } = await supabaseAdmin.auth.admin.getUserById(booking.user_id);
@@ -201,9 +188,8 @@ serve(async (req) => {
             }),
           }
         );
-        logStep("Guest cancellation email sent");
       } catch (error) {
-        logStep("Guest cancellation email failed", { error: String(error) });
+        console.error("Cancellation notification failed:", error);
       }
     }
 
@@ -233,9 +219,8 @@ serve(async (req) => {
             }),
           }
         );
-        logStep("Vendor cancellation email sent");
       } catch (error) {
-        logStep("Vendor cancellation email failed", { error: String(error) });
+        console.error("Cancellation notification failed:", error);
       }
     }
 
@@ -249,7 +234,6 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

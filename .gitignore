@@ -28,7 +28,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Lovable sync metadata. This app is standalone.
+# Local editor metadata
 .lovable
 
 # Regenerator cache for Airbnb photo downloads and listing facts. Photos and the generated catalog are committed.
@@ -48,5 +48,7 @@ android/.gradle
 android/build
 android/app/build
 android/local.properties
-.vercel
-.env*
+
+# TypeScript and test output
+*.tsbuildinfo
+coverage/

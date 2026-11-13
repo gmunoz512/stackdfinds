@@ -32,9 +32,9 @@ The existing rateLimit.ts helper and its callers remain unchanged.
 | scrape-airbnb-reviews | Required, non-anonymous Auth user | 20 | 100 | 5 |
 | generate-vendor-description | Required, non-anonymous Auth user | 20 | 100 | 5 |
 | price-comparison | Guest access retained | 30 | 300 | — |
-| vendor-directions | Guest access retained | 60 | 1000 | — |
 | mapbox-directions | Existing gateway configuration retained | 60 | 1000 | — |
-| google-places | Guest access retained | 120 | 3000 | — |
+
+`google-places`, `google-reviews`, and `vendor-directions` are not in this repo. The client does not call maps.googleapis.com. Migration `20260910121000` still has quota branches for `vendor-directions` and `google-places`; those branches are unused unless an older deployed function is still online. Delete those functions in the Supabase dashboard if they are still deployed. Do not rewrite the migration.
 
 These are initial conservative request budgets, not dollar spending caps.
 Provider fan-out and billing differ by endpoint. Confirm expected traffic before

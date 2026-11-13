@@ -261,14 +261,15 @@ export const isRestaurantOpen = (restaurant: Restaurant): boolean => {
   
   const parseTime = (timeStr: string): number => {
     const [time, period] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
+    const [parsedHours, minutes] = time.split(':').map(Number);
+    let hours = parsedHours;
     if (period === 'PM' && hours !== 12) hours += 12;
     if (period === 'AM' && hours === 12) hours = 0;
     return hours * 60 + minutes;
   };
   
   const openTime = parseTime(hours.open);
-  let closeTime = parseTime(hours.close);
+  const closeTime = parseTime(hours.close);
   
   // Handle overnight hours (e.g., closes at 2 AM)
   if (closeTime < openTime) {

@@ -115,7 +115,6 @@ serve(async (req) => {
     );
 
     if (!rateLimitResult.allowed) {
-      console.log(`Rate limit exceeded for IP: ${ip}`);
       return createRateLimitResponse(rateLimitResult.resetAt, corsHeaders);
     }
 

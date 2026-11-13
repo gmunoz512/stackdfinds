@@ -21,12 +21,23 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 
+type VendorBookingRow = {
+  id: string;
+  service: string | null;
+  date: string | null;
+  time: string | null;
+  guests: number | null;
+  status: string | null;
+  amount: number | null;
+  host: string;
+};
+
 const AllBookings = () => {
   const goBack = useSmartBack("/vendor/dashboard");
   const { user } = useAuthContext();
   const queryClient = useQueryClient();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [selectedBooking, setSelectedBooking] = useState<VendorBookingRow | null>(null);
   const [cancelReason, setCancelReason] = useState("");
 
   const { data: bookings = [], isLoading } = useQuery({
@@ -89,7 +100,7 @@ const AllBookings = () => {
     },
   });
 
-  const handleCancelClick = (booking: any) => {
+  const handleCancelClick = (booking: VendorBookingRow) => {
     setSelectedBooking(booking);
     setCancelDialogOpen(true);
   };

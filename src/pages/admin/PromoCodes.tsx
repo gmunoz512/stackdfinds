@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { errorMessage } from "@/lib/errorMessage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -209,11 +210,11 @@ const AdminPromoCodes = () => {
       setDialogOpen(false);
       setFormData(initialFormData);
       setEditingId(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving promo code:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to save promo code",
+        description: errorMessage(error, "Failed to save promo code"),
         variant: "destructive",
       });
     } finally {

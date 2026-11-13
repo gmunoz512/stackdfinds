@@ -2,7 +2,7 @@
 
 1. `main` = live cream site (GitHub Pages → stackdfinds.com). Feature work goes on a branch (e.g. `phase2-vendor-marketplace`); do **not** merge to `main` until German reviews. Never force-push `main`.
 2. Never commit secrets: `.env*`, Google `GOCSPX-…` secrets, Supabase service-role keys, Stripe keys, Apple `.p8` keys. Client uses `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY` from the environment only.
-3. Supabase project `ilityngsjxknvxtqrgav` is Lovable-controlled: write migration files only; never apply, delete, or change schema directly.
+3. Supabase project `ilityngsjxknvxtqrgav` is the live database: write migration files only; never apply, delete, or change schema directly. Do not point the app at a different project.
 4. Before merging: `npx tsc -p tsconfig.app.json --noEmit`, `npm run build`, `npm test` pass; phone (390px) + desktop screenshots checked; FEATURES.md updated.
 5. OAuth must go through `startOAuth` (src/lib/oauth.ts) — never a plain in-frame redirect.
 6. No hardcoded sample hosts/vendors in production paths; `src/data/mockData.ts` is for demos only.

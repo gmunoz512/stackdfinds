@@ -45,7 +45,6 @@ serve(async (req) => {
   );
 
   if (!rateLimitResult.allowed) {
-    console.log(`Rate limit exceeded for TripAdvisor search from IP: ${ip}`);
     return createRateLimitResponse(rateLimitResult.resetAt, corsHeaders);
   }
 
@@ -59,7 +58,6 @@ serve(async (req) => {
 
   try {
     const { action, query, lat, lng, locationId, limit = 10 }: SearchRequest = await req.json();
-    console.log(`TripAdvisor API - Action: ${action}, Query: ${query}, Lat: ${lat}, Lng: ${lng}, LocationId: ${locationId}`);
 
     const baseUrl = 'https://api.content.tripadvisor.com/api/v1';
     const headers = {
@@ -80,7 +78,6 @@ serve(async (req) => {
         }
 
         const searchUrl = `${baseUrl}/location/nearby_search?latLong=${lat},${lng}&category=restaurants&language=en&key=${TRIPADVISOR_API_KEY}`;
-        console.log('Fetching nearby restaurants from TripAdvisor');
         
         response = await fetch(searchUrl, { headers });
         
@@ -91,12 +88,11 @@ serve(async (req) => {
         }
         
         data = await response.json();
-        console.log(`Found ${data.data?.length || 0} restaurants`);
         
         // Fetch details for each restaurant to get ratings, photos, etc.
         const restaurants = data.data?.slice(0, limit) || [];
         const enrichedRestaurants = await Promise.all(
-          restaurants.map(async (restaurant: any) => {
+          restaurants.map(async (restaurant: { location_id?: string }) => {
             try {
               // Get location details
               const detailsUrl = `${baseUrl}/location/${restaurant.location_id}/details?language=en&currency=USD&key=${TRIPADVISOR_API_KEY}`;
@@ -132,7 +128,6 @@ serve(async (req) => {
         }
 
         const detailsUrl = `${baseUrl}/location/${locationId}/details?language=en&currency=USD&key=${TRIPADVISOR_API_KEY}`;
-        console.log(`Fetching details for location ${locationId}`);
         
         response = await fetch(detailsUrl, { headers });
         
@@ -158,7 +153,6 @@ serve(async (req) => {
         }
 
         const photosUrl = `${baseUrl}/location/${locationId}/photos?language=en&key=${TRIPADVISOR_API_KEY}`;
-        console.log(`Fetching photos for location ${locationId}`);
         
         response = await fetch(photosUrl, { headers });
         
@@ -184,7 +178,6 @@ serve(async (req) => {
         }
 
         const reviewsUrl = `${baseUrl}/location/${locationId}/reviews?language=en&key=${TRIPADVISOR_API_KEY}`;
-        console.log(`Fetching reviews for location ${locationId}`);
         
         response = await fetch(reviewsUrl, { headers });
         
