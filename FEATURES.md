@@ -86,7 +86,7 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ Listing facts (price, duration, what’s offered, meeting area, city, languages, group size, description) are read from each public listing page by `scripts/build-airbnb-experiences.mjs` and stored in `src/data/airbnbExperiences.generated.ts`. Missing facts stay empty. Prices stay in the currency the page shows. A US “$” amount is stored as USD. No price is invented.
 - ✅ Home section titles (“Local Favorite Eats”, “Local Favorite Experiences”, and “My Wishlists”) share one light Georgia size, `clamp(20px, 6.15vw, 28px)`, and stay on one line from 360px up.
 - ✅ Categories are inferred from the title (Water Sports, Food & Drink, Tours & Culture, Wellness, Adventure, Workshops) and otherwise “Tour Guide”.
-- ✅ The home explore list and saved-item lookup use the same catalog. The homepage rail still shows the 4 preview experiences.
+- ✅ The home explore list and saved-item lookup use the same catalog. The homepage Local Favorite rails share one count (`HOME_RAIL_COUNT`, 8) in `src/data/homeRail.ts`. Experiences keep the 4 previews first, then fill the rest from the static catalog: one experience per business, with a real price and a saved photo, ranked by rating then review count. A `$price/person` line shows only for USD. The guest explore grid (`GuestExploreTab`) caps experiences at 6, and its eats grid never shows more than 6, so that rail is unchanged.
 
 ### UI polish (branch `ui-polish`)
 - ✅ Vendor and experience photos, plus host-guide Top 8 tiles, keep a cream placeholder and fade in. Broken vendor photos still fall back to initials, never emoji.
