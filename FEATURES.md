@@ -95,3 +95,8 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ Vendor first login shows a two-step progress track: password, then optional email.
 - ✅ Booking cancel dialogs use a cream panel, a light Georgia title, and a quiet confirm. The confirmation page no longer rains confetti.
 - ✅ Vendor payouts (`/vendor/affiliate`) and host earnings (`/host/earnings`) lead with Released, and keep Upcoming as the smaller held amount.
+
+### Google restaurant reviews (branch `restaurant-reviews`)
+- ✅ Restaurant detail reads `data/google-restaurant-reviews.json`, a one-time snapshot taken 2026-11-13 from each place’s Google Maps page. No Places API call and no Google key.
+- ✅ The 16 restaurants in that file (r1–r22) use its rating, review count, and Maps URL. The detail page shows the rating as stars and a number, the count (“2,113 Google reviews”), the three saved reviews, and “See all reviews on Google”. Review text is shown as saved. A restaurant with no snapshot hides the section.
+- ✅ Each review card shows the author, an initials avatar, stars, the relative date, and the text clamped to four lines with Read more. A line under the cards says “Reviews from Google Maps, as of Nov 2026”.

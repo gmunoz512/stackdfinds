@@ -2,8 +2,8 @@ import { useLocalWishlist } from "@/hooks/useLocalWishlist";
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { 
-  ArrowLeft, ArrowRight, Star, MapPin, Phone, Clock, ExternalLink,
-  Navigation, Heart, Share, Globe, MessageSquare, Loader2, Map as MapIcon
+  ArrowLeft, ArrowRight, MapPin, Phone, Clock, ExternalLink,
+  Navigation, Heart, Share, Globe, Map as MapIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,53 +17,11 @@ import { GuestGuideButton } from "@/components/GuestGuideButton";
 import { useSearch } from "@/contexts/SearchContext";
 import { buildReservationLink, googleMapsSearchUrl } from "@/lib/reservations";
 import { GoogleRating } from "@/components/GoogleRating";
+import { GoogleRestaurantReviews } from "@/components/GoogleRestaurantReviews";
 import { resolveGoogleRating } from "@/lib/googleRating";
-import { RefundPolicy } from "@/components/listing/RefundPolicy";
+import { googleRestaurantSnapshot, snapshotRatingNumber, snapshotReviewTotal } from "@/data/googleRestaurantReviews";
 import { useRequireSignIn } from "@/hooks/useRequireSignIn";
 import { openExternalUrl } from "@/lib/openExternalUrl";
-
-interface GoogleReview {
-  author_name: string;
-  author_url?: string;
-  profile_photo_url?: string;
-  rating: number;
-  relative_time_description: string;
-  text: string;
-}
-
-interface GoogleReviewsData {
-  placeId?: string;
-  rating?: number;
-  totalReviews?: number;
-  reviews: GoogleReview[];
-  photos?: string[];
-  googleMapsUrl?: string;
-  error?: string;
-}
-
-interface CachedGoogleReviews extends GoogleReviewsData {
-  timestamp: number;
-}
-
-const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
-
-const getDetailCacheKey = (restaurantId: string) => `google_reviews_detail_${restaurantId}`;
-
-const getCachedReviews = (restaurantId: string): GoogleReviewsData | null => {
-  try {
-    const cached = localStorage.getItem(getDetailCacheKey(restaurantId));
-    if (!cached) return null;
-    const parsed: CachedGoogleReviews = JSON.parse(cached);
-    if (Date.now() - parsed.timestamp > CACHE_DURATION_MS) {
-      localStorage.removeItem(getDetailCacheKey(restaurantId));
-      return null;
-    }
-    const { timestamp: _timestamp, ...reviewData } = parsed;
-    return reviewData;
-  } catch {
-    return null;
-  }
-};
 
 
 const getDayName = (index: number): string => {
@@ -80,12 +38,13 @@ const RestaurantDetail = () => {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const { has, toggle } = useLocalWishlist();
   const isFavorite = id ? has("restaurant", id) : false;
-  const [googleReviews, setGoogleReviews] = useState<GoogleReviewsData | null>(null);
-  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [displayPhotos, setDisplayPhotos] = useState<string[]>([]);
   const { requireSignIn } = useRequireSignIn();
+  const reviewSnapshot = googleRestaurantSnapshot(id);
   const placeRating = resolveGoogleRating({
-    google: googleReviews ? { rating: googleReviews.rating, totalReviews: googleReviews.totalReviews } : null,
+    google: reviewSnapshot
+      ? { rating: snapshotRatingNumber(reviewSnapshot.rating), totalReviews: snapshotReviewTotal(reviewSnapshot.reviewCount) }
+      : null,
     place: restaurant && isSupabaseConfigured
       ? { rating: restaurant.rating, reviewCount: restaurant.reviewCount, isFromApi: restaurant.isFromApi }
       : null,
@@ -114,27 +73,8 @@ const RestaurantDetail = () => {
       }
     }
     setRestaurant(found || null);
-    if (found && id) {
-      const cached = /^r\d+$/.test(id) ? null : getCachedReviews(id);
-      if (cached) {
-        setGoogleReviews(cached);
-        setDisplayPhotos(cached.photos && cached.photos.length > 0 ? cached.photos : []);
-      } else {
-        setDisplayPhotos([]);
-      }
-    } else if (found) {
-      setDisplayPhotos([]);
-    }
+    setDisplayPhotos(found ? (found.googleFetchedAt ? found.photos.slice(0, 1) : found.photos) : []);
   }, [id]);
-
-  useEffect(() => {
-    // Paid Google Places lookups are off. Use static snapshot photos only.
-    if (!restaurant || !id) return;
-    setDisplayPhotos(
-      restaurant.googleFetchedAt ? restaurant.photos.slice(0, 1) : restaurant.photos
-    );
-    setIsLoadingReviews(false);
-  }, [restaurant, id]);
 
   const toggleFavorite = () => {
     if (!restaurant || !id) return;
@@ -189,7 +129,7 @@ const RestaurantDetail = () => {
 
   const handleViewOnMaps = () => {
     if (!restaurant) return;
-    void openExternalUrl(googleReviews?.googleMapsUrl || googleMapsSearchUrl(restaurant));
+    void openExternalUrl(restaurant.googleMapsUrl || googleMapsSearchUrl(restaurant));
   };
 
   if (!restaurant) {
@@ -239,12 +179,6 @@ const RestaurantDetail = () => {
           <div className="px-4 lg:px-6 lg:pt-2">
             {!restaurant.googleFetchedAt && <p className="text-[10px] text-muted-foreground mb-2">Illustrative photo</p>}
             <StackedPhotoGrid photos={photos} alt={restaurant.name} />
-          </div>
-        ) : isLoadingReviews ? (
-          <div className="px-4 lg:px-6 lg:pt-2">
-            <div className="aspect-[4/3] rounded-xl bg-muted animate-pulse flex items-center justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            </div>
           </div>
         ) : (
           <div className="hidden lg:block" />
@@ -389,88 +323,7 @@ const RestaurantDetail = () => {
             </div>
           </div>
 
-          <Separator />
-
-          {/* Google Reviews Section */}
-          <div className="py-6 space-y-3">
-            <h2 className="text-[22px] font-semibold flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-muted-foreground" />
-              Google Reviews
-            </h2>
-            
-            {isLoadingReviews ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                <span className="ml-2 text-[15px] text-muted-foreground">Loading reviews...</span>
-              </div>
-            ) : googleReviews?.reviews && googleReviews.reviews.length > 0 ? (
-              <div className="space-y-4">
-                {/* Rating Summary */}
-                <div className="flex items-center gap-2 text-[15px]">
-                  <GoogleRating
-                    value={resolveGoogleRating({
-                      google: {
-                        rating: googleReviews.rating,
-                        totalReviews: googleReviews.totalReviews,
-                      },
-                    })}
-                    emptyLabel={null}
-                    starClassName="h-4 w-4"
-                  />
-                  {googleReviews.totalReviews ? (
-                    <span className="text-muted-foreground">on Google</span>
-                  ) : null}
-                </div>
-
-                {/* Horizontal scrolling review cards */}
-                <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide -mx-4 px-4">
-                  {googleReviews.reviews.slice(0, 5).map((review, index) => (
-                    <div key={index} className="flex-shrink-0 w-[260px] snap-start rounded-xl border border-border p-4 space-y-3">
-                      <div className="flex items-center gap-2">
-                        {review.profile_photo_url && (
-                          <img 
-                            src={review.profile_photo_url} 
-                            alt={review.author_name}
-                            className="w-8 h-8 rounded-full"
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[14px] font-medium truncate">{review.author_name}</p>
-                          <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`h-3 w-3 ${i < review.rating ? 'fill-foreground text-foreground' : 'text-muted-foreground/30'}`} 
-                              />
-                            ))}
-                            <span className="text-xs text-muted-foreground ml-1">
-                              {review.relative_time_description}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-[14px] text-foreground leading-relaxed line-clamp-4">{review.text}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* View All Reviews Link */}
-                {googleReviews.googleMapsUrl && (
-                  <button
-                    type="button"
-                    onClick={() => void openExternalUrl(googleReviews.googleMapsUrl!)}
-                    className="text-[15px] font-semibold underline underline-offset-4 hover:text-foreground/80 transition-colors"
-                  >
-                    View all reviews on Google Maps
-                  </button>
-                )}
-              </div>
-            ) : (
-              <p className="text-[15px] text-muted-foreground">
-                No reviews yet.
-              </p>
-            )}
-          </div>
+          <GoogleRestaurantReviews id={restaurant.id} />
 
           {/* Host Guest Guide Button */}
           {restaurant && (

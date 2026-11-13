@@ -1,7 +1,8 @@
 // Single source of truth for Google ratings shown anywhere in the app.
 // Canonical fields:
-//  - Restaurants: a catalog rating copied from a public Google listing (src/data/googlePlaces.json)
-//    or a place record marked isFromApi. The app does not call the Places API.
+//  - Restaurants: a catalog rating copied from a public Google listing
+//    (src/data/googlePlaces.json, or data/google-restaurant-reviews.json when that
+//    snapshot includes the restaurant). The app does not call the Places API.
 //  - Vendors/experiences: vendor_profiles.google_rating is typed in by the vendor, so it is
 //    NOT shown as a Google rating until it comes from a real Google source.
 // Never invent a number: return null when there is no real rating.

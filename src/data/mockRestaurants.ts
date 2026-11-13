@@ -8,6 +8,7 @@ import chamicosTulum from '@/assets/restaurants/chamicos-tulum.jpg';
 
 import { expandedTulumRestaurants } from './tulumRestaurantsExpanded';
 import googlePlaces from './googlePlaces.json';
+import { googleRestaurantSnapshot, snapshotRatingNumber, snapshotReviewTotal } from './googleRestaurantReviews';
 
 // Mock restaurant data with realistic information
 export interface Restaurant {
@@ -223,20 +224,21 @@ const catalog: Restaurant[] = [
 ];
 
 // The ratings typed into the catalog above are sample numbers, not Google's.
-// Only the snapshot in googlePlaces.json (pulled from public Google Maps pages)
-// counts as a Google rating; everything else shows no rating.
+// googlePlaces.json supplies the public rating and photo. The 2026-11-13 review
+// snapshot supplies rating, review count, and the Maps URL when it has that id.
 type GooglePlace = { rating: number; photo: string; mapsUrl: string };
 const places = googlePlaces.places as Record<string, GooglePlace>;
 
 export const mockRestaurants: Restaurant[] = catalog.map((r) => {
   const g = places[r.name];
+  const snap = googleRestaurantSnapshot(r.id);
   return {
     ...r,
-    rating: g?.rating,
-    reviewCount: undefined,
+    rating: (snap ? snapshotRatingNumber(snap.rating) : undefined) ?? g?.rating,
+    reviewCount: snap ? snapshotReviewTotal(snap.reviewCount) : undefined,
     photos: g ? [g.photo, ...r.photos] : r.photos,
     googleFetchedAt: g ? googlePlaces.fetchedAt : undefined,
-    googleMapsUrl: g?.mapsUrl,
+    googleMapsUrl: snap?.mapsUrl ?? g?.mapsUrl,
   };
 });
 // Location suggestions for autocomplete
