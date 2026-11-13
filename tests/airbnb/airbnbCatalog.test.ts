@@ -46,8 +46,13 @@ describe("airbnb experience catalog", () => {
     for (const item of unrated) expect(item.reviewCount).toBeNull();
     for (const item of airbnbExperiences) {
       if (item.rating != null) expect(item.rating).toBeGreaterThan(0);
-      expect(item).not.toHaveProperty("price");
       expect(item).not.toHaveProperty("sourceUrl");
+      if (item.price) {
+        expect(item.price.amount).toBeGreaterThan(0);
+        expect(item.price.display.length).toBeGreaterThan(0);
+      } else {
+        expect(item.price).toBeNull();
+      }
       expect(JSON.stringify(item)).not.toContain("airbnb.com");
       expect(JSON.stringify(item)).not.toContain("muscache");
     }
@@ -90,6 +95,7 @@ describe("airbnb experience catalog", () => {
     const files = [
       "src/pages/guest/AllExperiences.tsx",
       "src/pages/guest/ExperienceBusiness.tsx",
+      "src/pages/guest/ExperienceListing.tsx",
       "src/pages/guest/AppView.tsx",
       "src/pages/guest/app-view/GuestExploreTab.tsx",
       "src/pages/marketing/SplashPage.tsx",

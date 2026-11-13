@@ -1,6 +1,8 @@
 import type { ReferenceCrop } from "@/components/destination/ReferencePhoto";
 import { airbnbExperiences } from "@/data/airbnbExperiences.generated";
 import { previewExperiences } from "@/data/previewExperiences";
+import { guestPriceLine } from "@/lib/experiencePrice";
+import { formatUsd } from "@/lib/guestBooking";
 
 export type CatalogCard = {
   id: string;
@@ -9,6 +11,8 @@ export type CatalogCard = {
   category: string;
   photos: string[] | null;
   price: number | null;
+  /** Shown on cards. "Price on request" when the listing has no public price. */
+  priceLabel: string;
   rating: number | null;
   reviewCount: number | null;
   referencePhoto?: ReferenceCrop;
@@ -23,6 +27,7 @@ const previewCards: CatalogCard[] = previewExperiences.map((item) => ({
   category: item.category,
   photos: item.photos,
   price: item.price_per_person,
+  priceLabel: formatUsd(item.price_per_person),
   rating: item.google_rating,
   reviewCount: null,
   referencePhoto: item.referencePhoto,
@@ -36,11 +41,12 @@ const airbnbCards: CatalogCard[] = airbnbExperiences.map((item) => ({
   businessName: item.businessName,
   category: item.category,
   photos: item.photos.length ? item.photos : null,
-  price: null,
+  price: item.price?.currency === "USD" ? item.price.amount : null,
+  priceLabel: guestPriceLine(item.price),
   rating: item.rating,
   reviewCount: item.reviewCount,
   username: item.username,
-  href: `/experiences/${item.username}#${item.id}`,
+  href: `/experiences/${item.username}/${item.id}`,
 }));
 
 /** Preview listings first, then every Airbnb experience. No prices invented for Airbnb. */

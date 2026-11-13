@@ -8,6 +8,8 @@ import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { airbnbVendors } from "@/data/airbnbCatalog";
 import { experienceCatalog, type CatalogCard } from "@/data/experienceCatalog";
 import { CATALOG_FILTERS, matchesCategory } from "@/lib/experienceCategory";
+import { PRICE_ON_REQUEST } from "@/lib/experiencePrice";
+import { formatUsd } from "@/lib/guestBooking";
 
 const PAGE = 24;
 
@@ -40,6 +42,7 @@ export default function AllExperiences() {
             category: row.category,
             photos: row.photos,
             price: row.price_per_person,
+            priceLabel: row.price_per_person != null ? formatUsd(row.price_per_person) : PRICE_ON_REQUEST,
             rating: row.google_rating,
             reviewCount: null,
             username: null,
@@ -201,12 +204,16 @@ function ExperienceCard({ item, eager }: { item: CatalogCard; eager: boolean }) 
           ) : null}
           <p className="listing-category">{item.category}</p>
           <RatingLine rating={item.rating} reviewCount={item.reviewCount} />
-          {item.price != null ? (
-            <p className="listing-price">
-              ${item.price}
-              <span>/person</span>
-            </p>
-          ) : null}
+          <p className="listing-price">
+            {item.priceLabel === PRICE_ON_REQUEST ? (
+              PRICE_ON_REQUEST
+            ) : (
+              <>
+                {item.priceLabel}
+                <span>/person</span>
+              </>
+            )}
+          </p>
         </div>
       </Link>
       <WishlistHeart
@@ -219,6 +226,7 @@ function ExperienceCard({ item, eager }: { item: CatalogCard; eager: boolean }) 
           crop: item.referencePhoto,
           url: item.href,
           price: item.price,
+          priceLabel: item.priceLabel,
         }}
       />
     </article>

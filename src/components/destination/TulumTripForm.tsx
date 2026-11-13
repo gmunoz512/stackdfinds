@@ -69,7 +69,8 @@ export function TulumTripForm() {
           <p className="trip-step-hint">Choose what to include. Your wishlist stays saved.</p>
           {items.length ? <div className="trip-favorite-options">{items.map(item => {
             const key = `${item.kind}:${item.id}`;
-            return <label className="trip-favorite-option" key={key}><input type="checkbox" checked={!draft.excluded.includes(key)} onChange={e => update({ excluded: e.target.checked ? draft.excluded.filter(v => v !== key) : [...draft.excluded, key] })} /><span><strong>{item.name}</strong><small>{item.kind === "restaurant" ? "Restaurant" : "Experience"}{item.price != null ? ` · $${item.price}/person` : ""}</small></span></label>;
+            const priceNote = item.priceLabel && item.priceLabel !== "Price on request" ? ` · ${item.priceLabel}/person` : item.price != null ? ` · $${item.price}/person` : "";
+            return <label className="trip-favorite-option" key={key}><input type="checkbox" checked={!draft.excluded.includes(key)} onChange={e => update({ excluded: e.target.checked ? draft.excluded.filter(v => v !== key) : [...draft.excluded, key] })} /><span><strong>{item.name}</strong><small>{item.kind === "restaurant" ? "Restaurant" : "Experience"}{item.kind === "experience" ? priceNote : ""}</small></span></label>;
           })}<p className="trip-selection-count" role="status">{selected.length} of {items.length} favorites selected</p></div> : <div className="trip-empty-favorites"><Heart size={23} /><p>Save a few local finds, or start with your trip details.</p></div>}
           <div className="trip-explore-links"><Link to="/restaurants">Find restaurants <ArrowRight size={14} /></Link><Link to="/experiences">Find experiences <ArrowRight size={14} /></Link></div>
         </section>

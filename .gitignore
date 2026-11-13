@@ -31,8 +31,9 @@ dist-ssr
 # Lovable sync metadata. This app is standalone.
 .lovable
 
-# Regenerator cache for Airbnb photo downloads. The photos themselves are committed.
+# Regenerator cache for Airbnb photo downloads and listing facts. Photos and the generated catalog are committed.
 data/.airbnb-photo-cache.json
+data/.airbnb-listing-facts.json
 
 # Capacitor / iOS
 ios/App/Pods
