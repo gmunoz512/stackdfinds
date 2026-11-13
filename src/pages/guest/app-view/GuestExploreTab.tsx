@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight,
   Heart,
-  ImageOff,
   Search,
   Utensils,
   Waves,
 } from "lucide-react";
 import { FadePhoto } from "@/components/media/FadePhoto";
+import { InitialsTile } from "@/components/destination/InitialsTile";
+import { RatingLine } from "@/components/destination/RatingLine";
 import { TabsContent } from "@/components/ui/tabs";
 import { DestinationHero } from "@/components/destination/DestinationShell";
 import { GoogleRating } from "@/components/GoogleRating";
@@ -25,6 +26,8 @@ interface GuestVendor {
   photos: string[] | null;
   price_per_person: number | null;
   google_rating: number | null;
+  username?: string | null;
+  reviewCount?: number | null;
 }
 
 interface GuestExploreTabProps {
@@ -70,10 +73,7 @@ function ListingPhoto({
       {src && !failed ? (
         <FadePhoto src={src} alt={name} frameClassName="h-full w-full" onError={() => setFailed(true)} />
       ) : (
-        <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground text-xs">
-          <ImageOff size={24} />
-          <span>Photo coming soon</span>
-        </div>
+        <InitialsTile name={name} className="h-full w-full min-h-[120px]" />
       )}
       {illustrative && !failed && (
         <span className="photo-note">Illustrative photo</span>
@@ -110,15 +110,17 @@ export function GuestExploreTab(props: GuestExploreTabProps) {
     <article className="destination-card" key={vendor.id}>
       <Link
         to={
-          vendor.id.startsWith("preview-")
-            ? `/experiences?category=${encodeURIComponent(vendor.category)}`
-            : `/vendor/${vendor.id}`
+          vendor.username
+            ? `/experiences/${vendor.username}#${vendor.id}`
+            : vendor.id.startsWith("preview-")
+              ? `/experiences?category=${encodeURIComponent(vendor.category)}`
+              : `/vendor/${vendor.id}`
         }
       >
         <ListingPhoto src={vendor.photos?.[0]} name={vendor.name} />
         <h3>{vendor.name}</h3>
       </Link>
-      {!vendor.id.startsWith("preview-") && (
+      {!vendor.id.startsWith("preview-") && !vendor.username && (
         <button
           className="save-place"
           aria-label={`${props.vendorFavorites.includes(vendor.id) ? "Remove" : "Save"} ${vendor.name}`}
@@ -137,7 +139,9 @@ export function GuestExploreTab(props: GuestExploreTabProps) {
       )}
       <p>{vendor.category} · Tulum</p>
       <div className="text-xs mt-2">
-        {vendor.id.startsWith("preview-") ? (
+        {vendor.username ? (
+          <RatingLine rating={vendor.google_rating} reviewCount={vendor.reviewCount ?? null} />
+        ) : vendor.id.startsWith("preview-") ? (
           <span className="text-muted-foreground">Illustrative preview</span>
         ) : (
           <GoogleRating

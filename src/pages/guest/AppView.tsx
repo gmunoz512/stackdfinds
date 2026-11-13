@@ -1,4 +1,4 @@
-import { previewExperiences } from "@/data/previewExperiences";
+import { experienceCatalog } from "@/data/experienceCatalog";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Vendor } from "@/types";
@@ -23,7 +23,23 @@ interface VendorProfile {
   google_rating: number | null;
   is_published: boolean | null;
   listing_type: "restaurant" | "experience";
+  username?: string | null;
+  reviewCount?: number | null;
 }
+
+const staticExperiences: VendorProfile[] = experienceCatalog.map((item) => ({
+  id: item.id,
+  name: item.name,
+  category: item.category,
+  description: null,
+  photos: item.photos,
+  price_per_person: item.price,
+  google_rating: item.rating,
+  is_published: true,
+  listing_type: "experience",
+  username: item.username,
+  reviewCount: item.reviewCount,
+}));
 
 const AppView = () => {
   const { isAuthenticated, signOut, role } = useAuthContext();
@@ -118,7 +134,7 @@ const AppView = () => {
 
     if (!isSupabaseConfigured) {
       setVendorRestaurants([]);
-      setVendorExperiences(previewExperiences);
+      setVendorExperiences(staticExperiences);
       setIsLoadingVendors(false);
       return;
     }
@@ -132,13 +148,17 @@ const AppView = () => {
       if (error) throw error;
 
       const published = (data || []) as VendorProfile[];
+      const known = new Set(staticExperiences.map((item) => item.id));
       setVendorRestaurants(published.filter((vendor) => vendor.listing_type === "restaurant"));
-      setVendorExperiences(published.filter((vendor) => vendor.listing_type === "experience"));
+      setVendorExperiences([
+        ...staticExperiences,
+        ...published.filter((vendor) => vendor.listing_type === "experience" && !known.has(vendor.id)),
+      ]);
     } catch (error) {
       console.error("Error fetching published services:", error);
       setVendorRestaurants([]);
-      setVendorExperiences([]);
-      setCatalogError(true);
+      setVendorExperiences(staticExperiences);
+      setCatalogError(false);
     } finally {
       setIsLoadingVendors(false);
     }

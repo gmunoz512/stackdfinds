@@ -1460,3 +1460,178 @@ html.dark[data-stackd-theme="tulum"] [data-sonner-toast] { background:#1a3027f5;
   font-size: clamp(24px, 8.6vw, 40px);
   white-space: nowrap;
 }
+
+/* Experience catalog: light Georgia, cream initials, local photos only. */
+.experiences-light h1,
+.experiences-light h2,
+.experiences-light h3,
+.destination-shell .experiences-light h1,
+.destination-shell .experiences-light h2,
+.destination-shell .experiences-light h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  color: #153d30;
+}
+.catalog-filters {
+  justify-content: flex-start;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+  margin-bottom: 8px;
+}
+.catalog-filters::-webkit-scrollbar { display: none; }
+.catalog-filters button {
+  flex: 0 0 auto;
+  padding: 0 12px;
+}
+.catalog-count {
+  margin: 0 2px 10px;
+  font-size: 13px;
+  color: #6b7a6e;
+}
+.listing-business,
+.listing-rating {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 0 4px;
+}
+.listing-business { color: #153d30; }
+.listing-rating { color: #6b7a6e; }
+.initials-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3ebdd;
+  color: #153d30;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  font-size: 28px;
+}
+.reference-listing .initials-tile.reference-photo,
+.vendor-hero {
+  width: 100%;
+  aspect-ratio: 1.4;
+}
+.vendor-hero {
+  border-radius: 13px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.experiences-light.reference-detail h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.catalog-more {
+  display: block;
+  width: 100%;
+  margin: 16px 0 8px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid #153d30;
+  background: transparent;
+  color: #153d30;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 16px;
+}
+.catalog-more:hover { background: #e9ecdc; }
+.business-tile-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+.business-tile-copy {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 28px 10px 10px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.28), transparent);
+  color: #fffdf5;
+}
+.business-tile-copy .guide-tile-title,
+.business-tile-copy .listing-rating,
+.business-tile-meta {
+  color: #fffdf5;
+}
+.business-tile-meta {
+  margin: 2px 0 0;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.guide-photo-link > .initials-tile { width: 100%; height: 100%; }
+.experience-list { list-style: none; margin: 18px 0 0; padding: 0; }
+.experience-block {
+  padding: 14px 0;
+  border-top: 1px solid rgba(216, 208, 190, 0.72);
+  scroll-margin-top: 12px;
+}
+.experience-block.is-targeted {
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: #e9ecdc;
+  border-radius: 12px;
+}
+.experience-heading {
+  position: relative;
+  min-width: 0;
+  padding-right: 42px;
+}
+.experience-heading h2 {
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 2px 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.experience-photos {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  overflow-x: auto;
+}
+.experience-main-photo,
+.experience-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  overflow: hidden;
+  height: 84px;
+}
+.experience-main-photo { width: 120px; border-radius: 12px; }
+.experience-thumb { width: 56px; border-radius: 10px; }
+.dark .experiences-light h1,
+.dark .experiences-light h2,
+.dark .experiences-light h3,
+.dark .destination-shell .experiences-light h1,
+.dark .destination-shell .experiences-light h2,
+.dark .destination-shell .experiences-light h3,
+.dark .listing-business {
+  color: #e7eadf;
+}
+.dark .catalog-count,
+.dark .listing-rating { color: #adbcad; }
+.dark .initials-tile {
+  background: #1c3028;
+  color: #e7eadf;
+}
+.dark .catalog-more {
+  border-color: #c5d4c4;
+  color: #e7eadf;
+  background: transparent;
+}
+.dark .catalog-more:hover { background: #24382e; }
+.dark .experience-block { border-top-color: rgba(192, 213, 187, 0.28); }
+.dark .experience-block.is-targeted { background: #24382e; }

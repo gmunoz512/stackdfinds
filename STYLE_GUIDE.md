@@ -49,5 +49,11 @@
 - Sign-in, set-password, and add-email errors use a clay box (`role="alert"`) and a warm field border. Success uses a pale green box (`role="status"`).
 - Booking cancel dialogs are cream panels with a Georgia regular title. "Keep this booking" is the pine button. "Cancel booking" is the quiet clay button. No zoom, no confetti rain.
 
+### Experience catalog
+- Page background stays cream `#f8f3e7`. Headings are Georgia at regular weight in pine `#153d30`. Card titles stay on one line and ellipsize.
+- Experience cards show the title, then the business name, then the category. Rating and review count appear only when that listing has them. No `$0`, no empty description, no placeholder price.
+- Photos are local files. The business tile and the business page use the top experience’s main photo. If a photo is missing or broken, show the cream initials tile (`#f3ebdd`, pine letters). Never an emoji, never a hotlinked image.
+- Category chips scroll sideways. “Show more” is a pine outline pill. Night mode keeps a dark initials tile and a light outline on that pill.
+
 ### Payout totals
 - Released is the large Georgia figure. Upcoming is the smaller number under it, with a one-line note. Same on `/vendor/affiliate` and `/host/earnings`. Amounts stay in `formatLedgerMoney`.
