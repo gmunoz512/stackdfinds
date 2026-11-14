@@ -7,6 +7,8 @@ type FadePhotoProps = {
   className?: string;
   frameClassName?: string;
   loading?: "eager" | "lazy";
+  width?: number;
+  height?: number;
   /** When set, a broken photo unmounts so the parent can show its own fallback. */
   onError?: () => void;
 };
@@ -22,6 +24,8 @@ export function FadePhoto({
   className,
   frameClassName,
   loading = "lazy",
+  width,
+  height,
   onError,
 }: FadePhotoProps) {
   const imgRef = useRef<HTMLImageElement>(null);
@@ -45,6 +49,8 @@ export function FadePhoto({
           ref={imgRef}
           src={src}
           alt={alt}
+          width={width}
+          height={height}
           loading={loading}
           decoding="async"
           className={cn("fade-photo-img", className)}

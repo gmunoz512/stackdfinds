@@ -96,6 +96,11 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ Booking cancel dialogs use a cream panel, a light Georgia title, and a quiet confirm. The confirmation page no longer rains confetti.
 - ✅ Vendor payouts (`/vendor/affiliate`) and host earnings (`/host/earnings`) lead with Released, and keep Upcoming as the smaller held amount.
 
+### Google restaurant photos (branch `restaurant-photos`)
+- ✅ Restaurant detail reads `data/google-restaurant-photos.json`, a one-time set of photos saved from Google Maps into `public/restaurant-photos/<id>/<n>.jpg`. No Places API call and no Google key.
+- ✅ The 16 restaurants in that file (r1–r22) show every saved photo (6 to 8) in the gallery, including Show all photos. Photo 1 is the cover on restaurant cards and the home Local Favorite Eats rail. A restaurant with no snapshot keeps its existing photos.
+- ✅ Gallery images lazy-load after the first, use width and height inside an aspect-ratio frame, and use alt text like “ARCA photo 3”. A line under the gallery says “Photos from Google Maps”.
+
 ### Google restaurant reviews (branch `restaurant-reviews`)
 - ✅ Restaurant detail reads `data/google-restaurant-reviews.json`, a one-time snapshot taken 2026-11-13 from each place’s Google Maps page. No Places API call and no Google key.
 - ✅ The 16 restaurants in that file (r1–r22) use its rating, review count, and Maps URL. The detail page shows the rating as stars and a number, the count (“2,113 Google reviews”), the three saved reviews, and “See all reviews on Google”. Review text is shown as saved. A restaurant with no snapshot hides the section.

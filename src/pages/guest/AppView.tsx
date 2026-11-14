@@ -94,8 +94,8 @@ const AppView = () => {
     fetchPublishedVendors();
   }, [destination]);
 
-  // Catalog card photos come from the static Google snapshot in
-  // src/data/googlePlaces.json / public/google-photos — no live Places calls.
+  // Card photos are photo 1 from public/restaurant-photos when that restaurant
+  // has a saved set, otherwise the single file in public/google-photos. No live Places calls.
   useEffect(() => {
     const curatedForCity = mockRestaurants.filter(
       (r) => r.city.toLowerCase() === destination.toLowerCase(),
