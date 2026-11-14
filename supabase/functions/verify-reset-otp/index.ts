@@ -77,7 +77,7 @@ serve(async (req) => {
       type: "recovery",
       email: email,
       options: {
-        redirectTo: `${req.headers.get("origin") || Deno.env.get("SITE_URL") || "http://localhost:8080"}/reset-password`,
+        redirectTo: `${req.headers.get("origin") || Deno.env.get("SITE_URL") || "https://stackdfinds.com"}/reset-password`,
       },
     });
 

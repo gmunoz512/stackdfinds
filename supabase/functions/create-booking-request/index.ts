@@ -1,7 +1,6 @@
 // Guest booking requests for Airbnb-catalog experiences. No payment and no Stripe.
 // Deploy ONLY to Stackd (lryeshzwwhcdtzemeyzk):
 //   supabase functions deploy create-booking-request --project-ref lryeshzwwhcdtzemeyzk
-// Do not deploy this function to ilityngsjxknvxtqrgav.
 // The function validates the body, recomputes the price from
 // src/data/airbnbExperiences.generated.ts, and inserts with the service role.
 // The catalog has no per-vendor commission tier, so host earnings are stored

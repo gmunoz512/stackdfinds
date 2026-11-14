@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+// Points at the Stackd Supabase project (lryeshzwwhcdtzemeyzk). The key is the
+// public anon key. Never put a service-role key in a VITE_ variable.
+
 const configuredUrl = import.meta.env.VITE_SUPABASE_URL || "";
 const configuredKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "";
 

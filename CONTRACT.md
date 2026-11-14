@@ -2,7 +2,7 @@
 
 1. `main` = live cream site (GitHub Pages → stackdfinds.com). Feature work goes on a branch (e.g. `phase2-vendor-marketplace`); do **not** merge to `main` until German reviews. Never force-push `main`.
 2. Never commit secrets: `.env*`, Google `GOCSPX-…` secrets, Supabase service-role keys, Stripe keys, Apple `.p8` keys. Client uses `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY` from the environment only.
-3. Supabase project `ilityngsjxknvxtqrgav` is the live database: write migration files only; never apply, delete, or change schema directly. Do not point the app at a different project.
+3. Supabase project `lryeshzwwhcdtzemeyzk` (Stackd, owned by German) is the live database. Schema changes ship as migration files in `supabase/migrations/` and are applied to Stackd only with German's go-ahead. The old Lovable backend is retired: never read, write, or point the app at it.
 4. Before merging: `npx tsc -p tsconfig.app.json --noEmit`, `npm run build`, `npm test` pass; phone (390px) + desktop screenshots checked; FEATURES.md updated.
 5. OAuth must go through `startOAuth` (src/lib/oauth.ts) — never a plain in-frame redirect.
 6. No hardcoded sample hosts/vendors in production paths; `src/data/mockData.ts` is for demos only.
@@ -15,9 +15,9 @@
 - Share links: `/guide/<hostId>?host=<hostId>[&guest=<name>]` (src/lib/shareGuide.ts). `guest` is display-only (max 40 chars, no markup) and is never stored. No SMS service is called.
 
 ## Stackd project (booking requests, payout details, host pages)
-- These features use Supabase project `lryeshzwwhcdtzemeyzk` through `src/integrations/stackd/client.ts` (`VITE_STACKD_SUPABASE_URL`, `VITE_STACKD_SUPABASE_ANON_KEY`). Do not point `src/integrations/supabase/client.ts` at that project.
-- Do not read or write project `ilityngsjxknvxtqrgav` for these features, and do not apply migrations `20261114120000_stackd_booking_requests.sql`, `20261114121000_stackd_vendor_payout_details.sql`, or `20261114122000_stackd_host_pages.sql` there.
-- `create-booking-request` deploys only to Stackd. It inserts with the service role after recomputing the price. Guests have no select policy.
+- The whole app uses Stackd through `src/integrations/supabase/client.ts`. `src/integrations/stackd/client.ts` is a thin alias of that client (one login session). The Pages build fills `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` from the repo variables `VITE_STACKD_SUPABASE_URL` / `VITE_STACKD_SUPABASE_ANON_KEY`.
+- Security baseline: `20261114130000_stackd_security_hardening.sql` and `20261114131000_stackd_policy_tuning.sql`. Signed-out visitors have no table writes, public views are read-only, internal SECURITY DEFINER functions are service-role only, and `has_role` answers only for the caller. Keep new tables on RLS with explicit policies.
+- `create-booking-request` deploys to Stackd. It inserts with the service role after recomputing the price. Guests have no select policy.
 - Vendor rows are matched with `app_metadata.vendor_username`. `user_metadata.username` is display only.
 - Host pages use the Stackd auth user id as `host_id`. They do not write `profiles.recommendations` or `host_vendor_links`.
 
@@ -25,7 +25,7 @@
 - Host attribution: `src/lib/guestBooking.ts` is the only reader and writer of `stackd_host_ref`. A `?host=` in the URL beats the stored value.
 - Pricing is computed server-side in create-booking-checkout (the tier is priced there). The client summary is only for display. Guests pay $0 in fees. The vendor pays stackd's cut, and the host keeps the full commission.
 - Stripe stays in test mode. No live charges until the owner configures them.
-- Schema changes ship as migration files only. Never apply them to the shared Supabase project from an agent.
+- Schema changes ship as migration files. Apply them to Stackd only with German's go-ahead.
 
 ## Affiliate accounting / payouts (Phase 6)
 - Ledger status comes from `classifyAffiliateStatus` in `src/lib/affiliateAccounting.ts` (pending / upcoming / released / refunded / failed). Release time is `parseBookingDate(booking_date) + 24h` via `releaseAtFromBookingDate`. Do not invent a second status map in pages.

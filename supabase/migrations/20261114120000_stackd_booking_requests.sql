@@ -1,5 +1,4 @@
 -- APPLY ONLY to Stackd project lryeshzwwhcdtzemeyzk.
--- Do not apply this file to ilityngsjxknvxtqrgav.
 -- Inserts go through the create-booking-request edge function (service role).
 -- There is no anon SELECT. Vendors read and change status only for their own username.
 -- The username is app_metadata.vendor_username, the same claim vendor-username-sign-in uses.

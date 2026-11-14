@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from "react";
 import "@/pages/auth/vendor-accounts.css";
 import { stackd } from "@/integrations/stackd/client";
-import { normalizeUsername, usernameError, usernameLoginEmail } from "@/lib/vendorAccounts";
+import { signInWithIdentifier } from "@/lib/vendorSignIn";
 
 /**
- * Signs in against the Stackd project only. It does not call the main app's
- * Supabase client or vendor-username-sign-in on that other project.
+ * Inline sign-in for booking requests, payouts and host pages. Uses the same
+ * login as the rest of the site (email, or vendor username via
+ * vendor-username-sign-in).
  */
 export function StackdSignIn({
   onSignedIn,
@@ -22,21 +23,15 @@ export function StackdSignIn({
     if (!stackd) return;
     setError(null);
     const value = identifier.trim();
-    const email = value.includes("@")
-      ? value
-      : (() => {
-          const username = normalizeUsername(value);
-          return usernameError(username) ? "" : usernameLoginEmail(username);
-        })();
-    if (!email || password.length < 6) {
-      setError("Enter the email or username and password for the Stackd account.");
+    if (!value || password.length < 6) {
+      setError("Enter your email or username and your password.");
       return;
     }
     setSaving(true);
-    const { error: signError } = await stackd.auth.signInWithPassword({ email, password });
+    const { error: signError } = await signInWithIdentifier(value, password);
     setSaving(false);
     if (signError) {
-      setError("That Stackd sign-in didn't work. The account has to exist on the Stackd project.");
+      setError("That email or username and password didn't match.");
       return;
     }
     onSignedIn?.();
@@ -44,9 +39,6 @@ export function StackdSignIn({
 
   return (
     <form onSubmit={submit} noValidate>
-      <p className="va-note">
-        This sign-in is for the Stackd project. It is separate from the account you use on the rest of stackd.
-      </p>
       <label className="va-field">
         Email or username
         <input value={identifier} autoComplete="username" onChange={(event) => setIdentifier(event.target.value)} />

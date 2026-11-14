@@ -4,8 +4,11 @@ const LOCAL_ORIGINS = [
   "http://localhost:4173",
 ];
 
+// Live site. SITE_URL (a Supabase function secret) overrides it.
+const PRODUCTION_SITE = "https://stackdfinds.com";
+
 export function siteUrl(): string {
-  return (Deno.env.get("SITE_URL") || "").replace(/\/$/, "");
+  return (Deno.env.get("SITE_URL") || PRODUCTION_SITE).replace(/\/$/, "");
 }
 
 export function corsHeadersFor(req: Request, extraHeaders?: string) {
@@ -13,6 +16,8 @@ export function corsHeadersFor(req: Request, extraHeaders?: string) {
   const site = siteUrl();
   const allowed = new Set(LOCAL_ORIGINS);
   if (site) allowed.add(site);
+  allowed.add(PRODUCTION_SITE);
+  allowed.add("https://www.stackdfinds.com");
   const allowOrigin = origin && allowed.has(origin) ? origin : site || LOCAL_ORIGINS[1];
   return {
     "Access-Control-Allow-Origin": allowOrigin,

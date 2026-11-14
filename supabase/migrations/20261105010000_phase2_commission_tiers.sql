@@ -1,6 +1,6 @@
 -- Phase 2: document / constrain vendor affiliate commission tiers.
--- DO NOT apply from agents. Supabase project ilityngsjxknvxtqrgav is Lovable-controlled.
--- German reviews and applies (or asks Lovable to apply) when ready.
+-- Applied on Stackd (lryeshzwwhcdtzemeyzk) on 2026-11-14.
+
 --
 -- Live payout math (create-booking-checkout) already uses:
 --   host 10/11/12% → stackd 3%

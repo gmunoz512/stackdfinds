@@ -51,7 +51,7 @@ export function AddToHostPage({
     }
     if (!page) {
       setSaving(false);
-      setMessage("Create your page first. The page is owned by this Stackd account, not the other sign-in.");
+      setMessage("Create your page first, then add picks to it.");
       setOpen(true);
       return;
     }
@@ -86,7 +86,7 @@ export function AddToHostPage({
           <SheetHeader>
             <SheetTitle className="booking-sheet-title">Your page</SheetTitle>
             <SheetDescription className="booking-sheet-copy">
-              Host pages are stored on the Stackd project. The host id is that account's user id.
+              Save experiences and restaurants to your own page to share with guests.
             </SheetDescription>
           </SheetHeader>
           {message ? <p className="va-note" role="status">{message}</p> : null}

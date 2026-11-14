@@ -1,5 +1,4 @@
 -- APPLY ONLY to Stackd project lryeshzwwhcdtzemeyzk.
--- Do not apply this file to ilityngsjxknvxtqrgav.
 -- Only the owning vendor can read or write their payout row.
 -- Anon, hosts, and guests have no access. CLABE, IBAN, and routing are checked in the database.
 

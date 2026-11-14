@@ -1,5 +1,4 @@
 -- APPLY ONLY to Stackd project lryeshzwwhcdtzemeyzk.
--- Do not apply this file to ilityngsjxknvxtqrgav.
 -- Public read. Writes require the Stackd auth user id (auth.uid()) as host_id.
 -- This does not read or write the other project's profiles or host_vendor_links.
 
