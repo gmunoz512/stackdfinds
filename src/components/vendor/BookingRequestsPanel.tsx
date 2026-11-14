@@ -63,14 +63,14 @@ export function BookingRequestsPanel() {
       {ready && configured && !user ? (
         <>
           <p className="va-note">
-            These requests live on the Stackd project. The sign-in used for the rest of stackd is a different project, so it cannot open this list. Sign in with the Stackd vendor account whose app_metadata.vendor_username matches your catalog username.
+            Sign in with your vendor username and password to see your booking requests.
           </p>
           <StackdSignIn />
         </>
       ) : null}
       {ready && configured && user && !username ? (
         <p className="va-status va-status-error" role="alert">
-          This Stackd user has no app_metadata.vendor_username. Set that server-only claim to the catalog username before this list can load. The display username in user_metadata is not used.
+          This account isn't linked to a vendor listing yet. Contact stackd to link it.
         </p>
       ) : null}
       {error ? <p className="va-status va-status-error" role="alert">{error}</p> : null}

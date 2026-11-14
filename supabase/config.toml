@@ -1,4 +1,4 @@
-project_id = "ilityngsjxknvxtqrgav"
+project_id = "lryeshzwwhcdtzemeyzk"
 
 [functions.assign-role]
 verify_jwt = true
@@ -60,7 +60,9 @@ verify_jwt = true
 [functions.vendor-username-sign-in]
 verify_jwt = false
 
-# Deploy create-booking-request to Stackd (lryeshzwwhcdtzemeyzk) only.
-# Do not deploy it to the project_id at the top of this file.
 [functions.create-booking-request]
 verify_jwt = false
+
+# Not listed above means the default (verify_jwt = true): cancel-booking,
+# mapbox-directions, mapbox-token, release-payouts, send-admin-notification,
+# send-booking-reminders, verify-host.

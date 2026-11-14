@@ -86,7 +86,7 @@ export function PayoutDetailsForm({ onSkip, onSaved }: { onSkip?: () => void; on
       return;
     }
     if (!username) {
-      setError("This Stackd account has no vendor username yet. Set app_metadata.vendor_username to the catalog username, then sign in again.");
+      setError("This account isn't linked to a vendor listing yet. Contact stackd to link it.");
       return;
     }
     const parsed = validatePayoutDetails({

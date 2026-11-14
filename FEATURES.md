@@ -23,7 +23,7 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - ✅ **Active vendors fix**: reads `commission_percentage` (was wrongly using `host_commission_percentage`).
 - ✅ **Vendor management** restyled cream/pine (no gradient header); links to marketplace; graceful empty states if link tables are missing.
 - ✅ **og meta** in `index.html` points at `https://stackdfinds.com` (was chatgpt.site).
-- 🟡 Migration `supabase/migrations/20261105010000_phase2_commission_tiers.sql` — CHECK constraint + comment; **German must review/apply** on shared project `ilityngsjxknvxtqrgav`. UI works without it.
+- ✅ Migration `supabase/migrations/20261105010000_phase2_commission_tiers.sql` — CHECK constraint + comment, applied on Stackd.
 - ✅ Host guide builder, text share, guest booking, and affiliate ledger land in later phase sections below.
 
 ## Phase 3 — host guides (branch `phase3-host-guides`)
@@ -75,7 +75,7 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Sign in (/auth, sign-in mode): the field is "Email or username". No `@` means a username: we try the hidden address first, then the `vendor-username-sign-in` function (for vendors who later switched to their own email). Errors say "Wrong username/email or password".
 - First login: `user_metadata.must_change_password = true` sends every page to /set-password (New + Confirm password, 6–72 chars, breach check). No skip. After saving, an optional "Add your email" step (Skip for now), then an optional "How you get paid" step (Add later), then /vendor/edit-profile.
 - Preferred email: /vendor/account-email (linked from vendor Settings) and the step above. Uses `supabase.auth.updateUser({ email })`, so Supabase sends a confirmation link to the new address. Until it's confirmed, the hidden address stays the login. Once confirmed, the vendor can sign in with the email or the username.
-- Edge functions `create-vendor-account` and `vendor-username-sign-in` are NOT deployed and Supabase Auth "Secure email change" is still on: both need a Supabase access token for project ilityngsjxknvxtqrgav. Until then the admin page says "Couldn't create the account. Is the function deployed?".
+- Edge functions `create-vendor-account` and `vendor-username-sign-in` are deployed on Stackd. Supabase Auth "Secure email change" still has to be turned off in the Stackd dashboard for the email-switch step.
 - Email forwarding (docs/email-routing-plan.md) is no longer needed.
 
 ### Airbnb experiences (branch `airbnb-experiences`)
@@ -113,4 +113,11 @@ Status legend: ✅ working in code · 🟡 needs setup outside code · ⏳ later
 - Vendor payout details are an optional step on first login and on create-profile (Add later), and the same form on Payment Settings. They are saved on Stackd in `vendor_payout_details`. CLABE, IBAN, and US routing numbers are checked in the browser and in the database. After save, the account number is shown as the last 4 digits. The old card-payout block on that page is unchanged and is not used for these requests.
 - Host pages are `/h/:slug`. A signed-in host sees Add to my page on the home rails, experience and restaurant listings, and the explore grid. The top 8 photos come first. Restaurants are recommendations and have no booking. An experience on a host page links to the listing with `?host=<Stackd user id>`, which `resolveHostAttribution` stores. Share by text uses the existing share dialog with `/h/:slug?host=`.
 - These three features use a separate client (`VITE_STACKD_SUPABASE_URL`, `VITE_STACKD_SUPABASE_ANON_KEY`). If either value is missing, the screens say the feature is opening soon and do not crash. The main Supabase client is unchanged. Nothing here calls Stripe, Google, or the other Supabase project.
-- Not applied yet: the three Stackd migrations and `create-booking-request`. Vendor and host accounts have to exist on Stackd. A vendor needs `app_metadata.vendor_username`. A host page’s id is that project’s auth user id, not the id from the other sign-in. Set the two GitHub Actions repository variables before the Pages build can turn the screens on.
+- Applied on Stackd: the three Stackd migrations and `create-booking-request`. A vendor needs `app_metadata.vendor_username`. A host page’s id is the host's auth user id. These screens now share the site's one login.
+
+## Switch to Stackd (Nov 2026)
+- ✅ The whole site runs on Stackd (`lryeshzwwhcdtzemeyzk`): sign-in, data, storage and 28 edge functions. The old Lovable backend is no longer used. No profiles or photos were copied; people sign up again.
+- ✅ Applied on Stackd: `20261026060000_public_vetting_fields`, `20261105010000_phase2_commission_tiers`, `20261105020000_phase5_guest_bookings`, `20261114130000_stackd_security_hardening`, `20261114131000_stackd_policy_tuning`, and pg_net moved to the `extensions` schema.
+- ✅ Security advisors: 50 findings before, 6 after (all intentional, plus leaked-password protection, which is a dashboard switch).
+- 🟡 Features waiting on function secrets in the Stackd dashboard: Stripe checkout, payouts and refunds (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`), emails (`RESEND_API_KEY`), maps (`MAPBOX_PUBLIC_TOKEN`), trip planner / descriptions / price comparison (`AI_GATEWAY_URL`, `AI_GATEWAY_API_KEY`), Instagram and Airbnb import (`FIRECRAWL_API_KEY`), TripAdvisor (`TRIPADVISOR_API_KEY`), scheduled payouts (`CRON_SECRET`).
+- 🟡 Preview experience photos in `src/data/previewExperiences.ts` are still hotlinked from the old backend's public storage (not copied, per German).

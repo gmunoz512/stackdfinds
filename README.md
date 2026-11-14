@@ -47,12 +47,12 @@ npm run preview
 
 - Build command: `npm run build`
 - Output directory: `dist`
-- The workflow sets `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from repository variables, and `VITE_SITE_URL` to `https://stackdfinds.com`.
+- The workflow sets `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from the repository variables `VITE_STACKD_SUPABASE_URL` and `VITE_STACKD_SUPABASE_ANON_KEY`, and `VITE_SITE_URL` to `https://stackdfinds.com`.
 - It copies `dist/index.html` to `dist/404.html` so client routes load the app.
 
 The top-level page shows the app inside a phone frame. The frame loads the same bundle. Do not embed Resy or other reservation sites in that frame; those links go through `openExternalUrl`.
 
-Supabase project `ilityngsjxknvxtqrgav` is the live database. Agents write migration files only and do not apply them. The vetted badge reads `verification_status` and `verified_at` from the public vendor view. Until `supabase/migrations/20261026060000_public_vetting_fields.sql` is applied, the badge stays hidden.
+Supabase project `lryeshzwwhcdtzemeyzk` (Stackd) is the live database. Schema changes are migration files in `supabase/migrations/`. The vetted badge reads `verification_status` and `verified_at` from the public vendor view.
 
 Google and Apple sign-in are Supabase Auth providers. The app starts them with `startOAuth` in `src/lib/oauth.ts`. Configure the providers, redirect URLs, and the site URL in the Supabase dashboard.
 
@@ -74,4 +74,4 @@ A Google rating is shown only when `resolveGoogleRating` (`src/lib/googleRating.
 
 ## What you own outside this repo
 
-The Supabase project id is in `supabase/config.toml` (`ilityngsjxknvxtqrgav`). The database, auth providers, storage buckets, edge-function secrets, and Stripe account are not part of this git history. Mapbox and Stripe stay in Supabase secrets. Set `VITE_SITE_URL` to the domain you host.
+The Supabase project id is in `supabase/config.toml` (`lryeshzwwhcdtzemeyzk`). The database, auth providers, storage buckets, edge-function secrets, and Stripe account are not part of this git history. Mapbox and Stripe stay in Supabase secrets. Set `VITE_SITE_URL` to the domain you host.

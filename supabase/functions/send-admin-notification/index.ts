@@ -551,7 +551,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="color: #64748b; margin: 0;">A new vendor has submitted their profile for review.</p>
           </div>
           
-          <a href="https://stackbnb.app/admin/vendor-approvals" 
+          <a href="https://stackdfinds.com/admin/vendor-approvals" 
              style="display: inline-block; background: linear-gradient(135deg, #10b981, #14b8a6); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
             Review Now
           </a>
@@ -576,7 +576,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div style="text-align: center;">
-            <a href="https://stackbnb.app/vendor/preview" 
+            <a href="https://stackdfinds.com/vendor/preview" 
                style="display: inline-block; background: linear-gradient(135deg, #f97316, #ec4899); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
               Publish Your Profile
             </a>
@@ -618,7 +618,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div style="text-align: center;">
-            <a href="https://stackbnb.app/vendor/create-profile" 
+            <a href="https://stackdfinds.com/vendor/create-profile" 
                style="display: inline-block; background: linear-gradient(135deg, #f97316, #ec4899); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
               Update Your Profile
             </a>
@@ -660,7 +660,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <div style="text-align: center;">
-            <a href="https://stackbnb.app/vendor/create-profile" 
+            <a href="https://stackdfinds.com/vendor/create-profile" 
                style="display: inline-block; background: linear-gradient(135deg, #f97316, #ec4899); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
               Make Changes
             </a>
