@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { BookingRequestsPanel } from "@/components/vendor/BookingRequestsPanel";
 
 type VendorBookingRow = {
   id: string;
@@ -126,6 +127,8 @@ const AllBookings = () => {
           <h1 className="text-2xl font-bold">All Bookings</h1>
           <p className="text-sm text-muted-foreground">Complete list of your bookings</p>
         </div>
+
+        <BookingRequestsPanel />
 
         <div className="space-y-3 max-h-[calc(100vh-240px)] overflow-y-auto">
           {isLoading ? (

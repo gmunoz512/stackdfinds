@@ -53,3 +53,9 @@ export function findAirbnbExperience(username: string | undefined, experienceId:
   const id = experienceId.startsWith("airbnb-") ? experienceId : `airbnb-${experienceId}`;
   return airbnbExperiences.find((item) => item.username === username && item.id === id);
 }
+
+export function findAirbnbExperienceById(experienceId: string | undefined) {
+  if (!experienceId) return undefined;
+  const id = experienceId.startsWith("airbnb-") ? experienceId : `airbnb-${experienceId}`;
+  return airbnbExperiences.find((item) => item.id === id);
+}

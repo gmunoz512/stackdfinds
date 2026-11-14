@@ -7,17 +7,21 @@ import { findAirbnbExperience, findAirbnbVendor } from "@/data/airbnbCatalog";
 import { useLocalWishlist } from "@/hooks/useLocalWishlist";
 import { toast } from "@/hooks/use-toast";
 import { groupSizeMax, locationLine } from "@/lib/airbnbListingFacts";
+import { BookingRequestButton, BookingRequestSheet } from "@/components/booking/BookingRequestSheet";
+import { AddToHostPage } from "@/components/host/AddToHostPage";
 import { PRICE_ON_REQUEST, guestPriceLine, listingPriceBreakdown } from "@/lib/experiencePrice";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 export default function ExperienceListing() {
   const { username, experienceId } = useParams();
+  const { hash } = useLocation();
   const experience = findAirbnbExperience(username, experienceId);
   const vendor = findAirbnbVendor(experience?.username);
   const { has, toggle } = useLocalWishlist();
   const [guests, setGuests] = useState(1);
+  const [bookingOpen, setBookingOpen] = useState(hash === "#book");
 
   if (!experience) {
     return (
@@ -179,8 +183,17 @@ export default function ExperienceListing() {
               <dd>{summary.total}</dd>
             </div>
           </dl>
+          <div className="booking-request-inline">
+            <BookingRequestButton onClick={() => setBookingOpen(true)} />
+            <p className="booking-request-note">No payment now. The vendor confirms availability, then you'll get payment details.</p>
+          </div>
         </section>
-      ) : null}
+      ) : (
+        <div className="booking-request-inline">
+          <BookingRequestButton onClick={() => setBookingOpen(true)} />
+          <p className="booking-request-note">No payment now. The vendor confirms availability, then you'll get payment details.</p>
+        </div>
+      )}
       {usdPrice != null ? (
         <section className="experience-price-comparison" aria-label="Experience price comparison">
           <h2>How does the price compare?</h2>
@@ -219,6 +232,11 @@ export default function ExperienceListing() {
       <button type="button" className="catalog-more" onClick={() => void share()}>
         Share
       </button>
+      <AddToHostPage itemType="experience" itemRef={experience.id} vendorUsername={experience.username} />
+      <div className="booking-request-dock">
+        <BookingRequestButton onClick={() => setBookingOpen(true)} />
+      </div>
+      <BookingRequestSheet experience={experience} open={bookingOpen} onOpenChange={setBookingOpen} />
     </article>
   );
 }

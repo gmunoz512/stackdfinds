@@ -38,7 +38,7 @@
 ### Vendor account screens (/admin/vendors/new, /set-password, /vendor/account-email)
 - `src/pages/auth/vendor-accounts.css`: cream #f8f3e7 page, frosted card, Georgia regular-weight titles in pine #153d30, pill pine buttons, ghost button for Skip / secondary.
 - Credentials show in monospace with a Copy button. Steps show a small "Step 1 of 2" label; optional steps say "optional" and have "Skip for now".
-- First login also shows `VendorSetupSteps`: Password, then Email (optional). The current step is a filled pine circle.
+- First login also shows `VendorSetupSteps`: Password, then Email (optional), then How you get paid (optional). The current step is a filled pine circle.
 
 ### Focus, press, and photos
 - Keyboard focus is a 2px pine `#153d30` ring (`src/styles/polish.css`), with a light ring in night mode. Do not invent a second focus color.

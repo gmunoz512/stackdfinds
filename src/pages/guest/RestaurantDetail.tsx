@@ -22,6 +22,7 @@ import { GoogleRestaurantReviews } from "@/components/GoogleRestaurantReviews";
 import { resolveGoogleRating } from "@/lib/googleRating";
 import { googleRestaurantSnapshot, snapshotRatingNumber, snapshotReviewTotal } from "@/data/googleRestaurantReviews";
 import { useRequireSignIn } from "@/hooks/useRequireSignIn";
+import { AddToHostPage } from "@/components/host/AddToHostPage";
 import { openExternalUrl } from "@/lib/openExternalUrl";
 
 
@@ -210,6 +211,7 @@ const RestaurantDetail = () => {
             <dl><div><dt>Location</dt><dd>{restaurant.neighborhood || restaurant.city}</dd></div><div><dt>Price range</dt><dd>{restaurant.priceRange}</dd></div><div><dt>Cuisine</dt><dd>{restaurant.cuisine}</dd></div></dl>
           </section>
           <Link className="wishlist-plan-button restaurant-plan-link" to={`/trip-planner?include=restaurant:${restaurant.id}`} onClick={() => { if (!isFavorite) toggleFavorite(); }}>Plan with this restaurant <ArrowRight size={18} /></Link>
+          <AddToHostPage itemType="restaurant" itemRef={restaurant.id} />
           <Separator />
 
           {/* Features */}

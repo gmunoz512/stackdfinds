@@ -4,10 +4,11 @@
 .va-title { font-family: Georgia, "Times New Roman", serif; font-size: 28px; line-height: 1.15; color: #153d30; margin: 0 0 8px; }
 .va-sub { font-size: 14px; color: #6b7a6e; margin: 0 0 22px; line-height: 1.5; }
 .va-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; font-size: 13px; font-weight: 600; }
-.va-field input, .va-field select { height: 44px; border-radius: 12px; border: 1px solid rgba(216,208,190,.9); background: #fffdf5; padding: 0 14px; font-size: 15px; color: #274234; font-weight: 400; }
-.va-field input:focus, .va-field select:focus,
-.va-field input:focus-visible, .va-field select:focus-visible { outline: 2px solid #153d30; outline-offset: 2px; }
-.va-field input[aria-invalid="true"], .va-field select[aria-invalid="true"] { border-color: #9a5348; background: #fff8f5; }
+.va-field input, .va-field select, .va-field textarea { border-radius: 12px; border: 1px solid rgba(216,208,190,.9); background: #fffdf5; padding: 10px 14px; font-size: 15px; color: #274234; font-weight: 400; font-family: Arial, Helvetica, sans-serif; }
+.va-field input, .va-field select { height: 44px; padding: 0 14px; }
+.va-field input:focus, .va-field select:focus, .va-field textarea:focus,
+.va-field input:focus-visible, .va-field select:focus-visible, .va-field textarea:focus-visible { outline: 2px solid #153d30; outline-offset: 2px; }
+.va-field input[aria-invalid="true"], .va-field select[aria-invalid="true"], .va-field textarea[aria-invalid="true"] { border-color: #9a5348; background: #fff8f5; }
 .va-hint { font-size: 12px; color: #6b7a6e; font-weight: 400; }
 .va-error, .va-status { font-size: 13px; line-height: 1.45; margin: 0 0 12px; border-radius: 12px; padding: 10px 12px; }
 .va-error, .va-status-error { color: #6f2e2a; background: #f8ebe6; border: 1px solid #e4c4ba; }
@@ -37,7 +38,7 @@
 .dark .va-panel { background: rgba(26,38,31,.92); border-color: rgba(80,98,86,.6); box-shadow: none; }
 .dark .va-wordmark, .dark .va-title { color: #e7eadf; }
 .dark .va-sub, .dark .va-hint, .dark .va-note, .dark .va-row dt { color: #9fada2; }
-.dark .va-field input, .dark .va-field select, .dark .va-result { background: #18231c; border-color: rgba(80,98,86,.8); color: #e7eadf; }
+.dark .va-field input, .dark .va-field select, .dark .va-field textarea, .dark .va-result { background: #18231c; border-color: rgba(80,98,86,.8); color: #e7eadf; }
 .dark .va-btn { background: #e7eadf; color: #153d30; }
 .dark .va-btn-ghost, .dark .va-copy { background: transparent; color: #e7eadf; border-color: rgba(80,98,86,.8); }
 .dark .va-btn-ghost:hover, .dark .va-copy:hover { background: #22312a; }
@@ -46,7 +47,21 @@
 .dark .va-progress-index { background: #18231c; color: #e7eadf; border-color: rgba(80,98,86,.8); }
 .dark .va-progress .is-current .va-progress-index { background: #e7eadf; color: #153d30; }
 .dark .va-progress .is-done .va-progress-index { background: #1c3328; color: #d7e6d4; }
-.dark .va-field input[aria-invalid="true"] { background: #3a2422; border-color: #a56b64; }
+.dark .va-field input[aria-invalid="true"], .dark .va-field textarea[aria-invalid="true"] { background: #3a2422; border-color: #a56b64; }
+.host-editor { max-width: 520px; }
+.host-editor-heading { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 22px; color: #153d30; margin: 22px 0 10px; }
+.host-editor-list { list-style: none; margin: 0; padding: 0; }
+.host-editor-list li { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid rgba(216,208,190,.72); }
+.host-editor-photo { width: 64px; height: 64px; border-radius: 12px; flex: 0 0 auto; overflow: hidden; }
+.host-editor-title { margin: 0; font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 16px; color: #153d30; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+.booking-request-list { list-style: none; margin: 0; padding: 0; }
+.booking-request-list li { padding: 12px 0; border-top: 1px solid rgba(216,208,190,.72); }
+.booking-request-title { margin: 0 0 4px; font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: #153d30; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.booking-request-status { text-transform: capitalize; color: #6b7a6e; font-size: 13px; }
+.booking-request-actions { display: flex; gap: 8px; margin-top: 8px; }
+.booking-request-actions .va-btn { width: auto; padding: 0 16px; }
+.dark .host-editor-heading, .dark .host-editor-title, .dark .booking-request-title { color: #e7eadf; }
+.dark .booking-request-list li, .dark .host-editor-list li { border-top-color: rgba(192,213,187,.28); }
 .va-back { display: inline-block; font-size: 13px; color: #6b7a6e; text-decoration: none; margin-bottom: 14px; }
 .va-back:hover { color: #153d30; }
 .va-steps { font-size: 12px; color: #6b7a6e; margin: 0 0 6px; letter-spacing: .02em; }

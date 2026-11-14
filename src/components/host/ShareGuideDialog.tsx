@@ -17,17 +17,19 @@ export interface ShareGuideFormProps {
   hostId: string;
   propertyName: string;
   initialGuestName?: string;
+  /** Defaults to the guide URL. Host pages pass their /h/:slug link. */
+  urlFor?: (hostId: string, guestName?: string) => string;
 }
 
 /** The share form, usable inside a dialog or rendered on its own. */
-export function ShareGuideForm({ hostId, propertyName, initialGuestName = '' }: ShareGuideFormProps) {
+export function ShareGuideForm({ hostId, propertyName, initialGuestName = '', urlFor = shareGuideUrl }: ShareGuideFormProps) {
   const [guestName, setGuestName] = useState(initialGuestName);
   const [phone, setPhone] = useState('');
   const [arrival, setArrival] = useState('');
   const [customMessage, setCustomMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const url = useMemo(() => shareGuideUrl(hostId, guestName), [hostId, guestName]);
+  const url = useMemo(() => urlFor(hostId, guestName), [hostId, guestName, urlFor]);
   const message = customMessage ?? defaultShareMessage({ guestName, propertyName, arrivalDate: arrival });
   const body = shareText(message, url);
 

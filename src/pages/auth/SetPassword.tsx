@@ -5,6 +5,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { passwordSchema } from "@/lib/validations";
 import { mustChangePassword, preferredEmail } from "@/lib/vendorAccounts";
 import AddEmailForm from "@/components/vendor/AddEmailForm";
+import { PayoutDetailsForm } from "@/components/vendor/PayoutDetailsForm";
 import { VendorSetupSteps } from "@/components/vendor/VendorSetupSteps";
 import "./vendor-accounts.css";
 
@@ -18,10 +19,24 @@ const SetPassword = () => {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [step, setStep] = useState<"password" | "email">("password");
+  const [step, setStep] = useState<"password" | "email" | "payout">("password");
   const finish = () => navigate("/vendor/edit-profile", { replace: true });
   const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
   const username = typeof meta.username === "string" ? meta.username : null;
+
+  if (step === "payout") {
+    return (
+      <main className="va-page">
+        <div className="va-panel">
+          <div className="va-wordmark">stackd</div>
+          <VendorSetupSteps step={3} />
+          <p className="va-steps">Step 3 of 3 · optional</p>
+          <h1 className="va-title">How you get paid</h1>
+          <PayoutDetailsForm onSkip={finish} onSaved={finish} />
+        </div>
+      </main>
+    );
+  }
 
   if (step === "email") {
     return (
@@ -29,11 +44,11 @@ const SetPassword = () => {
         <div className="va-panel">
           <div className="va-wordmark">stackd</div>
           <VendorSetupSteps step={2} />
-          <p className="va-steps">Step 2 of 2 · optional</p>
+          <p className="va-steps">Step 2 of 3 · optional</p>
           <h1 className="va-title">Add your email</h1>
           <p className="va-status va-status-success" role="status">Password saved.</p>
           <p className="va-sub">Add an email so booking updates and password resets reach you. You can do this later in Settings.</p>
-          <AddEmailForm current={preferredEmail(user)} pending={null} username={username} onSkip={finish} onDone={finish} />
+          <AddEmailForm current={preferredEmail(user)} pending={null} username={username} onSkip={() => setStep("payout")} onDone={() => setStep("payout")} />
         </div>
       </main>
     );
@@ -58,7 +73,7 @@ const SetPassword = () => {
         : same ? "Pick a password different from the one you were given."
         : err.message);
     }
-    if (preferredEmail(user)) return finish();
+    if (preferredEmail(user)) return setStep("payout");
     setStep("email");
   };
 
@@ -67,7 +82,7 @@ const SetPassword = () => {
       <form className="va-panel" onSubmit={submit} noValidate>
         <div className="va-wordmark">stackd</div>
         <VendorSetupSteps step={1} />
-        <p className="va-steps">Step 1 of 2</p>
+        <p className="va-steps">Step 1 of 3</p>
         <h1 className="va-title">Set your password</h1>
         <p className="va-sub">{username ? <>Signed in as <strong>{username}</strong>. </> : null}You used a temporary password. Choose your own to finish setting up your vendor page.</p>
         <label className="va-field">

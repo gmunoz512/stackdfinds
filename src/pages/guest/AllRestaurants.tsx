@@ -2,6 +2,7 @@ import { WishlistHeart } from "@/components/destination/WishlistHeart";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Search } from "lucide-react";
+import { AddToHostPage } from "@/components/host/AddToHostPage";
 import { mockRestaurants } from "@/data/mockRestaurants";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 interface VendorEat {
@@ -99,6 +100,7 @@ export default function AllRestaurants() {
               </div>
             </Link>
 <WishlistHeart item={{id:item.id,kind:"restaurant",name:item.name,category:item.category,photo:item.photos?.[0],url:item.url}}/>
+            {item.url.startsWith("/restaurant/") ? <AddToHostPage itemType="restaurant" itemRef={item.id} /> : null}
           </article>
         ))}
       </div>
