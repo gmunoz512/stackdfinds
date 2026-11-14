@@ -1,5 +1,5 @@
 import { useLocalWishlist } from "@/hooks/useLocalWishlist";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { 
   ArrowLeft, ArrowRight, MapPin, Phone, Clock, ExternalLink,
@@ -11,7 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { mockRestaurants, isRestaurantOpen, type Restaurant } from "@/data/mockRestaurants";
 import { formatDistance } from "@/services/googleMapsService";
-import StackedPhotoGrid from "@/components/ui/stacked-photo-grid";
+import { RestaurantGallery } from "@/components/RestaurantGallery";
+import { restaurantGallery } from "@/data/googleRestaurantPhotos";
 import { isSupabaseConfigured } from "@/integrations/supabase/client";
 import { GuestGuideButton } from "@/components/GuestGuideButton";
 import { useSearch } from "@/contexts/SearchContext";
@@ -38,7 +39,7 @@ const RestaurantDetail = () => {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const { has, toggle } = useLocalWishlist();
   const isFavorite = id ? has("restaurant", id) : false;
-  const [displayPhotos, setDisplayPhotos] = useState<string[]>([]);
+  const gallery = useMemo(() => restaurantGallery(restaurant), [restaurant]);
   const { requireSignIn } = useRequireSignIn();
   const reviewSnapshot = googleRestaurantSnapshot(id);
   const placeRating = resolveGoogleRating({
@@ -51,10 +52,10 @@ const RestaurantDetail = () => {
   });
   useEffect(() => {
     if (!restaurant) return;
-    const data = { "@context": "https://schema.org", "@type": "Restaurant", name: restaurant.name, description: restaurant.description, image: displayPhotos, servesCuisine: restaurant.cuisine, address: { "@type": "PostalAddress", streetAddress: restaurant.address, addressLocality: restaurant.city }, aggregateRating: placeRating?.reviewCount ? { "@type": "AggregateRating", ratingValue: placeRating.rating, reviewCount: placeRating.reviewCount, bestRating: 5 } : undefined };
+    const data = { "@context": "https://schema.org", "@type": "Restaurant", name: restaurant.name, description: restaurant.description, image: gallery.photos, servesCuisine: restaurant.cuisine, address: { "@type": "PostalAddress", streetAddress: restaurant.address, addressLocality: restaurant.city }, aggregateRating: placeRating?.reviewCount ? { "@type": "AggregateRating", ratingValue: placeRating.rating, reviewCount: placeRating.reviewCount, bestRating: 5 } : undefined };
     const script = document.createElement("script"); script.type = "application/ld+json"; script.textContent = JSON.stringify(data); document.head.appendChild(script);
     return () => script.remove();
-  }, [restaurant, displayPhotos, placeRating?.rating, placeRating?.reviewCount]);
+  }, [restaurant, gallery.photos, placeRating?.rating, placeRating?.reviewCount]);
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -73,12 +74,11 @@ const RestaurantDetail = () => {
       }
     }
     setRestaurant(found || null);
-    setDisplayPhotos(found ? (found.googleFetchedAt ? found.photos.slice(0, 1) : found.photos) : []);
   }, [id]);
 
   const toggleFavorite = () => {
     if (!restaurant || !id) return;
-    toggle({id,kind:"restaurant",name:restaurant.name,category:restaurant.cuisine,photo:restaurant.photos[0],url:`/restaurant/${id}`});
+    toggle({id,kind:"restaurant",name:restaurant.name,category:restaurant.cuisine,photo:gallery.photos[0] ?? restaurant.photos[0],url:`/restaurant/${id}`});
   };
 
   const handleShare = async () => {
@@ -141,7 +141,6 @@ const RestaurantDetail = () => {
   }
 
   const isOpen = isRestaurantOpen(restaurant);
-  const photos = displayPhotos.slice(0, 6);
   const platformLabel = reservationLink
     ? { resy: 'Resy', opentable: 'OpenTable', yelp: 'Yelp' }[reservationLink.platform]
     : null;
@@ -175,11 +174,8 @@ const RestaurantDetail = () => {
         </header>
 
         <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
-        {photos.length > 0 ? (
-          <div className="px-4 lg:px-6 lg:pt-2">
-            {!restaurant.googleFetchedAt && <p className="text-[10px] text-muted-foreground mb-2">Illustrative photo</p>}
-            <StackedPhotoGrid photos={photos} alt={restaurant.name} />
-          </div>
+        {gallery.photos.length > 0 ? (
+          <RestaurantGallery restaurant={restaurant} />
         ) : (
           <div className="hidden lg:block" />
         )}

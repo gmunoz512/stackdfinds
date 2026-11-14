@@ -1208,7 +1208,9 @@ html[data-stackd-theme="tulum"] body {
 .detail-gallery-tile:focus-visible,.detail-gallery-show-all:focus-visible { outline:3px solid #67c3b1; outline-offset:-3px; }
 .detail-photo-dialog { position:fixed; inset:0; top:0!important; left:0!important; transform:none!important; width:100vw; max-width:none!important; height:100dvh; padding:60px 14px; border:0; border-radius:0; display:flex; align-items:center; justify-content:center; background:#101310fa; color:white; }
 .detail-photo-dialog > button:last-child:not([class^="detail-viewer"]) { display:none; }
-.detail-viewer-photo { display:block; max-width:100%; max-height:calc(100dvh - 120px); width:auto; height:auto; object-fit:contain; }
+.detail-viewer-photo { display:block; width:min(100%, 960px); max-width:100%; max-height:calc(100dvh - 120px); height:auto; aspect-ratio:4 / 3; object-fit:contain; background:#101310; touch-action:pan-y; }
+.restaurant-photo-credit { margin:8px 2px 0; color:#6b7a6e; font-size:12px; line-height:1.4; }
+.dark .restaurant-photo-credit { color:#adbcad; }
 .detail-viewer-crop { width:min(100%,720px); aspect-ratio:1.4; }
 .detail-viewer-close,.detail-viewer-prev,.detail-viewer-next { position:absolute; display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:#ffffff20; z-index:2; color:white; }
 .detail-viewer-close { left:16px; top:max(16px,env(safe-area-inset-top)); }
