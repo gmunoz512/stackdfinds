@@ -1,5 +1,5 @@
-import type { AirbnbPrice } from "@/lib/airbnbListingFacts";
-import { formatUsd, priceSummary } from "@/lib/guestBooking";
+import type { AirbnbPrice } from "./airbnbListingFacts.ts";
+import { formatUsd, priceSummary } from "./guestBooking.ts";
 
 export const PRICE_ON_REQUEST = "Price on request";
 

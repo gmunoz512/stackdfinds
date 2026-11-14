@@ -14,6 +14,13 @@
 
 - Share links: `/guide/<hostId>?host=<hostId>[&guest=<name>]` (src/lib/shareGuide.ts). `guest` is display-only (max 40 chars, no markup) and is never stored. No SMS service is called.
 
+## Stackd project (booking requests, payout details, host pages)
+- These features use Supabase project `lryeshzwwhcdtzemeyzk` through `src/integrations/stackd/client.ts` (`VITE_STACKD_SUPABASE_URL`, `VITE_STACKD_SUPABASE_ANON_KEY`). Do not point `src/integrations/supabase/client.ts` at that project.
+- Do not read or write project `ilityngsjxknvxtqrgav` for these features, and do not apply migrations `20261114120000_stackd_booking_requests.sql`, `20261114121000_stackd_vendor_payout_details.sql`, or `20261114122000_stackd_host_pages.sql` there.
+- `create-booking-request` deploys only to Stackd. It inserts with the service role after recomputing the price. Guests have no select policy.
+- Vendor rows are matched with `app_metadata.vendor_username`. `user_metadata.username` is display only.
+- Host pages use the Stackd auth user id as `host_id`. They do not write `profiles.recommendations` or `host_vendor_links`.
+
 ## Booking & attribution (Phase 5)
 - Host attribution: `src/lib/guestBooking.ts` is the only reader and writer of `stackd_host_ref`. A `?host=` in the URL beats the stored value.
 - Pricing is computed server-side in create-booking-checkout (the tier is priced there). The client summary is only for display. Guests pay $0 in fees. The vendor pays stackd's cut, and the host keeps the full commission.

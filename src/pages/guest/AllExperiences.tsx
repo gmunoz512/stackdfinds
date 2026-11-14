@@ -8,6 +8,7 @@ import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { airbnbVendors } from "@/data/airbnbCatalog";
 import { experienceCatalog, type CatalogCard } from "@/data/experienceCatalog";
 import { CATALOG_FILTERS, matchesCategory } from "@/lib/experienceCategory";
+import { AddToHostPage } from "@/components/host/AddToHostPage";
 import { PRICE_ON_REQUEST } from "@/lib/experiencePrice";
 import { formatUsd } from "@/lib/guestBooking";
 
@@ -216,6 +217,7 @@ function ExperienceCard({ item, eager }: { item: CatalogCard; eager: boolean }) 
           </p>
         </div>
       </Link>
+      {item.username ? <AddToHostPage itemType="experience" itemRef={item.id} vendorUsername={item.username} /> : null}
       <WishlistHeart
         item={{
           id: item.id,

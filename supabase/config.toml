@@ -59,3 +59,8 @@ verify_jwt = true
 
 [functions.vendor-username-sign-in]
 verify_jwt = false
+
+# Deploy create-booking-request to Stackd (lryeshzwwhcdtzemeyzk) only.
+# Do not deploy it to the project_id at the top of this file.
+[functions.create-booking-request]
+verify_jwt = false

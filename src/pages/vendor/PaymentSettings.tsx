@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { errorMessage } from "@/lib/errorMessage";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PayoutDetailsForm } from "@/components/vendor/PayoutDetailsForm";
 
 const VendorPaymentSettings = () => {
   const navigate = useNavigate();
@@ -118,6 +119,16 @@ const VendorPaymentSettings = () => {
           <h1 className="text-2xl font-bold">Payment Settings</h1>
           <p className="text-sm text-muted-foreground">Manage how you receive payments from bookings</p>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">How you get paid</CardTitle>
+            <CardDescription>Bank details for experience payouts. This does not start a card payout.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PayoutDetailsForm />
+          </CardContent>
+        </Card>
 
         {isLoading ? (
           <Card>

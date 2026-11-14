@@ -15,6 +15,14 @@ export function shareGuideUrl(hostId: string, guestName?: string, origin = GUIDE
   return `${origin}/guide/${encodeURIComponent(hostId)}?${params.toString()}`;
 }
 
+/** Host page link: /h/<slug>?host=<hostId>[&guest=<name>]. */
+export function shareHostPageUrl(slug: string, hostId: string, guestName?: string, origin = GUIDE_ORIGIN): string {
+  const params = new URLSearchParams({ host: hostId });
+  const guest = cleanGuestName(guestName);
+  if (guest) params.set('guest', guest);
+  return `${origin}/h/${encodeURIComponent(slug)}?${params.toString()}`;
+}
+
 export function defaultShareMessage(opts: {
   guestName?: string;
   propertyName?: string;

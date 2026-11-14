@@ -2,13 +2,18 @@ import { RatingLine } from "@/components/destination/RatingLine";
 import { VendorPhoto } from "@/components/destination/VendorPhoto";
 import { WishlistHeart } from "@/components/destination/WishlistHeart";
 import { findAirbnbVendor } from "@/data/airbnbCatalog";
+import { AddToHostPage } from "@/components/host/AddToHostPage";
 import { PRICE_ON_REQUEST, guestPriceLine } from "@/lib/experiencePrice";
+import { isValidHostId } from "@/lib/guestBooking";
+import { withHostRef } from "@/lib/hostGuide";
 import { useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
 
 export default function ExperienceBusiness() {
   const { username } = useParams();
   const { hash } = useLocation();
+  const [params] = useSearchParams();
+  const host = params.get("host");
   const vendor = findAirbnbVendor(username);
 
   useEffect(() => {
@@ -66,6 +71,17 @@ export default function ExperienceBusiness() {
                       </>
                     )}
                   </p>
+                  <Link
+                    className="experience-book"
+                    to={
+                      host && isValidHostId(host)
+                        ? withHostRef(`/experiences/${vendor.username}/${experience.id}#book`, host)
+                        : `/experiences/${vendor.username}/${experience.id}#book`
+                    }
+                  >
+                    Request to book
+                  </Link>
+                  <AddToHostPage itemType="experience" itemRef={experience.id} vendorUsername={vendor.username} />
                 </div>
                 <WishlistHeart
                   item={{

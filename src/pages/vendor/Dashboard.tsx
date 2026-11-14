@@ -443,13 +443,22 @@ const VendorDashboard = () => {
               <TrendingUp className="h-5 w-5 text-brand" />
               <h2 className="text-xl font-bold">Upcoming Bookings</h2>
             </div>
-            <button 
-              onClick={() => navigate('/vendor/bookings')}
-              className="text-sm font-medium text-primary hover:text-primary/80 active:scale-95 flex items-center gap-1"
-            >
-              View All
-              <ArrowUpRight className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => navigate('/vendor/booking-requests')}
+                className="text-sm font-medium text-primary hover:text-primary/80 active:scale-95"
+              >
+                Booking requests
+              </button>
+              <button 
+                onClick={() => navigate('/vendor/bookings')}
+                className="text-sm font-medium text-primary hover:text-primary/80 active:scale-95 flex items-center gap-1"
+              >
+                View All
+                <ArrowUpRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
           
           <div className="space-y-3">

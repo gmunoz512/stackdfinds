@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserProvider } from "./contexts/UserContext";
 import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
+import { StackdSessionProvider } from "./contexts/StackdSessionContext";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileProvider } from "./contexts/ProfileContext";
 import { ThemeProvider } from "./components/ThemeProvider";
@@ -47,6 +48,7 @@ const AllExperiences = lazy(() => import("./pages/guest/AllExperiences"));
 const ExperienceBusiness = lazy(() => import("./pages/guest/ExperienceBusiness"));
 const ExperienceListing = lazy(() => import("./pages/guest/ExperienceListing"));
 const GuestGuide = lazy(() => import("./pages/guest/GuestGuide"));
+const HostPublicPage = lazy(() => import("./pages/guest/HostPublicPage"));
 const MyBookings = lazy(() => import("./pages/guest/MyBookings"));
 const Conversation = lazy(() => import("./pages/guest/Conversation"));
 const RequestRefund = lazy(() => import("./pages/guest/RequestRefund"));
@@ -57,6 +59,7 @@ const PaymentSuccess = lazy(() => import("./pages/guest/PaymentSuccess"));
 
 // Host pages (lazy)
 const HostDashboard = lazy(() => import("./pages/host/Dashboard"));
+const HostPageEditor = lazy(() => import("./pages/host/HostPageEditor"));
 const HostVendors = lazy(() => import("./pages/host/Vendors"));
 const AddVendor = lazy(() => import("./pages/host/AddVendor"));
 const HostProfile = lazy(() => import("./pages/host/Profile"));
@@ -80,6 +83,7 @@ const VendorSettings = lazy(() => import("./pages/vendor/Settings"));
 const VendorPaymentSettings = lazy(() => import("./pages/vendor/PaymentSettings"));
 const VendorPayoutHistory = lazy(() => import("./pages/vendor/PayoutHistory"));
 const AllBookings = lazy(() => import("./pages/vendor/AllBookings"));
+const VendorBookingRequests = lazy(() => import("./pages/vendor/BookingRequests"));
 const ActiveHosts = lazy(() => import("./pages/vendor/ActiveHosts"));
 const RevenueBreakdown = lazy(() => import("./pages/vendor/RevenueBreakdown"));
 const VendorAffiliateAccounting = lazy(() => import("./pages/vendor/AffiliateAccounting"));
@@ -268,6 +272,7 @@ const AppRoutes = () => (
     <Route path="/experiences/:username" element={<ExperienceBusiness />} />
     <Route path="/wishlists" element={<Wishlists />} />
     <Route path="/guide/:hostId" element={<GuestGuide />} />
+    <Route path="/h/:slug" element={<HostPublicPage />} />
     <Route path="/privacy" element={<PrivacyPolicy />} />
     <Route path="/terms" element={<TermsOfService />} />
     <Route path="/vendor/upload-photos" element={<ProtectedVendorRoute><TestInstagramScrape /></ProtectedVendorRoute>} />
@@ -311,6 +316,7 @@ const AppRoutes = () => (
     <Route path="/host/vendors/manage" element={<ProtectedHostRoute><HostVendorManagement /></ProtectedHostRoute>} />
     <Route path="/host/marketplace" element={<ProtectedHostRoute><HostMarketplace /></ProtectedHostRoute>} />
     <Route path="/host/guide" element={<ProtectedHostRoute><HostGuideBuilder /></ProtectedHostRoute>} />
+    <Route path="/host/page" element={<HostPageEditor />} />
     <Route path="/host/earnings" element={<ProtectedHostRoute><HostEarnings /></ProtectedHostRoute>} />
     <Route path="/host/ratings" element={<ProtectedHostRoute><HostRatings /></ProtectedHostRoute>} />
     <Route 
@@ -374,6 +380,7 @@ const AppRoutes = () => (
         </ProtectedVendorRoute>
       } 
     />
+    <Route path="/vendor/booking-requests" element={<VendorBookingRequests />} />
     <Route 
       path="/vendor/hosts" 
       element={
@@ -458,6 +465,7 @@ const App = () => {
           disableTransitionOnChange
         >
           <AuthProvider>
+            <StackdSessionProvider>
             <ProfileProvider>
               <UserProvider>
                 <TooltipProvider>
@@ -471,6 +479,7 @@ const App = () => {
                 </TooltipProvider>
               </UserProvider>
             </ProfileProvider>
+            </StackdSessionProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

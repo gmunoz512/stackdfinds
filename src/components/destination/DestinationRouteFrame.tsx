@@ -8,7 +8,7 @@ export function DestinationRouteFrame({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const management =
     /^\/(host|admin)(\/|$)/.test(pathname) ||
-    /^\/vendor\/(dashboard|settings|profile|payment-settings|payout-history|ratings|bookings|services|create-profile|upload-photos|add-service|affiliate|revenue|hosts)(\/|$)/.test(
+    /^\/vendor\/(dashboard|settings|profile|payment-settings|payout-history|ratings|bookings|booking-requests|services|create-profile|upload-photos|add-service|affiliate|revenue|hosts)(\/|$)/.test(
       pathname,
     );
   useEffect(() => {

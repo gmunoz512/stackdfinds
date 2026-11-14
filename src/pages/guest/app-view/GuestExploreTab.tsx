@@ -14,6 +14,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import { DestinationHero } from "@/components/destination/DestinationShell";
 import { GoogleRating } from "@/components/GoogleRating";
 import { resolveGoogleRating } from "@/lib/googleRating";
+import { AddToHostPage } from "@/components/host/AddToHostPage";
 import type { Restaurant } from "@/data/mockRestaurants";
 import type { SupportedCity } from "@/lib/supportedCities";
 import type { UserRole, Vendor } from "@/types";
@@ -120,6 +121,7 @@ export function GuestExploreTab(props: GuestExploreTabProps) {
         <ListingPhoto src={vendor.photos?.[0]} name={vendor.name} />
         <h3>{vendor.name}</h3>
       </Link>
+      {vendor.username ? <AddToHostPage itemType="experience" itemRef={vendor.id} vendorUsername={vendor.username} /> : null}
       {!vendor.id.startsWith("preview-") && !vendor.username && (
         <button
           className="save-place"
@@ -219,6 +221,7 @@ export function GuestExploreTab(props: GuestExploreTabProps) {
               <p>
                 {r.cuisine} · {r.neighborhood || r.city}
               </p>
+              <AddToHostPage itemType="restaurant" itemRef={r.id} />
             </article>
           ))}
         </div>

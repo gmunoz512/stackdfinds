@@ -14,7 +14,9 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useCreateProfileForm } from './form-context';
 import { CommissionPreviewCard } from '@/components/CommissionPreviewCard';
+import { PayoutDetailsForm } from '@/components/vendor/PayoutDetailsForm';
 import { HOST_COMMISSION_TIERS, tierLabel } from '@/lib/commissions';
+import { useState } from 'react';
 
 export function CreateProfileForm() {
   const {
@@ -72,6 +74,7 @@ export function CreateProfileForm() {
     isUpdateMode,
     CATEGORIES
   } = useCreateProfileForm();
+  const [hidePayout, setHidePayout] = useState(() => sessionStorage.getItem("stackd-payout-later") === "1");
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -86,6 +89,20 @@ export function CreateProfileForm() {
           </h1>
         </div>
       </div>
+
+      {!isUpdateMode && !hidePayout ? (
+        <section className="max-w-2xl mx-auto p-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>How you get paid</CardTitle>
+              <CardDescription>Optional. You can add this later in Payment Settings.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PayoutDetailsForm onSkip={() => { sessionStorage.setItem("stackd-payout-later", "1"); setHidePayout(true); }} />
+            </CardContent>
+          </Card>
+        </section>
+      ) : null}
 
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto p-4 space-y-6">
         {/* Basic Info */}

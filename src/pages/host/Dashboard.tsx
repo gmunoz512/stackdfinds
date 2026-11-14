@@ -447,6 +447,13 @@ const HostDashboard = () => {
             >
               Marketplace
             </button>
+            <button
+              type="button"
+              onClick={() => navigate('/host/page')}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Your page
+            </button>
           </div>
           
           <p className="text-sm text-muted-foreground">

@@ -1,12 +1,13 @@
 const STEPS = [
   { n: 1 as const, label: "Password" },
   { n: 2 as const, label: "Email", optional: true },
+  { n: 3 as const, label: "Payout", optional: true },
 ];
 
-/** First-login progress: password, then an optional email. */
-export function VendorSetupSteps({ step }: { step: 1 | 2 }) {
+/** First-login progress: password, optional email, optional payout details. */
+export function VendorSetupSteps({ step }: { step: 1 | 2 | 3 }) {
   return (
-    <ol className="va-progress" aria-label={`Step ${step} of 2`}>
+    <ol className="va-progress" aria-label={`Step ${step} of 3`}>
       {STEPS.map((item) => {
         const done = item.n < step;
         const current = item.n === step;
